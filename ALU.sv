@@ -42,6 +42,7 @@ module ALU #(
             4'b0110: ALUResult = shift_left;
             4'b1110: ALUResult = shift_right;
             4'b1100: ALUResult = shift_arith;
+            4'b1101: ALUResult = SrcB;
             default: ALUResult = {DATA_WIDTH{1'b0}};
         endcase
 
