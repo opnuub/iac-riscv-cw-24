@@ -5,13 +5,18 @@ module ALU #(
     input   logic [DATA_WIDTH-1:0]  SrcB,
     input   logic [3:0]             ALUControl,
     output  logic [DATA_WIDTH-1:0]  ALUResult,
-    output  logic                   zero
+    output  logic                   zero,
+    output  logic                   signedsmaller,
+    output  logic                   unsignedsmaller
 );
 
     logic [DATA_WIDTH-1:0] add, sub, Opand, Opor, Opxor, slt, sltu, shift_left, shift_right, shift_arith;
 
     always_comb begin
         zero = 0;
+        signedsmaller = 0;
+        unsignedsmaller = 0;
+
         add = SrcA + SrcB;
         sub = SrcA - SrcB;
         Opand = SrcA & SrcB;
@@ -22,6 +27,9 @@ module ALU #(
         shift_left = SrcA << SrcB[4:0];
         shift_right = SrcA >> SrcB[4:0];
         shift_arith = $signed(SrcA) >>> SrcB[4:0];
+
+        signedsmaller = ($signed(SrcA) < $signed(SrcB));
+        unsignedsmaller = ($unsigned(SrcA) < $unsigned(SrcB));
 
         case (ALUControl)
             4'b0000: ALUResult = add;
