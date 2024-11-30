@@ -1,5 +1,5 @@
 module pcReg #(
-    ADDR_WIDTH = 16
+    parameter ADDR_WIDTH = 16
 ) (
     input   logic [ADDR_WIDTH-1:0]  nextPC,
     input   logic                   clk,

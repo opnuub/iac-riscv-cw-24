@@ -6,6 +6,6 @@ module pcMux #(
     input   logic                   PCsrc,
     output  logic [ADDR_WIDTH-1:0]  nextPC
 );
-
     assign nextPC = PCsrc ? branchPC : incPC;
+    
 endmodule
