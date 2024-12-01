@@ -18,16 +18,20 @@ module PRegFetch #(
         $readmemh("PRegFetch.mem", rom_array);
     end
 
+    always_comb begin
+
+        rom_array[2'b00] <= Rd; 
+        rom_array[2'b01] <= PCf;
+        rom_array[2'b10] <= PCPlus4F;
+        
+    end
+
    
     always_ff @(posedge clk) begin
 
         InstrD <= rom_array[2'b00];
         PCd <= rom_array[2'b01];
         PCPlus4D <= rom_array[2'b10]; 
-
-        rom_array[2'b00] <= Rd; 
-        rom_array[2'b01] <= PCf;
-        rom_array[2'b10] <= PCPlus4F;
         
     end
 

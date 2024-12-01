@@ -25,7 +25,7 @@ class Vtop___024root final : public VerilatedModule {
     IData/*31:0*/ top__DOT__PCFp;
     IData/*31:0*/ top__DOT__PCf;
     VlUnpacked<IData/*31:0*/, 4> top__DOT__PRegFetch__DOT__rom_array;
-    VlUnpacked<CData/*0:0*/, 3> __Vm_traceActivity;
+    VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
 
     // INTERNAL VARIABLES
     Vtop__Syms* const vlSymsp;

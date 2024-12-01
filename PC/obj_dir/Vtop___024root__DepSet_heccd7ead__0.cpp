@@ -6,42 +6,32 @@
 
 #include "Vtop___024root.h"
 
+VL_INLINE_OPT void Vtop___024root___sequent__TOP__0(Vtop___024root* vlSelf) {
+    if (false && vlSelf) {}  // Prevent unused
+    Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
+    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__0\n"); );
+    // Body
+    vlSelf->PCPlus4D = vlSelf->top__DOT__PRegFetch__DOT__rom_array
+        [2U];
+    vlSelf->PCd = vlSelf->top__DOT__PRegFetch__DOT__rom_array
+        [1U];
+    vlSelf->InstrD = vlSelf->top__DOT__PRegFetch__DOT__rom_array
+        [0U];
+}
+
 VL_INLINE_OPT void Vtop___024root___sequent__TOP__1(Vtop___024root* vlSelf) {
     if (false && vlSelf) {}  // Prevent unused
     Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__1\n"); );
-    // Init
-    IData/*31:0*/ __Vdlyvval__top__DOT__PRegFetch__DOT__rom_array__v0;
-    IData/*31:0*/ __Vdlyvval__top__DOT__PRegFetch__DOT__rom_array__v1;
-    IData/*31:0*/ __Vdlyvval__top__DOT__PRegFetch__DOT__rom_array__v2;
-    // Body
-    vlSelf->InstrD = vlSelf->top__DOT__PRegFetch__DOT__rom_array
-        [0U];
-    vlSelf->PCd = vlSelf->top__DOT__PRegFetch__DOT__rom_array
-        [1U];
-    vlSelf->PCPlus4D = vlSelf->top__DOT__PRegFetch__DOT__rom_array
-        [2U];
-    __Vdlyvval__top__DOT__PRegFetch__DOT__rom_array__v0 
-        = ((IData)(0xaU) + vlSelf->top__DOT__PCf);
-    __Vdlyvval__top__DOT__PRegFetch__DOT__rom_array__v1 
-        = vlSelf->top__DOT__PCf;
-    __Vdlyvval__top__DOT__PRegFetch__DOT__rom_array__v2 
-        = ((IData)(4U) + vlSelf->top__DOT__PCf);
-    vlSelf->top__DOT__PRegFetch__DOT__rom_array[0U] 
-        = __Vdlyvval__top__DOT__PRegFetch__DOT__rom_array__v0;
-    vlSelf->top__DOT__PRegFetch__DOT__rom_array[1U] 
-        = __Vdlyvval__top__DOT__PRegFetch__DOT__rom_array__v1;
-    vlSelf->top__DOT__PRegFetch__DOT__rom_array[2U] 
-        = __Vdlyvval__top__DOT__PRegFetch__DOT__rom_array__v2;
-}
-
-VL_INLINE_OPT void Vtop___024root___sequent__TOP__2(Vtop___024root* vlSelf) {
-    if (false && vlSelf) {}  // Prevent unused
-    Vtop__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
-    VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___sequent__TOP__2\n"); );
     // Body
     vlSelf->top__DOT__PCf = ((IData)(vlSelf->rst) ? 0U
                               : vlSelf->top__DOT__PCFp);
+    vlSelf->top__DOT__PRegFetch__DOT__rom_array[0U] 
+        = ((IData)(0xaU) + vlSelf->top__DOT__PCf);
+    vlSelf->top__DOT__PRegFetch__DOT__rom_array[1U] 
+        = vlSelf->top__DOT__PCf;
+    vlSelf->top__DOT__PRegFetch__DOT__rom_array[2U] 
+        = ((IData)(4U) + vlSelf->top__DOT__PCf);
 }
 
 VL_INLINE_OPT void Vtop___024root___combo__TOP__0(Vtop___024root* vlSelf) {
@@ -60,13 +50,12 @@ void Vtop___024root___eval(Vtop___024root* vlSelf) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    Vtop___024root___eval\n"); );
     // Body
     if (((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk)))) {
-        Vtop___024root___sequent__TOP__1(vlSelf);
-        vlSelf->__Vm_traceActivity[1U] = 1U;
+        Vtop___024root___sequent__TOP__0(vlSelf);
     }
     if ((((IData)(vlSelf->clk) & (~ (IData)(vlSelf->__Vclklast__TOP__clk))) 
          | ((IData)(vlSelf->rst) & (~ (IData)(vlSelf->__Vclklast__TOP__rst))))) {
-        Vtop___024root___sequent__TOP__2(vlSelf);
-        vlSelf->__Vm_traceActivity[2U] = 1U;
+        Vtop___024root___sequent__TOP__1(vlSelf);
+        vlSelf->__Vm_traceActivity[1U] = 1U;
     }
     Vtop___024root___combo__TOP__0(vlSelf);
     // Final
