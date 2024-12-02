@@ -31,15 +31,19 @@ void Vtop___024root__trace_chg_sub_0(Vtop___024root* vlSelf, VerilatedVcd::Buffe
         bufp->chgIData(oldp+4,(vlSelf->top__DOT__PRegFetch__DOT__rom_array[1]),32);
         bufp->chgIData(oldp+5,(vlSelf->top__DOT__PRegFetch__DOT__rom_array[2]),32);
         bufp->chgIData(oldp+6,(vlSelf->top__DOT__PRegFetch__DOT__rom_array[3]),32);
+        bufp->chgIData(oldp+7,(vlSelf->top__DOT__PRegFetch__DOT__rom_array[4]),32);
+        bufp->chgIData(oldp+8,(vlSelf->top__DOT__PRegFetch__DOT__rom_array[5]),32);
+        bufp->chgIData(oldp+9,(vlSelf->top__DOT__PRegFetch__DOT__rom_array[6]),32);
+        bufp->chgIData(oldp+10,(vlSelf->top__DOT__PRegFetch__DOT__rom_array[7]),32);
     }
-    bufp->chgBit(oldp+7,(vlSelf->clk));
-    bufp->chgBit(oldp+8,(vlSelf->rst));
-    bufp->chgBit(oldp+9,(vlSelf->PCsrcE));
-    bufp->chgIData(oldp+10,(vlSelf->PCTargetE),32);
-    bufp->chgIData(oldp+11,(vlSelf->InstrD),32);
-    bufp->chgIData(oldp+12,(vlSelf->PCd),32);
-    bufp->chgIData(oldp+13,(vlSelf->PCPlus4D),32);
-    bufp->chgIData(oldp+14,(((IData)(vlSelf->PCsrcE)
+    bufp->chgBit(oldp+11,(vlSelf->clk));
+    bufp->chgBit(oldp+12,(vlSelf->rst));
+    bufp->chgBit(oldp+13,(vlSelf->PCsrcE));
+    bufp->chgIData(oldp+14,(vlSelf->PCTargetE),32);
+    bufp->chgIData(oldp+15,(vlSelf->InstrD),32);
+    bufp->chgIData(oldp+16,(vlSelf->PCd),32);
+    bufp->chgIData(oldp+17,(vlSelf->PCPlus4D),32);
+    bufp->chgIData(oldp+18,(((IData)(vlSelf->PCsrcE)
                               ? vlSelf->PCTargetE : 
                              ((IData)(4U) + vlSelf->top__DOT__PCf))),32);
 }

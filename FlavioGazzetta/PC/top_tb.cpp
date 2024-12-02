@@ -15,9 +15,13 @@ int main(int argc, char **argv, char **env)
     Vtop *top = new Vtop;
 
     VerilatedVcdC *tfp = new VerilatedVcdC;
+
+    Verilated::traceEverOn(true);
+    top->trace(tfp, 99);
+    tfp->open("waveform.vcd");
     
     top->clk = 0;
-    top->rst = 0;
+    top->rst = 1;
     top->PCsrcE = 0;
     top->PCTargetE = 100;
 
@@ -29,6 +33,13 @@ int main(int argc, char **argv, char **env)
             tfp->dump(2 * simcyc + tick);
             top->clk = !top->clk;
             top->eval();
+        }
+
+        if(simcyc == 2){
+            top->rst = 1;
+        }
+        if(simcyc == 4){
+            top->rst = 0;
         }
 
         // Control logic for reset and PC branching
