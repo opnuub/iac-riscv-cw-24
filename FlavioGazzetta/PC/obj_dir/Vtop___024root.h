@@ -24,7 +24,7 @@ class Vtop___024root final : public VerilatedModule {
     VL_OUT(PCPlus4D,31,0);
     IData/*31:0*/ top__DOT__PCFp;
     IData/*31:0*/ top__DOT__PCf;
-    VlUnpacked<IData/*31:0*/, 4> top__DOT__PRegFetch__DOT__rom_array;
+    VlUnpacked<IData/*31:0*/, 8> top__DOT__PRegFetch__DOT__rom_array;
     VlUnpacked<CData/*0:0*/, 2> __Vm_traceActivity;
 
     // INTERNAL VARIABLES

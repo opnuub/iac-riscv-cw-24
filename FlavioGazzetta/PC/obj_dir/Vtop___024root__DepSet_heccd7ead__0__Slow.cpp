@@ -18,7 +18,7 @@ VL_ATTR_COLD void Vtop___024root___initial__TOP__0(Vtop___024root* vlSelf) {
     __Vtemp_h695134fa__0[1U] = 0x65746368U;
     __Vtemp_h695134fa__0[2U] = 0x52656746U;
     __Vtemp_h695134fa__0[3U] = 0x50U;
-    VL_READMEM_N(true, 32, 4, 0, VL_CVT_PACK_STR_NW(4, __Vtemp_h695134fa__0)
+    VL_READMEM_N(true, 32, 8, 0, VL_CVT_PACK_STR_NW(4, __Vtemp_h695134fa__0)
                  ,  &(vlSelf->top__DOT__PRegFetch__DOT__rom_array)
                  , 0, ~0ULL);
 }
@@ -81,7 +81,7 @@ VL_ATTR_COLD void Vtop___024root___ctor_var_reset(Vtop___024root* vlSelf) {
     vlSelf->PCPlus4D = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__PCFp = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__PCf = VL_RAND_RESET_I(32);
-    for (int __Vi0=0; __Vi0<4; ++__Vi0) {
+    for (int __Vi0=0; __Vi0<8; ++__Vi0) {
         vlSelf->top__DOT__PRegFetch__DOT__rom_array[__Vi0] = VL_RAND_RESET_I(32);
     }
     for (int __Vi0=0; __Vi0<2; ++__Vi0) {
