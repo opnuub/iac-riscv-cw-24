@@ -19,6 +19,7 @@ int main(int argc, char **argv, char **env)
     top->clk = 0;
     top->rst = 0;
     top->PCsrcE = 0;
+    top->PCTargetE = 100;
 
     for (simcyc = 0; simcyc < MAX_SIM_CYC; simcyc++)
     {

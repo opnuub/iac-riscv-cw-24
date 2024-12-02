@@ -1,6 +1,6 @@
 module PRegFetch #(
     parameter DATA_WIDTH = 32,
-    parameter REG_DATA_WIDTH = 2
+    parameter REG_DATA_WIDTH = 3
 ) (
     input   logic [DATA_WIDTH-1:0]  Rd,
     input   logic [DATA_WIDTH-1:0]  PCf,
@@ -20,18 +20,18 @@ module PRegFetch #(
 
     always_comb begin
 
-        rom_array[2'b00] <= Rd; 
-        rom_array[2'b01] <= PCf;
-        rom_array[2'b10] <= PCPlus4F;
+        rom_array[3'b00] = Rd; 
+        rom_array[3'b01] = PCf;
+        rom_array[3'b10] = PCPlus4F;
         
     end
 
    
     always_ff @(posedge clk) begin
 
-        InstrD <= rom_array[2'b00];
-        PCd <= rom_array[2'b01];
-        PCPlus4D <= rom_array[2'b10]; 
+        InstrD <= rom_array[3'b00];
+        PCd <= rom_array[3'b01];
+        PCPlus4D <= rom_array[3'b10]; 
         
     end
 
