@@ -11,7 +11,7 @@ module PRegDecode #(
     output  logic [DATA_WIDTH-1:0]  rd1E,
     output  logic [DATA_WIDTH-1:0]  rd2E,
     output  logic [DATA_WIDTH-1:0]  PCe,
-    output  logic [DATA_WIDTH-1:0]  RdE,
+    output  logic [4:0]             RdE,
     output  logic [DATA_WIDTH-1:0]  ImmExtE,
     output  logic [DATA_WIDTH-1:0]  PcPlus4E
 );
