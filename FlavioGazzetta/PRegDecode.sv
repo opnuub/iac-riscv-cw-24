@@ -25,18 +25,24 @@ module PRegDecode #(
 
     always_comb begin
 
-        rom_array[3'b00] = Rd; 
-        rom_array[3'b01] = PCf;
-        rom_array[3'b10] = PCPlus4F;
+        rom_array[3'b00] = rd1;
+        rom_array[3'b01] = rd2; 
+        rom_array[3'b10] = PCd;
+        rom_array[3'b11] = RdD;
+        rom_array[3'b100] = ImmExtD;
+        rom_array[3'b101] = PcPlus4D;
         
     end
 
    
     always_ff @(posedge clk) begin
 
-        InstrD <= rom_array[3'b00];
-        PCd <= rom_array[3'b01];
-        PCPlus4D <= rom_array[3'b10]; 
+        rd1E <= rom_array[3'b00];
+        rd2E <= rom_array[3'b01];
+        PCe <= rom_array[3'b10];
+        Rde <= rom_array[3'b11];
+        ImmExtE <= rom_array[3'b100];
+        PCPlus4E <= rom_array[3'b101];
         
     end
 
