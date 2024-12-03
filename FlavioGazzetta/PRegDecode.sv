@@ -19,8 +19,8 @@ module PRegDecode #(
     logic [DATA_WIDTH-1:0] rom_array [2**REG_DATA_WIDTH-1:0];
     
     initial begin
-        $display("Loading rom.2");
-        $readmemh("PRegFetch.mem", rom_array);
+        $display("Loading rom.3");
+        $readmemh("PRegDecode.mem", rom_array);
     end
 
     always_comb begin
