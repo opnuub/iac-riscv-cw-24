@@ -31,7 +31,7 @@ module mainDecoder (
                 aluOp = 2'b00;
             end
             7'b0010011: begin // immediate 6:22
-                aluSrc = 1
+                aluSrc = 1;
                 // more
             end
             7'b0110011: begin // R-type
@@ -51,9 +51,9 @@ module mainDecoder (
                 resultSrc = 1; // x
                 aluOp = 2'b01;
                 if (zero)
-                    pcSrc = 1
+                    pcSrc = 1;
                 else
-                    pcSrc = 0
+                    pcSrc = 0;
             end
             default: begin // shouldn't happen
                 regWrite = 1;
