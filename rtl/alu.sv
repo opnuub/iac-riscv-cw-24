@@ -4,8 +4,7 @@ module alu #(
     input   logic [DATA_WIDTH-1:0]  srcA,  // SrcA
     input   logic [DATA_WIDTH-1:0]  srcB,  // SrcB
     input   logic [2:0]             aluControl, // ALUControl
-    output  logic [DATA_WIDTH-1:0]  aluResult,  // ALUResult
-    output  logic                   zero     // equal
+    output  logic [DATA_WIDTH-1:0]  aluResult   // ALUResult
 );
     
 always_comb begin
@@ -19,8 +18,6 @@ always_comb begin
         3'b110: aluResult = srcA << srcB[4:0];
         3'b111: aluResult = srcA >> srcB[4:0];
     endcase
-
-    zero = (aluResult == 32'b0);
 end
 
 endmodule
