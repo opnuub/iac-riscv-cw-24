@@ -14,7 +14,7 @@ module branchUnit #(
             3'b100: zero = srcA < srcB;
             3'b101: zero = srcA >= srcB;
             3'b110: zero = $unsigned(srcA) < $unsigned(srcB);
-            3'b111: zero = $unsigned(SrcA) >= $unsigned(SrcB);
+            3'b111: zero = $unsigned(srcA) >= $unsigned(srcB);
             default: zero = 0;
         endcase
     end

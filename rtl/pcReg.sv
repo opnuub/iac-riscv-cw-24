@@ -10,12 +10,10 @@ module pcReg #(
     output  logic [ADDR_WIDTH-1:0]  incPC,
     output  logic [ADDR_WIDTH-1:0]  pc
 );
-    logic [ADDR_WIDTH:0] temp_pc; // deal with sign extension
-    assign temp_pc = {1'b0, pc};  // convert pc from 12-bits to 13-bits
 
     always_comb begin
         incPC = pc + OFFSET;
-        branchPC = (temp + immOp)[ADDR_WIDTH-1:0];
+        branchPC = pc + immOp;
     end
 
     always_ff @ (posedge clk)

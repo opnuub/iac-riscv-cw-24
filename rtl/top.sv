@@ -7,6 +7,7 @@ module top #(
 ) (
     input   logic                   clk,
     input   logic                   rst,
+    input   logic                   trigger,
     output  logic [DATA_WIDTH-1:0]  a0
 );
 
@@ -38,7 +39,7 @@ module top #(
         .ALUResult (aluResult),
         .ResultSrc (resultSrc),
         .Result (result)
-    )
+    );
 
     dataMemory #(
         .DATA_WIDTH(DATA_WIDTH),

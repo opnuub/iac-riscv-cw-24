@@ -13,7 +13,7 @@ always_comb begin
         3'b001: aluResult = srcA - srcB;
         3'b010: aluResult = srcA & srcB;
         3'b011: aluResult = srcA | srcB;
-        3'b100: aluResult = ($unsigned(SrcA) < $unsigned(SrcB)) ? 32'b1 : 32'b0;
+        3'b100: aluResult = ($unsigned(srcA) < $unsigned(srcB)) ? 32'b1 : 32'b0;
         3'b101: aluResult = (srcA < srcB) ? 32'b1 : 32'b0;
         3'b110: aluResult = srcA << srcB[4:0];
         3'b111: aluResult = srcA >> srcB[4:0];

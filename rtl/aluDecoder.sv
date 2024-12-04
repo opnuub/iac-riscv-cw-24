@@ -6,7 +6,7 @@ module aluDecoder (
     output  logic [2:0] aluControl
 );
     logic [1:0] opfunct7;
-    assign opfunct7 = {op[5], funct7[5]}
+    assign opfunct7 = {op[5], funct7};
 
     always_comb begin
         case (aluOp)
