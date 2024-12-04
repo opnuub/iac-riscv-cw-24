@@ -59,10 +59,5 @@ module top #(
         .PCsrc (pcSrc),
         .nextPC (nextPC)
     );
-
-    always_comb begin
-        incPC = pc + 4;
-        branchPC = pc + immOp[15:0];
-    end
-
+    
 endmodule
