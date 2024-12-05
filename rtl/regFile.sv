@@ -16,8 +16,8 @@ module regFile #(
     logic [DATA_WIDTH-1:0] rom_array [2**REG_DATA_WIDTH-1:0];
 
     always_comb begin
-        ALUop1 <= rom_array[rs1]; // Read first operand
-        regOp2 <= rom_array[rs2]; // Read second operand
+        ALUop1 = rom_array[rs1]; // Read first operand
+        regOp2 = rom_array[rs2]; // Read second operand
     end
 
     always_ff @(posedge clk) begin

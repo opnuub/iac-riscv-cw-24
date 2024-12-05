@@ -1,12 +1,12 @@
 module aluDecoder (
-    input   logic [6:0] op,
+    input   logic       op,
     input   logic [1:0] aluOp,
     input   logic [2:0] funct3,
     input   logic       funct7, // supposedly 7 bits but only bit 30 is significant
     output  logic [2:0] aluControl
 );
     logic [1:0] opfunct7;
-    assign opfunct7 = {op[5], funct7};
+    assign opfunct7 = {op, funct7};
 
     always_comb begin
         case (aluOp)

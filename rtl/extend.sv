@@ -14,9 +14,9 @@ module extend #(
             2'b10: immExt = {{20{instruction[31]}}, instruction[7], instruction[30:25], instruction[11:8], 1'b0};
             2'b11: begin
                 if (jumpSrc)
-                    immExt = {instruction[31:12], 12'b0};
+                    immExt = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};   
                 else
-                    immExt = {{11{instruction[31]}}, instruction[31], instruction[19:12], instruction[20], instruction[30:21], 1'b0};
+                    immExt = {instruction[31:12], 12'b0};;
             end
         endcase
     end

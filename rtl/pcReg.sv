@@ -1,6 +1,6 @@
 module pcReg #(
     parameter OFFSET = 4,
-    parameter ADDR_WIDTH = 12
+    parameter ADDR_WIDTH = 32
 ) (
     input   logic [ADDR_WIDTH-1:0]  nextPC,
     input   logic                   clk,
@@ -15,7 +15,7 @@ module pcReg #(
 
     always_ff @ (posedge clk)
         if (triggerRst)
-            pc <= 0;
+            pc <= 32'hBFC00000;
         else
             pc <= nextPC;
 
