@@ -1,5 +1,5 @@
 module pcMux #(
-    parameter ADDR_WIDTH = 12
+    parameter ADDR_WIDTH = 16
 ) (
     input   logic [ADDR_WIDTH-1:0]  branchPC,
     input   logic [ADDR_WIDTH-1:0]  incPC,
