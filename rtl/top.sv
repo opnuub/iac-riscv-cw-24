@@ -3,7 +3,8 @@ module top #(
     parameter INSTR_WIDTH = 32,
     parameter ADDR_WIDTH = 12,
     parameter MEM_ADDR_WIDTH = 17,
-    parameter REG_DATA_WIDTH = 5
+    parameter REG_DATA_WIDTH = 5,
+    parameter OFFSET = 4
 ) (
     input   logic                   clk,
     input   logic                   rst,
@@ -18,9 +19,12 @@ module top #(
     logic [2:0]             aluControl;
     logic                   aluSrc;
     logic [1:0]             immSrc;
+    logic                   jalrSrc;
+    logic                   jumpSrc;
     logic                   pcSrc;
     logic [DATA_WIDTH-1:0]  srcA;
     logic [DATA_WIDTH-1:0]  srcB;
+    logic [DATA_WIDTH-1:0]  wd3;
     logic [DATA_WIDTH-1:0]  regOp2;
     logic [DATA_WIDTH-1:0]  aluResult;
     logic                   resultSrc;
@@ -31,6 +35,34 @@ module top #(
     logic [ADDR_WIDTH-1:0]  nextPC;
     logic [ADDR_WIDTH-1:0]  branchPC;
     logic [ADDR_WIDTH-1:0]  incPC;
+    logic                   triggerRst;
+
+    jumpMux #(
+        .DATA_WIDTH(DATA_WIDTH)
+    ) jumpMux (
+        .result (result),
+        .incPC (incPC),
+        .jumpSrc (jumpSrc),
+        .ALUout (wd3)
+    );
+
+    extendPC #(
+        .DATA_WIDTH(DATA_WIDTH),
+        .ADDR_WIDTH(ADDR_WIDTH)
+    ) extendPC (
+        .pc (pc),
+        .immOp (immOp),
+        .result (result),
+        .jalrSrc (jalrSrc),
+        .branchPC (branchPC)
+    );
+
+    triggerFSM triggerFSM (
+        .clk (clk),
+        .rst (rst),
+        .trigger (trigger),
+        .triggerRst (triggerRst)
+    );
 
     resultMux #(
         .DATA_WIDTH(DATA_WIDTH)
@@ -80,7 +112,7 @@ module top #(
         .rs2 (instr[24:20]),
         .rd (instr[11:7]),
         .RegWrite (regWrite),
-        .ALUout (result),
+        .ALUout (wd3),
         .ALUop1 (srcA),
         .regOp2 (regOp2),
         .a0 (a0)
@@ -104,14 +136,13 @@ module top #(
     );
 
     pcReg #(
-        .ADDR_WIDTH(ADDR_WIDTH)
+        .ADDR_WIDTH(ADDR_WIDTH),
+        .OFFSET(OFFSET)
     ) pcReg (
         .clk (clk),
-        .rst (rst),
+        .triggerRst (triggerRst),
         .pc (pc),
         .nextPC (nextPC),
-        .immOp (immOp[ADDR_WIDTH:0]),
-        .branchPC (branchPC),
         .incPC (incPC)
     );
 
