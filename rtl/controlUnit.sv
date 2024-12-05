@@ -4,6 +4,8 @@ module controlUnit(
     input   logic       funct7,
     input   logic       zero,
     output  logic       pcSrc,
+    output  logic       jumpSrc,
+    output  logic       jalrSrc,
     output  logic       resultSrc,
     output  logic       memWrite,
     output  logic [2:0] aluControl,
@@ -18,6 +20,8 @@ module controlUnit(
         .op(op),
         .zero(zero),
         .pcSrc(pcSrc),
+        .jumpSrc(jumpSrc),
+        .jalrSrc(jalrSrc),
         .resultSrc(resultSrc),
         .memWrite(memWrite),
         .aluSrc(aluSrc),
@@ -27,7 +31,7 @@ module controlUnit(
     );
 
     aluDecoder aluDecoder (
-        .op(op),
+        .op(op[5]),
         .aluOp(aluOp),
         .funct3(funct3),
         .funct7(funct7),

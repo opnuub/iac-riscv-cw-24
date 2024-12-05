@@ -1,7 +1,7 @@
 module top #(
     parameter DATA_WIDTH = 32,
     parameter INSTR_WIDTH = 32,
-    parameter ADDR_WIDTH = 12,
+    parameter ADDR_WIDTH = 32,
     parameter MEM_ADDR_WIDTH = 17,
     parameter REG_DATA_WIDTH = 5,
     parameter OFFSET = 4
@@ -78,7 +78,7 @@ module top #(
         .ADDR_WIDTH(MEM_ADDR_WIDTH)
     ) dataMemory (
         .clk (clk),
-        .SizeCtr (aluControl), // not set
+        .SizeCtr (instr[14:12]), // not set
         .ALUResult (aluResult[MEM_ADDR_WIDTH-1:0]),
         .WriteData (regOp2),
         .MemWrite (memWrite),
@@ -132,6 +132,7 @@ module top #(
     ) extend (
         .instruction (instr),
         .immSrc (immSrc),
+        .jumpSrc (jumpSrc),
         .immExt (immOp)
     );
 
@@ -161,6 +162,8 @@ module top #(
         .funct7 (instr[30]),
         .zero (zero),
         .pcSrc (pcSrc),
+        .jumpSrc (jumpSrc),
+        .jalrSrc (jalrSrc),
         .resultSrc (resultSrc),
         .memWrite (memWrite),
         .aluControl (aluControl),

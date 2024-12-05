@@ -10,7 +10,11 @@ module dataMemory #(
     output  logic [DATA_WIDTH-1:0]  ReadData        // Data Read from Memory
 );
 
-logic [7:0] memory [2**ADDR_WIDTH-1:0];  // Byte-addressable memory
+    logic [7:0] memory [2**ADDR_WIDTH-1:0];  // Byte-addressable memory
+
+    initial begin
+        $readmemh("../rtl/data.hex", memory);
+    end
 
     always_ff @(posedge clk) begin
         if (MemWrite) begin
