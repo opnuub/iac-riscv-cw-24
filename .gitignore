@@ -1,5 +1,5 @@
 
-/test_out/
+**/test_out/
 /.vscode/
 *.log
 *.tmp
