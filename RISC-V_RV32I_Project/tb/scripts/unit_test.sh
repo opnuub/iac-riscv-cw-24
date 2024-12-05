@@ -22,7 +22,6 @@ else
     echo "Detected non-MacOS: Default configuration"
 fi
 
-# 使用动态模块名称
 verilator --cc ${RTL_FOLDER}/${MODULE_NAME}.sv \
           --exe ${TB_FOLDER}/${MODULE_NAME}_tb.sv ${TB_FOLDER}/${MODULE_NAME}_tb.cpp \
           --top-module ${MODULE_NAME} \
