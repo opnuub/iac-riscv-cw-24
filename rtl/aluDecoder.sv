@@ -29,7 +29,7 @@ module aluDecoder (
                     3'b111: aluControl = 3'b010; // and
                 endcase
             end
-            default: aluControl = 3'b000; // shouldn't happen, reserved for jump
+            2'b11: aluControl = 3'b100;
         endcase
     end
     
