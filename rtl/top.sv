@@ -73,10 +73,10 @@ module top #(
         .Result (result)
     );
 
-    dataMemory #(
+    DataMemory #(
         .DATA_WIDTH(DATA_WIDTH),
         .ADDR_WIDTH(MEM_ADDR_WIDTH)
-    ) dataMemory (
+    ) DataMemory (
         .clk (clk),
         .SizeCtr (instr[14:12]), // not set
         .ALUResult (aluResult[MEM_ADDR_WIDTH-1:0]),
