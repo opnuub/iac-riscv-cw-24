@@ -1,48 +1,29 @@
-module regfile (
-    input  logic        clk_i,
-    input  logic        rst_ni,
-    
-    // Write port
-    input  logic        wen_i,
-    input  logic [4:0]  waddr_i,
-    input  logic [31:0] wdata_i,
-    
-    // Read port 1
-    input  logic [4:0]  raddr1_i,
-    output logic [31:0] rdata1_o,
-    
-    // Read port 2
-    input  logic [4:0]  raddr2_i,
-    output logic [31:0] rdata2_o,
-    
-    // Output a0 register value
-    output logic [31:0] a0_o
+module regFile #(
+    parameter DATA_WIDTH = 32,
+    parameter REG_DATA_WIDTH = 5
+) (
+    input   logic                       clk,
+    input   logic [REG_DATA_WIDTH-1:0]  rs1, // A1
+    input   logic [REG_DATA_WIDTH-1:0]  rs2, // A2
+    input   logic [REG_DATA_WIDTH-1:0]  rd,  // A3
+    input   logic                       RegWrite, // WE3
+    input   logic [DATA_WIDTH-1:0]      ALUout,  // WD3
+    output  logic [DATA_WIDTH-1:0]      ALUop1,  // RD1
+    output  logic [DATA_WIDTH-1:0]      regOp2,  // RD2
+    output  logic [DATA_WIDTH-1:0]      a0
 );
 
-// Register file storage
-logic [31:0] rf_reg [32];
+    logic [DATA_WIDTH-1:0] rom_array [2**REG_DATA_WIDTH-1:0];
 
-// Write operation
-always_ff @(posedge clk_i or negedge rst_ni) begin
-    if (!rst_ni) begin
-        for (int i = 0; i < 32; i++) begin
-            rf_reg[i] <= 32'b0;
-        end
-    end else if (wen_i && (waddr_i != 5'b0)) begin
-        rf_reg[waddr_i] <= wdata_i;
+    always_comb begin
+        ALUop1 = rom_array[rs1]; // Read first operand
+        regOp2 = rom_array[rs2]; // Read second operand
     end
-end
 
-// Read operations
-always_comb begin
-    // Read port 1
-    rdata1_o = (raddr1_i == 5'b0) ? 32'b0 : rf_reg[raddr1_i];
-    
-    // Read port 2
-    rdata2_o = (raddr2_i == 5'b0) ? 32'b0 : rf_reg[raddr2_i];
-end
-
-// Assign a0 register value
-assign a0_o = rf_reg[10]; // a0 is x10
+    always_ff @(posedge clk) begin
+        if (RegWrite)
+            rom_array[rd] <= ALUout;  // Write to register
+        a0 <= rom_array[5'd10];
+    end
 
 endmodule

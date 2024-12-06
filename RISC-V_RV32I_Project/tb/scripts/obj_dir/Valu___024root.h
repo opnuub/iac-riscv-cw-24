@@ -7,28 +7,37 @@
 
 #include "verilated.h"
 
+
 class Valu__Syms;
 
-class Valu___024root final : public VerilatedModule {
+class alignas(VL_CACHE_LINE_BYTES) Valu___024root final : public VerilatedModule {
   public:
 
     // DESIGN SPECIFIC STATE
-    VL_IN8(operator_i,3,0);
-    VL_IN(operand_a_i,31,0);
-    VL_IN(operand_b_i,31,0);
-    VL_OUT(result_o,31,0);
+    VL_IN8(aluControl,2,0);
+    CData/*0:0*/ __VstlFirstIteration;
+    CData/*0:0*/ __VicoFirstIteration;
+    CData/*0:0*/ __VactContinue;
+    VL_IN(srcA,31,0);
+    VL_IN(srcB,31,0);
+    VL_OUT(aluResult,31,0);
+    IData/*31:0*/ __VactIterCount;
+    VlTriggerVec<1> __VstlTriggered;
+    VlTriggerVec<1> __VicoTriggered;
+    VlTriggerVec<0> __VactTriggered;
+    VlTriggerVec<0> __VnbaTriggered;
 
     // INTERNAL VARIABLES
     Valu__Syms* const vlSymsp;
 
     // CONSTRUCTORS
-    Valu___024root(Valu__Syms* symsp, const char* name);
+    Valu___024root(Valu__Syms* symsp, const char* v__name);
     ~Valu___024root();
     VL_UNCOPYABLE(Valu___024root);
 
     // INTERNAL METHODS
     void __Vconfigure(bool first);
-} VL_ATTR_ALIGNED(VL_CACHE_LINE_BYTES);
+};
 
 
 #endif  // guard
