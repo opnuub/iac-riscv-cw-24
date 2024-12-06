@@ -7,10 +7,9 @@
 
 #include "verilated.h"
 
-
 class Vcontroller__Syms;
 
-class alignas(VL_CACHE_LINE_BYTES) Vcontroller___024root final : public VerilatedModule {
+class Vcontroller___024root final : public VerilatedModule {
   public:
 
     // DESIGN SPECIFIC STATE
@@ -33,26 +32,18 @@ class alignas(VL_CACHE_LINE_BYTES) Vcontroller___024root final : public Verilate
     VL_OUT8(imm_type_o,2,0);
     VL_OUT8(next_pc_sel_o,2,0);
     VL_OUT8(illegal_instr_o,0,0);
-    CData/*0:0*/ __VstlFirstIteration;
-    CData/*0:0*/ __VicoFirstIteration;
-    CData/*0:0*/ __VactContinue;
-    IData/*31:0*/ __VactIterCount;
-    VlTriggerVec<1> __VstlTriggered;
-    VlTriggerVec<1> __VicoTriggered;
-    VlTriggerVec<0> __VactTriggered;
-    VlTriggerVec<0> __VnbaTriggered;
 
     // INTERNAL VARIABLES
     Vcontroller__Syms* const vlSymsp;
 
     // CONSTRUCTORS
-    Vcontroller___024root(Vcontroller__Syms* symsp, const char* v__name);
+    Vcontroller___024root(Vcontroller__Syms* symsp, const char* name);
     ~Vcontroller___024root();
     VL_UNCOPYABLE(Vcontroller___024root);
 
     // INTERNAL METHODS
     void __Vconfigure(bool first);
-};
+} VL_ATTR_ALIGNED(VL_CACHE_LINE_BYTES);
 
 
 #endif  // guard

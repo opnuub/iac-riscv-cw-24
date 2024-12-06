@@ -1,7 +1,7 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vimem__pch.h"
+#include "Vimem__Syms.h"
 #include "Vimem.h"
 #include "Vimem___024root.h"
 
@@ -17,8 +17,6 @@ Vimem__Syms::Vimem__Syms(VerilatedContext* contextp, const char* namep, Vimem* m
     // Setup module instances
     , TOP{this, namep}
 {
-        // Check resources
-        Verilated::stackCheck(11);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-12);
     _vm_contextp__->timeprecision(-12);

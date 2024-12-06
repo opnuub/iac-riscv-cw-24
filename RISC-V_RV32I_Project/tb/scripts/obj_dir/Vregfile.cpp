@@ -1,7 +1,8 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Model implementation (design independent parts)
 
-#include "Vregfile__pch.h"
+#include "Vregfile.h"
+#include "Vregfile__Syms.h"
 
 //============================================================
 // Constructors
@@ -38,15 +39,26 @@ Vregfile::~Vregfile() {
 }
 
 //============================================================
-// Evaluation function
+// Evaluation loop
 
-#ifdef VL_DEBUG
-void Vregfile___024root___eval_debug_assertions(Vregfile___024root* vlSelf);
-#endif  // VL_DEBUG
-void Vregfile___024root___eval_static(Vregfile___024root* vlSelf);
 void Vregfile___024root___eval_initial(Vregfile___024root* vlSelf);
 void Vregfile___024root___eval_settle(Vregfile___024root* vlSelf);
 void Vregfile___024root___eval(Vregfile___024root* vlSelf);
+#ifdef VL_DEBUG
+void Vregfile___024root___eval_debug_assertions(Vregfile___024root* vlSelf);
+#endif  // VL_DEBUG
+void Vregfile___024root___final(Vregfile___024root* vlSelf);
+
+static void _eval_initial_loop(Vregfile__Syms* __restrict vlSymsp) {
+    vlSymsp->__Vm_didInit = true;
+    Vregfile___024root___eval_initial(&(vlSymsp->TOP));
+    // Evaluate till stable
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Initial loop\n"););
+        Vregfile___024root___eval_settle(&(vlSymsp->TOP));
+        Vregfile___024root___eval(&(vlSymsp->TOP));
+    } while (0);
+}
 
 void Vregfile::eval_step() {
     VL_DEBUG_IF(VL_DBG_MSGF("+++++TOP Evaluate Vregfile::eval_step\n"); );
@@ -54,27 +66,14 @@ void Vregfile::eval_step() {
     // Debug assertions
     Vregfile___024root___eval_debug_assertions(&(vlSymsp->TOP));
 #endif  // VL_DEBUG
-    vlSymsp->__Vm_deleter.deleteAll();
-    if (VL_UNLIKELY(!vlSymsp->__Vm_didInit)) {
-        vlSymsp->__Vm_didInit = true;
-        VL_DEBUG_IF(VL_DBG_MSGF("+ Initial\n"););
-        Vregfile___024root___eval_static(&(vlSymsp->TOP));
-        Vregfile___024root___eval_initial(&(vlSymsp->TOP));
-        Vregfile___024root___eval_settle(&(vlSymsp->TOP));
-    }
-    VL_DEBUG_IF(VL_DBG_MSGF("+ Eval\n"););
-    Vregfile___024root___eval(&(vlSymsp->TOP));
+    // Initialize
+    if (VL_UNLIKELY(!vlSymsp->__Vm_didInit)) _eval_initial_loop(vlSymsp);
+    // Evaluate till stable
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Clock loop\n"););
+        Vregfile___024root___eval(&(vlSymsp->TOP));
+    } while (0);
     // Evaluate cleanup
-    Verilated::endOfEval(vlSymsp->__Vm_evalMsgQp);
-}
-
-//============================================================
-// Events and timing
-bool Vregfile::eventsPending() { return false; }
-
-uint64_t Vregfile::nextTimeSlot() {
-    VL_FATAL_MT(__FILE__, __LINE__, "", "%Error: No delays in the design");
-    return 0;
 }
 
 //============================================================
@@ -87,10 +86,8 @@ const char* Vregfile::name() const {
 //============================================================
 // Invoke final blocks
 
-void Vregfile___024root___eval_final(Vregfile___024root* vlSelf);
-
 VL_ATTR_COLD void Vregfile::final() {
-    Vregfile___024root___eval_final(&(vlSymsp->TOP));
+    Vregfile___024root___final(&(vlSymsp->TOP));
 }
 
 //============================================================
@@ -99,7 +96,3 @@ VL_ATTR_COLD void Vregfile::final() {
 const char* Vregfile::hierName() const { return vlSymsp->name(); }
 const char* Vregfile::modelName() const { return "Vregfile"; }
 unsigned Vregfile::threads() const { return 1; }
-void Vregfile::prepareClone() const { contextp()->prepareClone(); }
-void Vregfile::atClone() const {
-    contextp()->threadPoolpOnClone();
-}

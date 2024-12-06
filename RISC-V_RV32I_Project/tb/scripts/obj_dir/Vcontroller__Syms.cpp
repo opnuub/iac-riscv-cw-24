@@ -1,7 +1,7 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vcontroller__pch.h"
+#include "Vcontroller__Syms.h"
 #include "Vcontroller.h"
 #include "Vcontroller___024root.h"
 
@@ -17,8 +17,6 @@ Vcontroller__Syms::Vcontroller__Syms(VerilatedContext* contextp, const char* nam
     // Setup module instances
     , TOP{this, namep}
 {
-        // Check resources
-        Verilated::stackCheck(25);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-12);
     _vm_contextp__->timeprecision(-12);
