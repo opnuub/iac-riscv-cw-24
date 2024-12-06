@@ -1,6 +1,5 @@
 # Instruction Architecture RISC-V Coursework - Group Error404
 
-<<<<<<< HEAD
 ## Overview
 
 |Tag	|Descripton			|Statement		|
@@ -19,4 +18,3 @@
 
 ##### Files to Take Note
 1. README.md file
-
