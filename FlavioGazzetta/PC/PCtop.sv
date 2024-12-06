@@ -1,4 +1,4 @@
-module top #(
+module PC_top #(
     parameter DATA_WIDTH = 32
 ) (
     input   logic                  clk,
@@ -30,7 +30,7 @@ module top #(
         .PCFp (PCFp)     	
     );
 
-    fakeinstmem fakeinstmem (
+    imem imem (
         .PCf (PCf),          
         .Rd (Rd)  	
     );
