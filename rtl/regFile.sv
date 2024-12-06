@@ -21,7 +21,7 @@ module regFile #(
     end
 
     always_ff @(posedge clk) begin
-        if (RegWrite)
+        if (RegWrite && rd != 5'd0)
             rom_array[rd] <= ALUout;  // Write to register
         a0 <= rom_array[5'd10];
     end
