@@ -1,12 +1,13 @@
 module PRegMemory #(
-    parameter DATA_WIDTH = 32,
-    parameter REG_DATA_WIDTH = 3
+    parameter DATA_WIDTH = 32
 ) (
     input   logic [DATA_WIDTH-1:0]  ALUResultM,
     input   logic [DATA_WIDTH-1:0]  DMRd,
     input   logic [4:0]             RdM,
     input   logic [DATA_WIDTH-1:0]  PCPlus4M,
     input   logic                   clk,
+    input   logic                   rst,         // Reset signal
+    input   logic                   FlushM,      // Flush signal
     output  logic [4:0]             RdW,
     output  logic [DATA_WIDTH-1:0]  ALUResultW,
     output  logic [DATA_WIDTH-1:0]  WriteDataW,
@@ -17,27 +18,25 @@ module PRegMemory #(
     output  logic [1:0]             ResultSrcW
 );
 
-    // Internal ROM array for intermediate storage
-    logic [DATA_WIDTH-1:0] rom_array [2**REG_DATA_WIDTH-1:0];
-
-    // Sequential logic: Write inputs to ROM
-    always_ff @(posedge clk) begin
-        rom_array[3'b000] <= ALUResultM;
-        rom_array[3'b001] <= DMRd;
-        rom_array[3'b010] <= {{(DATA_WIDTH-5){1'b0}}, RdM};
-        rom_array[3'b011] <= PCPlus4M;
-        rom_array[3'b100] <= {{(DATA_WIDTH-1){1'b0}}, RegWriteM};
-        rom_array[3'b101] <= {{(DATA_WIDTH-2){1'b0}}, ResultSrcM};
-    end
-
-    // Combinational logic: Read outputs from ROM
-    always_comb begin
-        ALUResultW = rom_array[3'b000];
-        WriteDataW = rom_array[3'b001];
-        RdW        = rom_array[3'b010][4:0];    
-        PCPlus4W   = rom_array[3'b011];
-        RegWriteW  = rom_array[3'b100][0];      
-        ResultSrcW = rom_array[3'b101][1:0];    
+    // Sequential logic for updating outputs
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst || FlushM) begin
+            // Reset or flush all outputs to default values
+            ALUResultW <= 32'b0;
+            WriteDataW <= 32'b0;
+            RdW        <= 5'b0;
+            PCPlus4W   <= 32'b0;
+            RegWriteW  <= 1'b0;
+            ResultSrcW <= 2'b0;
+        end else begin
+            // Normal operation: Pass inputs to outputs
+            ALUResultW <= ALUResultM;
+            WriteDataW <= DMRd;
+            RdW        <= RdM;
+            PCPlus4W   <= PCPlus4M;
+            RegWriteW  <= RegWriteM;
+            ResultSrcW <= ResultSrcM;
+        end
     end
 
 endmodule

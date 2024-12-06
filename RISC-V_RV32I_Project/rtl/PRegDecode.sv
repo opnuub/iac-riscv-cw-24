@@ -7,6 +7,8 @@ module PRegDecode #(
     input   logic [DATA_WIDTH-1:0]  PCd,
     input   logic [DATA_WIDTH-1:0]  ImmExtD,
     input   logic                   clk,
+    input   logic                   rst,          // Reset signal
+    input   logic                   FlushD,       // Flush signal
     input   logic [4:0]             RdD,
     input   logic [DATA_WIDTH-1:0]  PCPlus4D,
     output  logic [DATA_WIDTH-1:0]  rd1E,
@@ -31,41 +33,54 @@ module PRegDecode #(
     output  logic                   ALUSrcE
 );
 
-    // Internal ROM array for intermediate storage
-    logic [DATA_WIDTH-1:0] rom_array [2**REG_DATA_WIDTH-1:0];
-
-    // Sequential logic: Write inputs to ROM
-    always_ff @(posedge clk) begin
-        rom_array[4'b0000] <= rd1;
-        rom_array[4'b0001] <= rd2; 
-        rom_array[4'b0010] <= PCd;
-        rom_array[4'b0011] <= {27'b0, RdD};      
-        rom_array[4'b0100] <= ImmExtD;
-        rom_array[4'b0101] <= PCPlus4D;
-        rom_array[4'b0110] <= {31'b0, RegWriteD}; 
-        rom_array[4'b0111] <= {30'b0, ResultSrcD};
-        rom_array[4'b1000] <= {31'b0, MemWriteD};
-        rom_array[4'b1001] <= {31'b0, JumpD};
-        rom_array[4'b1010] <= {31'b0, BranchD};
-        rom_array[4'b1011] <= {29'b0, ALUControl};
-        rom_array[4'b1100] <= {31'b0, ALUSrcD};
-    end
-
-    // Combinational logic: Read outputs from ROM
-    always_comb begin
-        rd1E        = rom_array[4'b0000];
-        rd2E        = rom_array[4'b0001];
-        PCe         = rom_array[4'b0010];
-        RdE         = rom_array[4'b0011][4:0];  
-        ImmExtE     = rom_array[4'b0100];       
-        PcPlus4E    = rom_array[4'b0101];
-        RegWriteE   = rom_array[4'b0110][0];    
-        ResultSrcE  = rom_array[4'b0111][1:0];  
-        MemWriteE   = rom_array[4'b1000][0];    
-        JumpE       = rom_array[4'b1001][0];    
-        BranchE     = rom_array[4'b1010][0];    
-        ALUControlE = rom_array[4'b1011][2:0];  
-        ALUSrcE     = rom_array[4'b1100][0];    
+    // Sequential logic with reset and flush
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            // Reset all outputs to default values
+            rd1E        <= {DATA_WIDTH{1'b0}};
+            rd2E        <= {DATA_WIDTH{1'b0}};
+            PCe         <= {DATA_WIDTH{1'b0}};
+            RdE         <= 5'b0;
+            ImmExtE     <= {DATA_WIDTH{1'b0}};
+            PcPlus4E    <= {DATA_WIDTH{1'b0}};
+            RegWriteE   <= 1'b0;
+            ResultSrcE  <= 2'b0;
+            MemWriteE   <= 1'b0;
+            JumpE       <= 1'b0;
+            BranchE     <= 1'b0;
+            ALUControlE <= 3'b0;
+            ALUSrcE     <= 1'b0;
+        end else if (FlushD) begin
+            // Flush all outputs to default values
+            rd1E        <= {DATA_WIDTH{1'b0}};
+            rd2E        <= {DATA_WIDTH{1'b0}};
+            PCe         <= {DATA_WIDTH{1'b0}};
+            RdE         <= 5'b0;
+            ImmExtE     <= {DATA_WIDTH{1'b0}};
+            PcPlus4E    <= {DATA_WIDTH{1'b0}};
+            RegWriteE   <= 1'b0;
+            ResultSrcE  <= 2'b0;
+            MemWriteE   <= 1'b0;
+            JumpE       <= 1'b0;
+            BranchE     <= 1'b0;
+            ALUControlE <= 3'b0;
+            ALUSrcE     <= 1'b0;
+        end else begin
+            // Normal operation: Pass inputs to outputs
+            rd1E        <= rd1;
+            rd2E        <= rd2;
+            PCe         <= PCd;
+            RdE         <= RdD;
+            ImmExtE     <= ImmExtD;
+            PcPlus4E    <= PCPlus4D;
+            RegWriteE   <= RegWriteD;
+            ResultSrcE  <= ResultSrcD;
+            MemWriteE   <= MemWriteD;
+            JumpE       <= JumpD;
+            BranchE     <= BranchD;
+            ALUControlE <= ALUControl;
+            ALUSrcE     <= ALUSrcD;
+        end
     end
 
 endmodule

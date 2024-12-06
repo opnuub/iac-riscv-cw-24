@@ -1,11 +1,12 @@
 module PRegExecute #(
-    parameter DATA_WIDTH = 32,
-    parameter REG_DATA_WIDTH = 3
+    parameter DATA_WIDTH = 32
 ) (
     input   logic [DATA_WIDTH-1:0]  ALUout,
     input   logic [DATA_WIDTH-1:0]  WriteData,
     input   logic [DATA_WIDTH-1:0]  PCPlus4E,
     input   logic                   clk,
+    input   logic                   rst,          // Reset signal
+    input   logic                   FlushM,       // Flush signal
     input   logic [4:0]             RdE,
     output  logic [DATA_WIDTH-1:0]  ALUResultM,
     output  logic [DATA_WIDTH-1:0]  WriteDataM,
@@ -19,29 +20,27 @@ module PRegExecute #(
     output  logic                   MemWriteM
 );
 
-    
-    logic [DATA_WIDTH-1:0] rom_array [2**REG_DATA_WIDTH-1:0];
-
-    
-    always_ff @(posedge clk) begin
-        rom_array[3'b000] <= ALUout;
-        rom_array[3'b001] <= WriteData;
-        rom_array[3'b010] <= PCPlus4E;
-        rom_array[3'b011] <= {{(DATA_WIDTH-5){1'b0}}, RdE}; 
-        rom_array[3'b100] <= {{(DATA_WIDTH-1){1'b0}}, RegWriteE}; 
-        rom_array[3'b101] <= {{(DATA_WIDTH-2){1'b0}}, ResultSrcE};
-        rom_array[3'b110] <= {{(DATA_WIDTH-1){1'b0}}, MemWriteE}; 
-    end
-
-    
-    always_comb begin
-        ALUResultM = rom_array[3'b000];
-        WriteDataM = rom_array[3'b001];
-        PCPlus4M   = rom_array[3'b010];
-        RdM        = rom_array[3'b011][4:0];  
-        RegWriteM  = rom_array[3'b100][0];    
-        ResultSrcM = rom_array[3'b101][1:0];  
-        MemWriteM  = rom_array[3'b110][0];   
+    // Sequential logic for both writing and output generation
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst || FlushM) begin
+            // Reset or flush: Set outputs to default values
+            ALUResultM <= 0;
+            WriteDataM <= 0;
+            PCPlus4M   <= 0;
+            RdM        <= 0;
+            RegWriteM  <= 0;
+            ResultSrcM <= 0;
+            MemWriteM  <= 0;
+        end else begin
+            // Normal operation: Assign inputs to outputs
+            ALUResultM <= ALUout;
+            WriteDataM <= WriteData;
+            PCPlus4M   <= PCPlus4E;
+            RdM        <= RdE;
+            RegWriteM  <= RegWriteE;
+            ResultSrcM <= ResultSrcE;
+            MemWriteM  <= MemWriteE;
+        end
     end
 
 endmodule

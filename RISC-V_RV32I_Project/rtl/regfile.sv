@@ -7,7 +7,7 @@ module regfile #(
     input   logic [REG_DATA_WIDTH-1:0]  rs2, // A2
     input   logic [REG_DATA_WIDTH-1:0]  rd,  // A3
     input   logic                       RegWrite, // WE3
-    input   logic [DATA_WIDTH-1:0]      ALUout,  // WD3
+    input   logic [DATA_WIDTH-1:0]      ResultW,  // WD3
     output  logic [DATA_WIDTH-1:0]      ALUop1,  // RD1
     output  logic [DATA_WIDTH-1:0]      regOp2,  // RD2
     output  logic [DATA_WIDTH-1:0]      a0
@@ -22,8 +22,8 @@ module regfile #(
 
     always_ff @(posedge clk) begin
         if (RegWrite)
-            rom_array[rd] <= ALUout;  // Write to register
-        a0 <= rom_array[5'd10];
+            rom_array[rd] <= ResultW;  // Write to register
+        a0 <= ResultW;
     end
 
 endmodule
