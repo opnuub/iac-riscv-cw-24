@@ -1,4 +1,4 @@
-module regFile #(
+module regfile #(
     parameter DATA_WIDTH = 32,
     parameter REG_DATA_WIDTH = 5
 ) (
