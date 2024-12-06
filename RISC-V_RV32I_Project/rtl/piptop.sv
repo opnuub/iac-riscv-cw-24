@@ -14,7 +14,7 @@ module piptop #( //!!!!!!!!!!!!!this file is still filled with errors, I am not 
 
     // Declare all internal signals
     // Fetch Stage
-    logic [ADDR_WIDTH-1:0] pc, incPC, branchPC, nextPC;
+    logic [ADDR_WIDTH-1:0] pc, PCPlus4F, PCTargetE, nextPC;
     logic [INSTR_WIDTH-1:0] instr;
     logic [DATA_WIDTH-1:0] PCPlus4F;
 
@@ -39,22 +39,22 @@ module piptop #( //!!!!!!!!!!!!!this file is still filled with errors, I am not 
     logic [1:0] ResultSrcM;
 
     // Write-Back Stage
-    logic [DATA_WIDTH-1:0] ALUResultW, WriteDataW, PCPlus4W;
+    logic [DATA_WIDTH-1:0] ALUResultW, ResultW, PCPlus4W;
     logic [4:0] RdW;
     logic RegWriteW;
     logic [1:0] ResultSrcW;
 
     // Additional Signals
-    logic jalrSrc, jumpSrc, pcSrc, zero;
+    logic jalrSrc, pcSrc, zero;
     logic [1:0] immSrc;
 
-    // Trigger FSM
-    logic triggerRst;
-    triggerFSM triggerFSM (
-        .clk(clk),
-        .rst(rst),
-        .trigger(trigger),
-        .triggerRst(triggerRst)
+    pcMux #(
+    .ADDR_WIDTH(ADDR_WIDTH)
+    ) (
+    .branchPC(PCTargetE),
+    .incPC(PCPlus4F),
+    .PCsrc(pcSrc),
+    .nextPC(nextPC)
     );
 
     // Fetch Stage
@@ -66,7 +66,7 @@ module piptop #( //!!!!!!!!!!!!!this file is still filled with errors, I am not 
         .triggerRst(triggerRst),
         .nextPC(nextPC),
         .pc(pc),
-        .incPC(incPC)
+        .PCPlus4F(PCPlus4F)
     );
 
     instrMemory #(
@@ -83,38 +83,36 @@ module piptop #( //!!!!!!!!!!!!!this file is still filled with errors, I am not 
     ) PRegFetch (
         .instr(instr),
         .PCf(pc),
-        .PCPlus4F(incPC),
+        .PCPlus4F(PCPlus4F),
         .clk(clk),
         .PCPlus4D(PCPlus4D),
         .PCd(PCd),
-        .InstrD(instr)
+        .InstrD(instrD)
     );
 
     // Decode Stage
     controlUnit controlUnit (
-        .op(instr[6:0]),
-        .funct3(instr[14:12]),
-        .funct7(instr[30]),
-        .zero(zero),
+        .op(instrD[6:0]),
+        .funct3(instrD[14:12]),
+        .funct7(instrD[30]),
         .RegWriteD(RegWriteD),
         .resultSrc(ResultSrcD),
-        .jumpSrc(jumpSrc),
-        .jalrSrc(jalrSrc),
         .memWrite(MemWriteD),
+        .jumpSrc(jumpD),
+        .jalrSrc(BranchD),
         .aluControl(ALUControlD),
         .aluSrc(ALUSrcD),
-        .immSrc(immSrc),
-        .regWrite(RegWriteD)
+        .immSrc(immSrcD)
     );
 
     extend #(
         .INSTR_WIDTH(INSTR_WIDTH),
         .DATA_WIDTH(DATA_WIDTH)
     ) extend (
-        .instruction(instr),
-        .immSrc(immSrc),
-        .jumpSrc(jumpSrc),
-        .immExt(immExt)
+        .instruction(instrD[31:7]),
+        .immSrc(immSrcD),
+        .jumpSrc(jumpD),
+        .immExt(immExtD)
     );
 
     regfile #(
@@ -126,21 +124,22 @@ module piptop #( //!!!!!!!!!!!!!this file is still filled with errors, I am not 
         .rs2(instr[24:20]),
         .rd(RdW),
         .RegWrite(RegWriteW),
-        .ALUout(WriteDataW),
+        .ResultW(ResultW),
         .ALUop1(rd1),
         .regOp2(rd2),
         .a0(a0)
     );
 
-    PRegDecode #(
+        PRegDecode #(
         .DATA_WIDTH(DATA_WIDTH),
         .REG_DATA_WIDTH(4)
     ) PRegDecode (
         .rd1(rd1),
         .rd2(rd2),
         .PCd(PCd),
-        .ImmExtD(immExt),
+        .ImmExtD(ImmExtD),
         .clk(clk),
+        .rst(rst),
         .RdD(instr[11:7]),
         .PCPlus4D(PCPlus4D),
         .rd1E(rd1E),
@@ -183,6 +182,26 @@ module piptop #( //!!!!!!!!!!!!!this file is still filled with errors, I am not 
         .aluResult(aluResult)
     );
 
+    branchUnit #(
+        .DATA_WIDTH(DATA_WIDTH)
+    ) branchUnit_inst (
+        .srcA(srcA),
+        .srcB(srcB),
+        .aluControl(aluControl),
+        .zero(zero)
+    );
+
+    extendPC #(   
+    .DATA_WIDTH(DATA_WIDTH),
+    .ADDR_WIDTH(ADDR_WIDTH)
+    ) (
+    .pc(PCe),
+    .immOp(ImmExtE),
+    .result(ResultW),
+    .jalrSrc(jalrSrc),
+    .PCTargetE(PCTargetE)
+    );
+
     PRegExecute #(
         .DATA_WIDTH(DATA_WIDTH),
         .REG_DATA_WIDTH(3)
@@ -210,7 +229,7 @@ module piptop #( //!!!!!!!!!!!!!this file is still filled with errors, I am not 
     ) DataMemory (
         .clk(clk),
         .SizeCtr(instr[14:12]),
-        .ALUResult(ALUResultM[MEM_ADDR_WIDTH-1:0]),
+        .ALUResult(ALUResultM),
         .WriteData(WriteDataM),
         .MemWrite(MemWriteM),
         .ReadData(ReadData)
@@ -223,7 +242,7 @@ module piptop #( //!!!!!!!!!!!!!this file is still filled with errors, I am not 
         .ALUResult(ALUResultW),
         .PCPlus4(PCPlus4W),
         .ResultSrc(ResultSrcW),
-        .Result(WriteDataW)
+        .Result(ResultW)
     );
 
 endmodule
