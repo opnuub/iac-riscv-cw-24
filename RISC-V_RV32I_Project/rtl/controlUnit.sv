@@ -6,7 +6,7 @@ module controlUnit(
     output  logic       pcSrc,
     output  logic       jumpSrc,
     output  logic       jalrSrc,
-    output  logic       resultSrc,
+    output  logic [1:0] resultSrc,
     output  logic       memWrite,
     output  logic [2:0] aluControl,
     output  logic       aluSrc,
