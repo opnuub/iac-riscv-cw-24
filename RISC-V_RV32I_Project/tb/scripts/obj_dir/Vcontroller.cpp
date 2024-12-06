@@ -1,7 +1,8 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Model implementation (design independent parts)
 
-#include "Vcontroller__pch.h"
+#include "Vcontroller.h"
+#include "Vcontroller__Syms.h"
 
 //============================================================
 // Constructors
@@ -47,15 +48,26 @@ Vcontroller::~Vcontroller() {
 }
 
 //============================================================
-// Evaluation function
+// Evaluation loop
 
-#ifdef VL_DEBUG
-void Vcontroller___024root___eval_debug_assertions(Vcontroller___024root* vlSelf);
-#endif  // VL_DEBUG
-void Vcontroller___024root___eval_static(Vcontroller___024root* vlSelf);
 void Vcontroller___024root___eval_initial(Vcontroller___024root* vlSelf);
 void Vcontroller___024root___eval_settle(Vcontroller___024root* vlSelf);
 void Vcontroller___024root___eval(Vcontroller___024root* vlSelf);
+#ifdef VL_DEBUG
+void Vcontroller___024root___eval_debug_assertions(Vcontroller___024root* vlSelf);
+#endif  // VL_DEBUG
+void Vcontroller___024root___final(Vcontroller___024root* vlSelf);
+
+static void _eval_initial_loop(Vcontroller__Syms* __restrict vlSymsp) {
+    vlSymsp->__Vm_didInit = true;
+    Vcontroller___024root___eval_initial(&(vlSymsp->TOP));
+    // Evaluate till stable
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Initial loop\n"););
+        Vcontroller___024root___eval_settle(&(vlSymsp->TOP));
+        Vcontroller___024root___eval(&(vlSymsp->TOP));
+    } while (0);
+}
 
 void Vcontroller::eval_step() {
     VL_DEBUG_IF(VL_DBG_MSGF("+++++TOP Evaluate Vcontroller::eval_step\n"); );
@@ -63,27 +75,14 @@ void Vcontroller::eval_step() {
     // Debug assertions
     Vcontroller___024root___eval_debug_assertions(&(vlSymsp->TOP));
 #endif  // VL_DEBUG
-    vlSymsp->__Vm_deleter.deleteAll();
-    if (VL_UNLIKELY(!vlSymsp->__Vm_didInit)) {
-        vlSymsp->__Vm_didInit = true;
-        VL_DEBUG_IF(VL_DBG_MSGF("+ Initial\n"););
-        Vcontroller___024root___eval_static(&(vlSymsp->TOP));
-        Vcontroller___024root___eval_initial(&(vlSymsp->TOP));
-        Vcontroller___024root___eval_settle(&(vlSymsp->TOP));
-    }
-    VL_DEBUG_IF(VL_DBG_MSGF("+ Eval\n"););
-    Vcontroller___024root___eval(&(vlSymsp->TOP));
+    // Initialize
+    if (VL_UNLIKELY(!vlSymsp->__Vm_didInit)) _eval_initial_loop(vlSymsp);
+    // Evaluate till stable
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Clock loop\n"););
+        Vcontroller___024root___eval(&(vlSymsp->TOP));
+    } while (0);
     // Evaluate cleanup
-    Verilated::endOfEval(vlSymsp->__Vm_evalMsgQp);
-}
-
-//============================================================
-// Events and timing
-bool Vcontroller::eventsPending() { return false; }
-
-uint64_t Vcontroller::nextTimeSlot() {
-    VL_FATAL_MT(__FILE__, __LINE__, "", "%Error: No delays in the design");
-    return 0;
 }
 
 //============================================================
@@ -96,10 +95,8 @@ const char* Vcontroller::name() const {
 //============================================================
 // Invoke final blocks
 
-void Vcontroller___024root___eval_final(Vcontroller___024root* vlSelf);
-
 VL_ATTR_COLD void Vcontroller::final() {
-    Vcontroller___024root___eval_final(&(vlSymsp->TOP));
+    Vcontroller___024root___final(&(vlSymsp->TOP));
 }
 
 //============================================================
@@ -108,7 +105,3 @@ VL_ATTR_COLD void Vcontroller::final() {
 const char* Vcontroller::hierName() const { return vlSymsp->name(); }
 const char* Vcontroller::modelName() const { return "Vcontroller"; }
 unsigned Vcontroller::threads() const { return 1; }
-void Vcontroller::prepareClone() const { contextp()->prepareClone(); }
-void Vcontroller::atClone() const {
-    contextp()->threadPoolpOnClone();
-}

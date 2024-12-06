@@ -1,7 +1,8 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Model implementation (design independent parts)
 
-#include "Vbranch__pch.h"
+#include "Vbranch.h"
+#include "Vbranch__Syms.h"
 
 //============================================================
 // Constructors
@@ -35,15 +36,26 @@ Vbranch::~Vbranch() {
 }
 
 //============================================================
-// Evaluation function
+// Evaluation loop
 
-#ifdef VL_DEBUG
-void Vbranch___024root___eval_debug_assertions(Vbranch___024root* vlSelf);
-#endif  // VL_DEBUG
-void Vbranch___024root___eval_static(Vbranch___024root* vlSelf);
 void Vbranch___024root___eval_initial(Vbranch___024root* vlSelf);
 void Vbranch___024root___eval_settle(Vbranch___024root* vlSelf);
 void Vbranch___024root___eval(Vbranch___024root* vlSelf);
+#ifdef VL_DEBUG
+void Vbranch___024root___eval_debug_assertions(Vbranch___024root* vlSelf);
+#endif  // VL_DEBUG
+void Vbranch___024root___final(Vbranch___024root* vlSelf);
+
+static void _eval_initial_loop(Vbranch__Syms* __restrict vlSymsp) {
+    vlSymsp->__Vm_didInit = true;
+    Vbranch___024root___eval_initial(&(vlSymsp->TOP));
+    // Evaluate till stable
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Initial loop\n"););
+        Vbranch___024root___eval_settle(&(vlSymsp->TOP));
+        Vbranch___024root___eval(&(vlSymsp->TOP));
+    } while (0);
+}
 
 void Vbranch::eval_step() {
     VL_DEBUG_IF(VL_DBG_MSGF("+++++TOP Evaluate Vbranch::eval_step\n"); );
@@ -51,27 +63,14 @@ void Vbranch::eval_step() {
     // Debug assertions
     Vbranch___024root___eval_debug_assertions(&(vlSymsp->TOP));
 #endif  // VL_DEBUG
-    vlSymsp->__Vm_deleter.deleteAll();
-    if (VL_UNLIKELY(!vlSymsp->__Vm_didInit)) {
-        vlSymsp->__Vm_didInit = true;
-        VL_DEBUG_IF(VL_DBG_MSGF("+ Initial\n"););
-        Vbranch___024root___eval_static(&(vlSymsp->TOP));
-        Vbranch___024root___eval_initial(&(vlSymsp->TOP));
-        Vbranch___024root___eval_settle(&(vlSymsp->TOP));
-    }
-    VL_DEBUG_IF(VL_DBG_MSGF("+ Eval\n"););
-    Vbranch___024root___eval(&(vlSymsp->TOP));
+    // Initialize
+    if (VL_UNLIKELY(!vlSymsp->__Vm_didInit)) _eval_initial_loop(vlSymsp);
+    // Evaluate till stable
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Clock loop\n"););
+        Vbranch___024root___eval(&(vlSymsp->TOP));
+    } while (0);
     // Evaluate cleanup
-    Verilated::endOfEval(vlSymsp->__Vm_evalMsgQp);
-}
-
-//============================================================
-// Events and timing
-bool Vbranch::eventsPending() { return false; }
-
-uint64_t Vbranch::nextTimeSlot() {
-    VL_FATAL_MT(__FILE__, __LINE__, "", "%Error: No delays in the design");
-    return 0;
 }
 
 //============================================================
@@ -84,10 +83,8 @@ const char* Vbranch::name() const {
 //============================================================
 // Invoke final blocks
 
-void Vbranch___024root___eval_final(Vbranch___024root* vlSelf);
-
 VL_ATTR_COLD void Vbranch::final() {
-    Vbranch___024root___eval_final(&(vlSymsp->TOP));
+    Vbranch___024root___final(&(vlSymsp->TOP));
 }
 
 //============================================================
@@ -96,7 +93,3 @@ VL_ATTR_COLD void Vbranch::final() {
 const char* Vbranch::hierName() const { return vlSymsp->name(); }
 const char* Vbranch::modelName() const { return "Vbranch"; }
 unsigned Vbranch::threads() const { return 1; }
-void Vbranch::prepareClone() const { contextp()->prepareClone(); }
-void Vbranch::atClone() const {
-    contextp()->threadPoolpOnClone();
-}

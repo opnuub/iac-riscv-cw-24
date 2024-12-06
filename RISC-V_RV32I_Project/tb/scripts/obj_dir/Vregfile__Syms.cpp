@@ -1,7 +1,7 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vregfile__pch.h"
+#include "Vregfile__Syms.h"
 #include "Vregfile.h"
 #include "Vregfile___024root.h"
 
@@ -17,8 +17,6 @@ Vregfile__Syms::Vregfile__Syms(VerilatedContext* contextp, const char* namep, Vr
     // Setup module instances
     , TOP{this, namep}
 {
-        // Check resources
-        Verilated::stackCheck(39);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-12);
     _vm_contextp__->timeprecision(-12);

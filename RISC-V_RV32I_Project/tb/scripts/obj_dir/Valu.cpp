@@ -1,7 +1,9 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Model implementation (design independent parts)
 
-#include "Valu__pch.h"
+#include "Valu.h"
+#include "Valu__Syms.h"
+#include "verilated_dpi.h"
 
 //============================================================
 // Constructors
@@ -32,15 +34,26 @@ Valu::~Valu() {
 }
 
 //============================================================
-// Evaluation function
+// Evaluation loop
 
-#ifdef VL_DEBUG
-void Valu___024root___eval_debug_assertions(Valu___024root* vlSelf);
-#endif  // VL_DEBUG
-void Valu___024root___eval_static(Valu___024root* vlSelf);
 void Valu___024root___eval_initial(Valu___024root* vlSelf);
 void Valu___024root___eval_settle(Valu___024root* vlSelf);
 void Valu___024root___eval(Valu___024root* vlSelf);
+#ifdef VL_DEBUG
+void Valu___024root___eval_debug_assertions(Valu___024root* vlSelf);
+#endif  // VL_DEBUG
+void Valu___024root___final(Valu___024root* vlSelf);
+
+static void _eval_initial_loop(Valu__Syms* __restrict vlSymsp) {
+    vlSymsp->__Vm_didInit = true;
+    Valu___024root___eval_initial(&(vlSymsp->TOP));
+    // Evaluate till stable
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Initial loop\n"););
+        Valu___024root___eval_settle(&(vlSymsp->TOP));
+        Valu___024root___eval(&(vlSymsp->TOP));
+    } while (0);
+}
 
 void Valu::eval_step() {
     VL_DEBUG_IF(VL_DBG_MSGF("+++++TOP Evaluate Valu::eval_step\n"); );
@@ -48,27 +61,14 @@ void Valu::eval_step() {
     // Debug assertions
     Valu___024root___eval_debug_assertions(&(vlSymsp->TOP));
 #endif  // VL_DEBUG
-    vlSymsp->__Vm_deleter.deleteAll();
-    if (VL_UNLIKELY(!vlSymsp->__Vm_didInit)) {
-        vlSymsp->__Vm_didInit = true;
-        VL_DEBUG_IF(VL_DBG_MSGF("+ Initial\n"););
-        Valu___024root___eval_static(&(vlSymsp->TOP));
-        Valu___024root___eval_initial(&(vlSymsp->TOP));
-        Valu___024root___eval_settle(&(vlSymsp->TOP));
-    }
-    VL_DEBUG_IF(VL_DBG_MSGF("+ Eval\n"););
-    Valu___024root___eval(&(vlSymsp->TOP));
+    // Initialize
+    if (VL_UNLIKELY(!vlSymsp->__Vm_didInit)) _eval_initial_loop(vlSymsp);
+    // Evaluate till stable
+    do {
+        VL_DEBUG_IF(VL_DBG_MSGF("+ Clock loop\n"););
+        Valu___024root___eval(&(vlSymsp->TOP));
+    } while (0);
     // Evaluate cleanup
-    Verilated::endOfEval(vlSymsp->__Vm_evalMsgQp);
-}
-
-//============================================================
-// Events and timing
-bool Valu::eventsPending() { return false; }
-
-uint64_t Valu::nextTimeSlot() {
-    VL_FATAL_MT(__FILE__, __LINE__, "", "%Error: No delays in the design");
-    return 0;
 }
 
 //============================================================
@@ -81,10 +81,8 @@ const char* Valu::name() const {
 //============================================================
 // Invoke final blocks
 
-void Valu___024root___eval_final(Valu___024root* vlSelf);
-
 VL_ATTR_COLD void Valu::final() {
-    Valu___024root___eval_final(&(vlSymsp->TOP));
+    Valu___024root___final(&(vlSymsp->TOP));
 }
 
 //============================================================
@@ -93,7 +91,3 @@ VL_ATTR_COLD void Valu::final() {
 const char* Valu::hierName() const { return vlSymsp->name(); }
 const char* Valu::modelName() const { return "Valu"; }
 unsigned Valu::threads() const { return 1; }
-void Valu::prepareClone() const { contextp()->prepareClone(); }
-void Valu::atClone() const {
-    contextp()->threadPoolpOnClone();
-}

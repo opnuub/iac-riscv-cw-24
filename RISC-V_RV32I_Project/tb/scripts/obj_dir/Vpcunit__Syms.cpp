@@ -1,7 +1,7 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vpcunit__pch.h"
+#include "Vpcunit__Syms.h"
 #include "Vpcunit.h"
 #include "Vpcunit___024root.h"
 
@@ -17,8 +17,6 @@ Vpcunit__Syms::Vpcunit__Syms(VerilatedContext* contextp, const char* namep, Vpcu
     // Setup module instances
     , TOP{this, namep}
 {
-        // Check resources
-        Verilated::stackCheck(25);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-12);
     _vm_contextp__->timeprecision(-12);

@@ -4,15 +4,13 @@
 # Execute this makefile from the object directory:
 #    make -f Vpcunit.mk
 
-default: /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/scripts/obj_dir/Vpcunit
+default: /home/fg723/Documents/iac/lab0-devtools/autumn/workspace/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/scripts/obj_dir/Vpcunit
 
 ### Constants...
-# Perl executable (from $PERL, defaults to 'perl' if not set)
+# Perl executable (from $PERL)
 PERL = perl
-# Python3 executable (from $PYTHON3, defaults to 'python3' if not set)
-PYTHON3 = python3
 # Path to Verilator kit (from $VERILATOR_ROOT)
-VERILATOR_ROOT = /opt/homebrew/Cellar/verilator/5.028/share/verilator
+VERILATOR_ROOT = /usr/local/share/verilator
 # SystemC include directory with systemc.h (from $SYSTEMC_INCLUDE)
 SYSTEMC_INCLUDE ?= 
 # SystemC library directory with libsystemc.a (from $SYSTEMC_LIBDIR)
@@ -37,11 +35,11 @@ VM_PREFIX = Vpcunit
 VM_MODPREFIX = Vpcunit
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
-	-isystem /opt/homebrew/Cellar/googletest/1.15.2/include \
+	-I/usr/include/gtest \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
-	-L/opt/homebrew/Cellar/googletest/1.15.2/lib -lgtest -lgtest_main \
+	-L/usr/lib -lgtest -lgtest_main \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
@@ -49,7 +47,7 @@ VM_USER_CLASSES = \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
-	/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/tests \
+	/home/fg723/Documents/iac/lab0-devtools/autumn/workspace/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/tests \
 
 
 ### Default rules...
@@ -61,11 +59,11 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-pcunit_tb.o: /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/tests/pcunit_tb.cpp 
-	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST)  -c -o $@ $<
+pcunit_tb.o: /home/fg723/Documents/iac/lab0-devtools/autumn/workspace/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/tests/pcunit_tb.cpp
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
 
 ### Link rules... (from --exe)
-/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/scripts/obj_dir/Vpcunit: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+/home/fg723/Documents/iac/lab0-devtools/autumn/workspace/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/scripts/obj_dir/Vpcunit: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 

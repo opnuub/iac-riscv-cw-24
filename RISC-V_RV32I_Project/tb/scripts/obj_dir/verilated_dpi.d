@@ -1,12 +1,12 @@
-verilated_dpi.o: \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilated_dpi.cpp \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilatedos.h \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilated_dpi.h \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilated.h \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilated_config.h \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilated_types.h \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilated_funcs.h \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilated_sym_props.h \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/vltstd/svdpi.h \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilated_imp.h \
-  /opt/homebrew/Cellar/verilator/5.028/share/verilator/include/verilated_syms.h
+verilated_dpi.o: /usr/local/share/verilator/include/verilated_dpi.cpp \
+ /usr/local/share/verilator/include/verilatedos.h \
+ /usr/local/share/verilator/include/verilated_dpi.h \
+ /usr/local/share/verilator/include/verilated.h \
+ /usr/local/share/verilator/include/verilated_config.h \
+ /usr/local/share/verilator/include/verilated_types.h \
+ /usr/local/share/verilator/include/verilated_funcs.h \
+ /usr/local/share/verilator/include/verilated_sym_props.h \
+ /usr/local/share/verilator/include/vltstd/svdpi.h \
+ /usr/local/share/verilator/include/verilated_imp.h \
+ /usr/local/share/verilator/include/verilated_syms.h \
+ /usr/local/share/verilator/include/vltstd/svdpi.h

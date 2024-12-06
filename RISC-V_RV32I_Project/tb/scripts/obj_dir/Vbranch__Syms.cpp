@@ -1,7 +1,7 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "Vbranch__pch.h"
+#include "Vbranch__Syms.h"
 #include "Vbranch.h"
 #include "Vbranch___024root.h"
 
@@ -17,8 +17,6 @@ Vbranch__Syms::Vbranch__Syms(VerilatedContext* contextp, const char* namep, Vbra
     // Setup module instances
     , TOP{this, namep}
 {
-        // Check resources
-        Verilated::stackCheck(33);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-12);
     _vm_contextp__->timeprecision(-12);
