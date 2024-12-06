@@ -18,23 +18,14 @@ if [ ! -d "$OUTPUT_DIR" ]; then
     mkdir -p "$OUTPUT_DIR"
 fi
 
-# Set paths for GTest (assuming it's installed correctly)
-GTEST_INCLUDE="/usr/include/gtest"
-GTEST_LIB="/usr/lib"
-
-# Ensure GTest libraries are in place
-if [ ! -f "$GTEST_LIB/libgtest.a" ] || [ ! -f "$GTEST_LIB/libgtest_main.a" ]; then
-    echo "Error: GTest libraries not found in $GTEST_LIB. Please ensure GTest is installed correctly."
-    exit 1
-fi
-
 # Run Verilator
 verilator --cc "$RTL_FOLDER/$MODULE_NAME.sv" \
     --exe "$TB_FOLDER/${MODULE_NAME}_tb.sv" "$TB_FOLDER/${MODULE_NAME}_tb.cpp" \
     --top-module "$MODULE_NAME" \
     -o "$OUTPUT_DIR/V$MODULE_NAME" \
-    -CFLAGS "-I$GTEST_INCLUDE" \
-    -LDFLAGS "-L$GTEST_LIB -lgtest -lgtest_main"
+    -I"$RTL_FOLDER" \
+    -CFLAGS "-I/usr/include/gtest" \
+    -LDFLAGS "-L/usr/lib -lgtest -lgtest_main"
 
 if [ $? -ne 0 ]; then
     echo "Verilator compilation failed for module '$MODULE_NAME'."

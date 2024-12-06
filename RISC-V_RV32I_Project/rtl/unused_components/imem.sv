@@ -4,9 +4,9 @@ module imem #(
     parameter INSTR_WIDTH = 32,
     parameter MEM_SIZE = 4096  // 4KB
 ) (
-    input  logic                    clk_i,
-    input  logic [ADDR_WIDTH-1:0]   addr_i,
-    output logic [INSTR_WIDTH-1:0]  rdata_o
+    input  logic                    clk,
+    input  logic [ADDR_WIDTH-1:0]   PCf,
+    output logic [INSTR_WIDTH-1:0]  Rd
 );
 
 // Memory array - byte addressable
@@ -21,11 +21,11 @@ end
 // Combine 4 bytes to form instruction
 
 // at the end, the lowest addressed byte is  the least significant
-always_ff @(posedge clk_i) begin
-    rdata_o <= {mem[{addr_i[11:2], 2'b11}],  // MSB (addr + 3)
-                mem[{addr_i[11:2], 2'b10}],  
-                mem[{addr_i[11:2], 2'b01}],
-                mem[{addr_i[11:2], 2'b00}]}; // LSB  (addr)
+always_ff @(posedge clk) begin
+    Rd <= {mem[{PCf[11:2], 2'b11}],  // MSB (addr + 3)
+                mem[{PCf[11:2], 2'b10}],  
+                mem[{PCf[11:2], 2'b01}],
+                mem[{PCf[11:2], 2'b00}]}; // LSB  (addr)
 end
 
 endmodule

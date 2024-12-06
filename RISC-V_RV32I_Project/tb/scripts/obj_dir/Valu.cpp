@@ -3,7 +3,6 @@
 
 #include "Valu.h"
 #include "Valu__Syms.h"
-#include "verilated_dpi.h"
 
 //============================================================
 // Constructors
@@ -11,10 +10,10 @@
 Valu::Valu(VerilatedContext* _vcontextp__, const char* _vcname__)
     : VerilatedModel{*_vcontextp__}
     , vlSymsp{new Valu__Syms(contextp(), _vcname__, this)}
-    , operator_i{vlSymsp->TOP.operator_i}
-    , operand_a_i{vlSymsp->TOP.operand_a_i}
-    , operand_b_i{vlSymsp->TOP.operand_b_i}
-    , result_o{vlSymsp->TOP.result_o}
+    , aluControl{vlSymsp->TOP.aluControl}
+    , srcA{vlSymsp->TOP.srcA}
+    , srcB{vlSymsp->TOP.srcB}
+    , aluResult{vlSymsp->TOP.aluResult}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context
