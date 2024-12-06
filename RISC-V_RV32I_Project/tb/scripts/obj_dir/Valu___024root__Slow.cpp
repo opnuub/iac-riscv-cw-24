@@ -3,7 +3,6 @@
 // See Valu.h for the primary calling header
 
 #include "verilated.h"
-#include "verilated_dpi.h"
 
 #include "Valu__Syms.h"
 #include "Valu___024root.h"

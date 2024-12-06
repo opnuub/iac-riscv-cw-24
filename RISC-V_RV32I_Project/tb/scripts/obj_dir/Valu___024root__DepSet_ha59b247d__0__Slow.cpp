@@ -3,7 +3,6 @@
 // See Valu.h for the primary calling header
 
 #include "verilated.h"
-#include "verilated_dpi.h"
 
 #include "Valu___024root.h"
 
@@ -34,8 +33,8 @@ VL_ATTR_COLD void Valu___024root___ctor_var_reset(Valu___024root* vlSelf) {
     Valu__Syms* const __restrict vlSymsp VL_ATTR_UNUSED = vlSelf->vlSymsp;
     VL_DEBUG_IF(VL_DBG_MSGF("+    Valu___024root___ctor_var_reset\n"); );
     // Body
-    vlSelf->operand_a_i = VL_RAND_RESET_I(32);
-    vlSelf->operand_b_i = VL_RAND_RESET_I(32);
-    vlSelf->operator_i = VL_RAND_RESET_I(4);
-    vlSelf->result_o = VL_RAND_RESET_I(32);
+    vlSelf->srcA = VL_RAND_RESET_I(32);
+    vlSelf->srcB = VL_RAND_RESET_I(32);
+    vlSelf->aluControl = VL_RAND_RESET_I(3);
+    vlSelf->aluResult = VL_RAND_RESET_I(32);
 }

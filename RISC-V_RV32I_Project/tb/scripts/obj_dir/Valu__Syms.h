@@ -16,8 +16,6 @@
 // INCLUDE MODULE CLASSES
 #include "Valu___024root.h"
 
-// DPI TYPES for DPI Export callbacks (Internal use)
-
 // SYMS CLASS (contains all model state)
 class Valu__Syms final : public VerilatedSyms {
   public:

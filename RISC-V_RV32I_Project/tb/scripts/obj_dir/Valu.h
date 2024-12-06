@@ -9,7 +9,6 @@
 #define VERILATED_VALU_H_  // guard
 
 #include "verilated.h"
-#include "svdpi.h"
 
 class Valu__Syms;
 class Valu___024root;
@@ -25,10 +24,10 @@ class Valu VL_NOT_FINAL : public VerilatedModel {
     // PORTS
     // The application code writes and reads these signals to
     // propagate new values into/out from the Verilated model.
-    VL_IN8(&operator_i,3,0);
-    VL_IN(&operand_a_i,31,0);
-    VL_IN(&operand_b_i,31,0);
-    VL_OUT(&result_o,31,0);
+    VL_IN8(&aluControl,2,0);
+    VL_IN(&srcA,31,0);
+    VL_IN(&srcB,31,0);
+    VL_OUT(&aluResult,31,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
