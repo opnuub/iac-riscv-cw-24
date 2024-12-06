@@ -1,4 +1,4 @@
-module DataMemory #(
+module dataMemory #(
     parameter DATA_WIDTH = 32,
     parameter ADDR_WIDTH = 17
 ) (
@@ -11,6 +11,10 @@ module DataMemory #(
 );
 
     logic [7:0] memory [2**ADDR_WIDTH-1:0];
+
+    initial begin
+        $readmemh("../tb/data.hex", memory);
+    end
 
     always_ff @(posedge clk) begin
         if (MemWrite) begin
