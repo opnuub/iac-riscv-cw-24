@@ -35,7 +35,6 @@ module top #(
     logic [ADDR_WIDTH-1:0]  nextPC;
     logic [ADDR_WIDTH-1:0]  branchPC;
     logic [ADDR_WIDTH-1:0]  incPC;
-    logic                   triggerRst;
 
     jumpMux #(
         .DATA_WIDTH(DATA_WIDTH)
@@ -55,13 +54,6 @@ module top #(
         .result (result),
         .jalrSrc (jalrSrc),
         .branchPC (branchPC)
-    );
-
-    triggerFSM triggerFSM (
-        .clk (clk),
-        .rst (rst),
-        .trigger (trigger),
-        .triggerRst (triggerRst)
     );
 
     resultMux #(
@@ -141,7 +133,7 @@ module top #(
         .OFFSET(OFFSET)
     ) pcReg (
         .clk (clk),
-        .triggerRst (triggerRst),
+        .rst (rst),
         .pc (pc),
         .nextPC (nextPC),
         .incPC (incPC)

@@ -1,4 +1,4 @@
-#include "Vtop.h"
+#include "Vf1.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
 
@@ -13,12 +13,12 @@ int main(int argc, char **argv, char **env)
 
     Verilated::commandArgs(argc, argv);
     // init top verilog instance
-    Vtop *top = new Vtop;
+    Vf1 *top = new Vf1;
     // init trace dump
     Verilated::traceEverOn(true);
     VerilatedVcdC *tfp = new VerilatedVcdC;
     top->trace(tfp, 99);
-    tfp->open("top.vcd");
+    tfp->open("f1.vcd");
 
     // init Vbuddy
     if (vbdOpen() != 1)
@@ -28,7 +28,7 @@ int main(int argc, char **argv, char **env)
     // initialize simulation inputs
     top->clk = 1;
     top->rst = 0;
-    top->trigger = 0;
+    top->trigger = 1;
 
     // run simulation for MAX_SIM_CYC clock cycles
     for (simcyc = 0; simcyc < MAX_SIM_CYC; simcyc++)
