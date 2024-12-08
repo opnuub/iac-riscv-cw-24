@@ -7,7 +7,7 @@ module PRegDecode #(
     input   logic [DATA_WIDTH-1:0]  ImmExtD,
     input   logic                   clk,
     input   logic                   rst,          // Reset signal
-    input   logic                   FlushE,       // Flush signal
+    //input   logic                   FlushE,       // Flush signal
     input   logic [4:0]             RdD,
     input   logic [DATA_WIDTH-1:0]  PCPlus4D,
     output  logic [DATA_WIDTH-1:0]  rd1E,
@@ -49,7 +49,7 @@ module PRegDecode #(
             BranchE     <= 1'b0;
             ALUControlE <= 3'b0;
             ALUSrcE     <= 1'b0;
-        end else if (FlushE) begin
+        end /* else if (FlushE) begin
             // Flush all outputs to default values
             rd1E        <= {DATA_WIDTH{1'b0}};
             rd2E        <= {DATA_WIDTH{1'b0}};
@@ -64,7 +64,7 @@ module PRegDecode #(
             BranchE     <= 1'b0;
             ALUControlE <= 3'b0;
             ALUSrcE     <= 1'b0;
-        end else begin
+        end */ else begin
             // Normal operation: Pass inputs to outputs
             rd1E        <= rd1;
             rd2E        <= rd2;

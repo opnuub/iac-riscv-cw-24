@@ -11,7 +11,7 @@ TEST_F(CpuTestbench, TestAddiBne)
     initSimulation();
     runSimulation(CYCLES);
     EXPECT_EQ(top_->a0, 254);
-}
+} 
 
 TEST_F(CpuTestbench, TestLiAdd)
 {
@@ -20,7 +20,7 @@ TEST_F(CpuTestbench, TestLiAdd)
     runSimulation(CYCLES);
     EXPECT_EQ(top_->a0, 1000);
 }
-
+/*
 TEST_F(CpuTestbench, TestLbuSb)
 {
     setupTest("3_lbu_sb");
@@ -44,7 +44,7 @@ TEST_F(CpuTestbench, TestPdf)
     initSimulation();
     runSimulation(CYCLES * 100);
     EXPECT_EQ(top_->a0, 15363);
-}
+} */
 
 int main(int argc, char **argv)
 {

@@ -5,7 +5,7 @@ module PRegFetch #(
     input   logic [DATA_WIDTH-1:0]  PCf,
     input   logic [DATA_WIDTH-1:0]  PCPlus4F,
     input   logic                   clk,
-    input   logic                   FlushD,
+    //input   logic                   FlushD,
     input   logic                   rst,         // Reset signal
     output  logic [DATA_WIDTH-1:0]  PCPlus4D,
     output  logic [DATA_WIDTH-1:0]  PCd,
@@ -19,11 +19,11 @@ module PRegFetch #(
             InstrD   <= 32'b0;
             PCd      <= 32'b0;
             PCPlus4D <= 32'b0;
-        end else if (FlushD) begin 
+        end /* else if (FlushD) begin 
             InstrD   <= 32'b0;
             PCd      <= 32'b0;
             PCPlus4D <= 32'b0;
-        end else begin
+        end */ else begin
             // Normal operation: Assign inputs to outputs
             InstrD   <= instr;
             PCd      <= PCf;
