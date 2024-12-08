@@ -10,12 +10,15 @@ module controlUnit(
     output  logic [2:0] aluControl,
     output  logic       aluSrc,
     output  logic [1:0] immSrc,
-    output  logic       regWrite
+    output  logic       regWrite,
+    output  logic [2:0] sizeSrc
 );
 
     logic [1:0] aluOp;
 
     mainDecoder mainDecoder (
+        .funct3(funct3),
+        .sizeSrc(sizeSrc),
         .op(op),
         .Branch(Branch),
         .jumpSrc(jumpSrc),

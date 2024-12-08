@@ -19,20 +19,21 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     // Decode Stage
     logic [DATA_WIDTH-1:0] PCd, PCPlus4D, rd1, rd2, ImmExtD, instrD;
     logic RegWriteD, MemWriteD, JumpD, BranchD, ALUSrcD;
-    logic [2:0] ALUControlD;
+    logic [2:0] ALUControlD, sizeSrcD;
     logic [1:0] ResultSrcD, immSrcD;
 
     // Execute Stage
     logic [DATA_WIDTH-1:0] PCe, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult;
     logic [4:0] RdE;
     logic RegWriteE, MemWriteE, JumpE, BranchE, ALUSrcE;
-    logic [2:0] ALUControlE;
+    logic [2:0] ALUControlE, sizeSrcE;
     logic [1:0] ResultSrcE;
 
     // Memory Stage
     logic [DATA_WIDTH-1:0] ALUResultM, WriteDataM, ReadData, PCPlus4M;
     logic [4:0] RdM;
     logic RegWriteM, MemWriteM;
+    logic [2:0] sizeSrcM;
     logic [1:0] ResultSrcM;
 
     // Write-Back Stage
@@ -42,16 +43,85 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic [1:0] ResultSrcW;
 
     //Hazard Unit
-    //logic FlushD, FlushE;
+    logic Flush;
 
     // Additional Signals
     logic jalrSrc, pcSrc, zero;
+
+
+    always_ff @(posedge clk) begin
+    $display(" ");
+
+    // Debug Fetch Stage
+    // $display("Fetch Stage:");
+    $display("NEW Instruction: %h, Opcode: %b", instr, instr[6:0]); 
+    $display("pc_F: %h, instr_F: %h", pc, instr);
+    // $display("pc_Plus4_F: %h, pc_next_F: %h", pc_Plus4_F, pc_next_F);
+
+    // $display("PCSrce_E: %b", PCSrc_E);
+
+    // // Debug Decode Stage
+    // $display("Decode Stage:");
+    // $display("signextend opcode: %b, Sign extended value: %h", immSrc_D, ImmExt_D);    
+    // $display("regwrite_D: %b", regWrite_D);
+    // $display("regwrite_E: %b", regWrite_E);
+    // $display("regwrite_M: %b", regWrite_M);
+    // $display("regFileOut1_D: %h, regFileOut2_D: %h, ImmExt_D: %h", regFileOut1_D, regFileOut2_D, ImmExt_D);
+    // $display("Instruction Decode: rd: %0d, rs1: %0d, rs2: %0d", instr_D[11:7], instr_D[19:15], instr_D[24:20]);
+    // // $display("resultSrc_D: %b", resultSrc_D);
+
+    // // Debug Execute Stage
+    // $display("Execute Stage:");
+    // $display("Jump_E: %b, zero_E %b", jump_E, zero_E);
+    // $display("ALUout_E: %h, ALU_in2_E: %h, mux4SrcA_OUT: %h", ALUout_E, ALU_in2_E, mux4SrcA_OUT);
+    // $display("regFileOut1_E: %h, regFileOut2_E: %h", regFileOut1_E, regFileOut2_E);
+    // $display("ALU Control: %b, ALU Src: %b", ALUcontrol_E, ALUsrc_E);
+    // $display("memread_E %b", MemRead_E);
+    // $display("resultSrc_E: %b", resultSrc_E);
+
+    // // Debug Memory Stage
+    // $display("Memory Stage:");
+    // $display("ALUout_M: %h, WriteData_M: %h, ReadMem_out_M: %h", ALUout_M, WriteData_M, ReadMem_out_M);
+    // $display("resultSrc_M: %b", resultSrc_M);
+    // // $display("memread_M %b, Memory Control: %b", MemRead_M, MemCtrl_M);
+    // if (memWrite_M) begin
+    //     $display("Memory Write Enabled: Writing to memory: %h, Data: %h", ALUout_M, WriteData_M);
+    // end
+
+    // // Debug Writeback Stage
+    // $display("Writeback Stage:");
+    // $display("ALUout_W: %h, ReadMem_out_W: %h, pc_Plus4_W: %h", ALUout_W, ReadMem_out_W, pc_Plus4_W);
+    // $display("resultSrc_W: %b (0: ALUout_W, 1: ReadMem_out_W, 2: pc_Plus4_W)", resultSrc_W);
+    // $display("regwrite: %b", regWrite_W);
+
+    // if (regWrite_W) begin
+    //     $display("Register Write Enabled: Writing to Register: %0d, Data: %h", destinationReg_W, Result_W);
+    // //     $display("This is a0:  ", a0);
+    // end
+    // if (memWrite_M) begin
+    //     $display("Memory Write Enabled: Writing to Memory: %0d, Data: %h", ALUout_M[17:0], WriteData_M);
+    // //     $display("This is a0:  ", a0);
+    // end
+
+
+    // // Debug Hazard Unit
+     $display("Hazard Unit:");
+     $display(", flush: %b",/* stall,*/Flush);//stall: %b
+    // $display("ForwardA_e: %b, ForwardB_e: %b", forwardA_e, forwardB_e);
+end
+
+
+    HazardUnit #(
+    ) HazardUnit (
+    .zero(zero),
+    .Flush(Flush)
+    );
 
     pcMux #(
     .ADDR_WIDTH(ADDR_WIDTH)
     ) pcMux (
     .branchPC(PCTargetE),
-    .incPC(PCPlus4F),
+    .PCPlus4F(PCPlus4F),
     .PCsrc(pcSrc),
     .nextPC(nextPC)
     );
@@ -88,7 +158,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegFetch (
         .instr(instr),
-        //.FlushD(FlushD),
+        .Flush(Flush),
         .rst(rst),
         .PCf(pc),
         .PCPlus4F(PCPlus4F),
@@ -111,7 +181,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .jalrSrc(jalrSrc),
         .aluControl(ALUControlD),
         .aluSrc(ALUSrcD),
-        .immSrc(immSrcD)
+        .immSrc(immSrcD),
+        .sizeSrc(sizeSrcD)
     );
 
     extend #(
@@ -129,8 +200,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .REG_DATA_WIDTH(REG_DATA_WIDTH)
     ) regfile (
         .clk(clk),
-        .rs1(instr[19:15]),
-        .rs2(instr[24:20]),
+        .rs1(instrD[19:15]),
+        .rs2(instrD[24:20]),
         .rd(RdW),
         .RegWrite(RegWriteW),
         .ResultW(ResultW),
@@ -142,7 +213,9 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     PRegDecode #(
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegDecode (
-        //.FlushE(FlushE),
+        .Flush(Flush),
+        .sizeSrcD(sizeSrcD),
+        .sizeSrcE(sizeSrcE),
         .rd1(rd1),
         .rd2(rd2),
         .PCd(PCd),
@@ -214,6 +287,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     PRegExecute #(
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegExecute (
+        .sizeSrcE(sizeSrcE),
+        .sizeSrcM(sizeSrcM),
         .rst(rst),
         .ALUout(aluResult),
         .WriteData(rd2E),
@@ -256,7 +331,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .ADDR_WIDTH(MEM_ADDR_WIDTH)
     ) DataMemory (
         .clk(clk),
-        .SizeCtr(instr[14:12]),
+        .SizeCtr(sizeSrcM),
         .ALUResult(ALUResultM[MEM_ADDR_WIDTH-1:0]),
         .WriteData(WriteDataM),
         .MemWrite(MemWriteM),

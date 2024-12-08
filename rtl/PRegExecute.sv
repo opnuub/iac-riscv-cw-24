@@ -16,7 +16,9 @@ module PRegExecute #(
     input   logic                   MemWriteE,
     output  logic                   RegWriteM,
     output  logic [1:0]             ResultSrcM,
-    output  logic                   MemWriteM
+    output  logic                   MemWriteM,
+    input   logic [2:0]             sizeSrcE,
+    output  logic [2:0]             sizeSrcM
 );
 
     // Sequential logic for both writing and output generation
@@ -30,6 +32,7 @@ module PRegExecute #(
             RegWriteM  <= 0;
             ResultSrcM <= 0;
             MemWriteM  <= 0;
+            sizeSrcM   <= 0;
         end else begin
             // Normal operation: Assign inputs to outputs
             ALUResultM <= ALUout;
@@ -39,6 +42,7 @@ module PRegExecute #(
             RegWriteM  <= RegWriteE;
             ResultSrcM <= ResultSrcE;
             MemWriteM  <= MemWriteE;
+            sizeSrcM   <= sizeSrcE;
         end
     end
 
