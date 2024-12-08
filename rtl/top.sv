@@ -100,8 +100,6 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 
     // Decode Stage
     controlUnit controlUnit (
-        .zero(zero), //delte now!!!!!!!!!!!!!!!!
-        .pcSrc(pcSrc), //delete now !!!!!!!!!!!!!!
         .op(instrD[6:0]),
         .funct3(instrD[14:12]),
         .funct7(instrD[30]),
@@ -109,7 +107,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .resultSrc(ResultSrcD),
         .memWrite(MemWriteD),
         .jumpSrc(JumpD),
-        .jalrSrc(BranchD),
+        .Branch(BranchD),
+        .jalrSrc(jalrSrc),
         .aluControl(ALUControlD),
         .aluSrc(ALUSrcD),
         .immSrc(immSrcD)
