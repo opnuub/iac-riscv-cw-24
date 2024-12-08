@@ -14,7 +14,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 
     // Declare all internal signals
     // Fetch Stage
-    logic [DATA_WIDTH-1:0] PCPlus4F, instr, pc, PCTargetE, nextPC, FlushE;
+    logic [DATA_WIDTH-1:0] PCPlus4F, instr, pc, PCTargetE, nextPC;
 
     // Decode Stage
     logic [DATA_WIDTH-1:0] PCd, PCPlus4D, rd1, rd2, ImmExtD, instrD;
@@ -37,13 +37,15 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic [1:0] ResultSrcM;
 
     // Write-Back Stage
-    logic [DATA_WIDTH-1:0] ALUResultW, ResultW, PCPlus4W;
+    logic [DATA_WIDTH-1:0] ALUResultW, ReadDataW, PCPlus4W, ResultW;
     logic [4:0] RdW;
     logic RegWriteW;
     logic [1:0] ResultSrcW;
 
+    //Hazard Unit
+    logic FlushD, FlushE;
     // Additional Signals
-    logic jalrSrc, pcSrc, zero, FlushF;
+    logic jalrSrc, pcSrc, zero;
     logic [1:0] immSrc;
 
     pcMux #(
@@ -79,7 +81,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegFetch (
         .instr(instr),
-        .FlushF(FlushF),
+        .FlushD(FlushD),
         .rst(rst),
         .PCf(pc),
         .PCPlus4F(PCPlus4F),
@@ -110,7 +112,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .INSTR_WIDTH(INSTR_WIDTH),
         .DATA_WIDTH(DATA_WIDTH)
     ) extend (
-        .instruction(instrD[31:7]),
+        .instruction(instrD),
         .immSrc(immSrcD),
         .jumpSrc(JumpD),
         .immExt(ImmExtD)
