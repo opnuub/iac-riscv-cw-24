@@ -6,13 +6,13 @@ module extendPC #(
     input   logic [DATA_WIDTH-1:0]  immOp,
     input   logic [DATA_WIDTH-1:0]  result,
     input   logic                   jalrSrc,
-    output  logic [ADDR_WIDTH-1:0]  PCTargetE
+    output  logic [ADDR_WIDTH-1:0]  branchPC
 );
 
     always_comb
         if (jalrSrc)
-            PCTargetE = result;
+            branchPC = result;
         else
-            PCTargetE = pc + immOp;
+            branchPC = pc + immOp;
     
 endmodule

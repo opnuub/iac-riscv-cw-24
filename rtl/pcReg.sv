@@ -4,18 +4,18 @@ module pcReg #(
 ) (
     input   logic [ADDR_WIDTH-1:0]  nextPC,
     input   logic                   clk,
-    input   logic                   triggerRst,        
-    output  logic [ADDR_WIDTH-1:0]  incPC,
+    input   logic                   rst,        
+    output  logic [ADDR_WIDTH-1:0]  PCPlus4F,
     output  logic [ADDR_WIDTH-1:0]  pc
 );
 
     always_comb begin
-        incPC = pc + OFFSET;
+        PCPlus4F = pc + OFFSET;
     end
 
     always_ff @ (posedge clk)
-        if (triggerRst)
-            pc <= 32'hBFC00000;
+        if (rst)
+            pc <= 32'hBFC00000; // instruction 
         else
             pc <= nextPC;
 
