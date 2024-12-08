@@ -18,13 +18,12 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 
     // Decode Stage
     logic [DATA_WIDTH-1:0] PCd, PCPlus4D, rd1, rd2, ImmExtD, instrD;
-    logic [4:0] RdD;
     logic RegWriteD, MemWriteD, JumpD, BranchD, ALUSrcD;
     logic [2:0] ALUControlD;
     logic [1:0] ResultSrcD, immSrcD;
 
     // Execute Stage
-    logic [DATA_WIDTH-1:0] PCe, PCPlus4E, ImmExtE, rd1E, rd2E, srcA, srcB, aluResult;
+    logic [DATA_WIDTH-1:0] PCe, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult;
     logic [4:0] RdE;
     logic RegWriteE, MemWriteE, JumpE, BranchE, ALUSrcE;
     logic [2:0] ALUControlE;
@@ -46,7 +45,6 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic FlushD, FlushE;
     // Additional Signals
     logic jalrSrc, pcSrc, zero;
-    logic [1:0] immSrc;
 
     pcMux #(
     .ADDR_WIDTH(ADDR_WIDTH)
@@ -55,6 +53,15 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     .incPC(PCPlus4F),
     .PCsrc(pcSrc),
     .nextPC(nextPC)
+    );
+
+    PCMuxSelect #(
+
+    ) PCMuxSelect (
+    .zero(zero),
+    .JumpE(JumpE),
+    .BranchE(BranchE),
+    .pcSrcE(pcSrc)
     );
 
     // Fetch Stage
@@ -133,9 +140,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .a0(a0)
     );
 
-        PRegDecode #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .REG_DATA_WIDTH(4)
+    PRegDecode #(
+        .DATA_WIDTH(DATA_WIDTH)
     ) PRegDecode (
         .FlushE(FlushE),
         .rd1(rd1),
@@ -144,7 +150,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .ImmExtD(ImmExtD),
         .clk(clk),
         .rst(rst),
-        .RdD(instr[11:7]),
+        .RdD(instrD[11:7]),
         .PCPlus4D(PCPlus4D),
         .rd1E(rd1E),
         .rd2E(rd2E),
@@ -189,7 +195,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     branchUnit #(
         .DATA_WIDTH(DATA_WIDTH)
     ) branchUnit_inst (
-        .srcA(srcA),
+        .srcA(rd1E),
         .srcB(srcB),
         .aluControl(ALUControlD),
         .zero(zero)
@@ -227,13 +233,32 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .MemWriteM(MemWriteM)
     );
 
+    PRegMemory # (
+        .DATA_WIDTH(DATA_WIDTH)
+    ) PRegMemory (
+    .ALUResultM(ALUResultM),
+    .DMRd(ReadData),
+    .RdM(RdM),
+    .PCPlus4M(PCPlus4M),
+    .clk(clk),
+    .rst(rst),         // Reset signal
+    .RdW(RdW),
+    .ALUResultW(ALUResultW),
+    .ReadDataW(ReadDataW),
+    .PCPlus4W(PCPlus4W),
+    .RegWriteM(RegWriteM),
+    .ResultSrcM(ResultSrcM),
+    .RegWriteW(RegWriteW),
+    .ResultSrcW(ResultSrcW)
+    );
+
     DataMemory #(
         .DATA_WIDTH(DATA_WIDTH),
         .ADDR_WIDTH(MEM_ADDR_WIDTH)
     ) DataMemory (
         .clk(clk),
         .SizeCtr(instr[14:12]),
-        .ALUResult(ALUResultM),
+        .ALUResult(ALUResultM[MEM_ADDR_WIDTH-1:0]),
         .WriteData(WriteDataM),
         .MemWrite(MemWriteM),
         .ReadData(ReadData)

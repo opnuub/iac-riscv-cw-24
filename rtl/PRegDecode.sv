@@ -1,6 +1,5 @@
 module PRegDecode #(
-    parameter DATA_WIDTH = 32,
-    parameter REG_DATA_WIDTH = 4
+    parameter DATA_WIDTH = 32
 ) (
     input   logic [DATA_WIDTH-1:0]  rd1,
     input   logic [DATA_WIDTH-1:0]  rd2,

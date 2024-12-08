@@ -13,7 +13,7 @@ module pcReg #(
         PCPlus4F = pc + OFFSET;
     end
 
-    always_ff @ (posedge clk)
+    always_ff @ (posedge clk or posedge rst)
         if (rst)
             pc <= 32'hBFC00000; // instruction 
         else

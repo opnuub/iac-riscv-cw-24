@@ -9,7 +9,7 @@ module PRegMemory #(
     input   logic                   rst,         // Reset signal
     output  logic [4:0]             RdW,
     output  logic [DATA_WIDTH-1:0]  ALUResultW,
-    output  logic [DATA_WIDTH-1:0]  WriteDataW,
+    output  logic [DATA_WIDTH-1:0]  ReadDataW,
     output  logic [DATA_WIDTH-1:0]  PCPlus4W,
     input   logic                   RegWriteM,
     input   logic [1:0]             ResultSrcM,
@@ -22,7 +22,7 @@ module PRegMemory #(
         if (rst) begin
             // Reset or flush all outputs to default values
             ALUResultW <= 32'b0;
-            WriteDataW <= 32'b0;
+            ReadDataW  <= 32'b0;
             RdW        <= 5'b0;
             PCPlus4W   <= 32'b0;
             RegWriteW  <= 1'b0;
@@ -30,7 +30,7 @@ module PRegMemory #(
         end else begin
             // Normal operation: Pass inputs to outputs
             ALUResultW <= ALUResultM;
-            WriteDataW <= DMRd;
+            ReadDataW  <= DMRd;
             RdW        <= RdM;
             PCPlus4W   <= PCPlus4M;
             RegWriteW  <= RegWriteM;
