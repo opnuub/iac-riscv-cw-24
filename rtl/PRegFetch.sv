@@ -14,8 +14,12 @@ module PRegFetch #(
 
     // Sequential logic for writing and output generation
     always_ff @(posedge clk or posedge rst) begin
-        if (rst || FlushD) begin
+        if (rst) begin
             // Reset or flush: Set outputs to default values
+            InstrD   <= 32'b0;
+            PCd      <= 32'b0;
+            PCPlus4D <= 32'b0;
+        end else if (FlushD) begin 
             InstrD   <= 32'b0;
             PCd      <= 32'b0;
             PCPlus4D <= 32'b0;
