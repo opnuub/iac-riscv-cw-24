@@ -196,7 +196,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     ) branchUnit_inst (
         .srcA(rd1E),
         .srcB(srcB),
-        .aluControl(ALUControlD),
+        .aluControl(ALUControlE),
         .zero(zero)
     );
 
