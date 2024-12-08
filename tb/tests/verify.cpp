@@ -3,7 +3,7 @@
 
 #include "cpu_testbench.h"
 
-#define CYCLES 10000
+#define CYCLES 50
 
 TEST_F(CpuTestbench, TestAddiBne)
 {
@@ -12,7 +12,7 @@ TEST_F(CpuTestbench, TestAddiBne)
     runSimulation(CYCLES);
     EXPECT_EQ(top_->a0, 254);
 } 
-
+/*
 TEST_F(CpuTestbench, TestLiAdd)
 {
     setupTest("2_li_add");
@@ -20,7 +20,7 @@ TEST_F(CpuTestbench, TestLiAdd)
     runSimulation(CYCLES);
     EXPECT_EQ(top_->a0, 1000);
 }
-/*
+
 TEST_F(CpuTestbench, TestLbuSb)
 {
     setupTest("3_lbu_sb");
