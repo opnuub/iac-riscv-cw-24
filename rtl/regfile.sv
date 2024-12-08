@@ -13,6 +13,13 @@ module regfile #(
     output  logic [DATA_WIDTH-1:0]      a0
 );
 
+    always_ff @ (posedge clk)
+ begin 
+
+    $display("a0: %d", rom_array[10]);
+    $display("a1: %d", rom_array[11]);
+
+ end
     logic [DATA_WIDTH-1:0] rom_array [2**REG_DATA_WIDTH-1:0];
 
     always_comb begin
@@ -20,7 +27,7 @@ module regfile #(
         regOp2 = rom_array[rs2]; // Read second operand
     end
 
-    always_ff @(posedge clk) begin
+    always_ff @(negedge clk) begin //negedge
         if (RegWrite && rd!=5'd0)
             rom_array[rd] <= ResultW;  // Write to register
         a0 <= ResultW;

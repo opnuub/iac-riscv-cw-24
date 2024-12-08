@@ -9,8 +9,8 @@ module branchUnit #(
 
     always_comb begin
         case (aluControl)
-            3'b000: zero = ((srcA - srcB) === 32'b0);
-            3'b001: zero = ((srcA - srcB) !== 32'b0);
+            3'b000: zero = ((srcA - srcB) === 32'b0); // beq
+            3'b001: zero = ((srcA - srcB) !== 32'b0); // bne
             3'b100: zero = $signed(srcA) < $signed(srcB);
             3'b101: zero = $signed(srcA) >= $signed(srcB);
             3'b110: zero = $unsigned(srcA) < $unsigned(srcB);
