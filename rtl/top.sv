@@ -8,7 +8,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 ) (
     input   logic                   clk,
     input   logic                   rst,
-    input   logic                   trigger,
+    //input   logic                 trigger,
     output  logic [DATA_WIDTH-1:0]  a0
 );
 
@@ -42,7 +42,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic [1:0] ResultSrcW;
 
     //Hazard Unit
-    logic FlushD, FlushE;
+    //logic FlushD, FlushE;
+
     // Additional Signals
     logic jalrSrc, pcSrc, zero;
 
@@ -56,7 +57,6 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     );
 
     PCMuxSelect #(
-
     ) PCMuxSelect (
     .zero(zero),
     .JumpE(JumpE),
@@ -88,7 +88,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegFetch (
         .instr(instr),
-        .FlushD(FlushD),
+        //.FlushD(FlushD),
         .rst(rst),
         .PCf(pc),
         .PCPlus4F(PCPlus4F),
@@ -142,7 +142,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     PRegDecode #(
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegDecode (
-        .FlushE(FlushE),
+        //.FlushE(FlushE),
         .rd1(rd1),
         .rd2(rd2),
         .PCd(PCd),

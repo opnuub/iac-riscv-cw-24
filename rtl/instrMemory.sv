@@ -13,7 +13,7 @@ module instrMemory #(
     end
 
     initial begin
-        $readmemh("../tb/data.hex", rom, 17'h10000);
+        $readmemh("../rtl/program.hex", rom); // 17'h10000
     end
 
 endmodule

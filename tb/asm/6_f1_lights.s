@@ -21,11 +21,11 @@ call_subroutine:
 
 subroutine:
     addi 	a0, zero, 0x1
-    addi 	a0, zero, 0x2
     addi 	a0, zero, 0x3
-    addi 	a0, zero, 0x4
-    addi 	a0, zero, 0x5
-    addi 	a0, zero, 0x6
     addi 	a0, zero, 0x7
-    addi    a0, zero, 0x8
+    addi 	a0, zero, 0xf
+    addi 	a0, zero, 0x1f
+    addi 	a0, zero, 0x3f
+    addi 	a0, zero, 0x7f
+    addi    a0, zero, 0xff
     ret
