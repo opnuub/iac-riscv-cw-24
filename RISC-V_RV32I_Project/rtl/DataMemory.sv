@@ -13,7 +13,7 @@ module DataMemory #(
     logic [7:0] memory [2**ADDR_WIDTH-1:0];  // Byte-addressable memory
 
     initial begin
-        $readmemh("../rtl/data.hex", memory);
+        $readmemh("../tb/data.hex", memory, 17'h10000);
     end
 
     always_ff @(posedge clk) begin

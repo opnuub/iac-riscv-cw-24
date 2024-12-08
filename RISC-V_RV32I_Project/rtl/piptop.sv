@@ -63,7 +63,7 @@ module piptop #( //!!!!!!this file is still filled with errors, I am not finishe
         .OFFSET(OFFSET)
     ) pcReg (
         .clk(clk),
-        .triggerRst(triggerRst),
+        .rst(rst),
         .nextPC(nextPC),
         .pc(pc),
         .PCPlus4F(PCPlus4F)
