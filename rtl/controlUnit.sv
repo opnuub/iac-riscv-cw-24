@@ -2,8 +2,7 @@ module controlUnit(
     input   logic [6:0] op,
     input   logic [2:0] funct3,
     input   logic       funct7,
-    input   logic       zero,
-    output  logic       pcSrc,
+    output  logic       Branch,
     output  logic       jumpSrc,
     output  logic       jalrSrc,
     output  logic [1:0] resultSrc,
@@ -18,8 +17,7 @@ module controlUnit(
 
     mainDecoder mainDecoder (
         .op(op),
-        .zero(zero),
-        .pcSrc(pcSrc),
+        .Branch(Branch),
         .jumpSrc(jumpSrc),
         .jalrSrc(jalrSrc),
         .resultSrc(resultSrc),
