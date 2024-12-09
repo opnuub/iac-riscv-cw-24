@@ -192,28 +192,69 @@ TEST_F(L1CacheTest, CacheReplacement) {
 }
 
 TEST_F(L1CacheTest, WriteBack) {
-    uint32_t addr1 = 0x2000;
-    uint32_t addr2 = 0x12000;
-    uint32_t data1 = 0xCAFEBABE;
-    uint32_t data2 = 0xFEEDBEEF;
+    // Fill cache with data that maps to the same cache set,
+    const int NUM_WRITES = 3; // Should be more than cache ways?
+    const uint32_t BASE_ADDR = 0x2000;
+    const uint32_t SET_OFFSET = 0x10000; // Ensure addresses map to same set
+    std::vector<uint32_t> test_data;
+    
+    // queuing for memory responses
+    for (int i = 0; i < NUM_WRITES; i++) {
+        test_data.push_back(0xDEAD0000 + i);
+        queue_memory_response(test_data.back());
+    }
+
+    // Fill cache and make lines dirty
+    for (int i = 0; i < NUM_WRITES; i++) {
+        dut->store = 1;
+        dut->address = BASE_ADDR + (i * SET_OFFSET);
+        dut->data_in = test_data[i];
+        dut->eval();
+        cycle();
+        wait_until_not_busy();
+        dut->store = 0;
+        dut->eval();
+        cycle();
+
+        // this time, the program read it back to verify storage
+        dut->load = 1;
+        dut->address = BASE_ADDR + (i * SET_OFFSET);
+        dut->eval();
+        cycle();
+        EXPECT_EQ(dut->hit, 1);
+        EXPECT_EQ(dut->data_out, test_data[i]);
+        wait_until_not_busy();
+        dut->load = 0;
+        dut->eval();
+        cycle();
+
+        dut->store = 1;
+        dut->address = BASE_ADDR + (i * SET_OFFSET);
+        dut->data_in = test_data[i] ^ 0xFFFFFFFF;  // Modified data which is dirty for testing purpos
+        dut->eval();
+        cycle();
+        wait_until_not_busy();
+        dut->store = 0;
+        dut->eval();
+        cycle();
+    }
 
     dut->store = 1;
-    dut->address = addr1;
-    dut->data_in = data1;
-    dut->eval();
-    cycle();
-    wait_until_not_busy();
-    dut->store = 0;
+    dut->address = BASE_ADDR + (NUM_WRITES * SET_OFFSET);
+    dut->data_in = 0xDEADBEEF;
     dut->eval();
     cycle();
 
-    // Write second data to force write-back
-    dut->store = 1;
-    dut->address = addr2;
-    dut->data_in = data2;
-    dut->eval();
-    cycle();
-    EXPECT_EQ(dut->mem_write, 1);
+    bool write_back_triggered = false;
+    for (int i = 0; i < 10; i++) {
+        if (dut->mem_write) {
+            write_back_triggered = true;
+            break;
+        }
+        cycle();
+    }
+    EXPECT_TRUE(write_back_triggered) << "Write-back was not triggered";
+    
     wait_until_not_busy();
     dut->store = 0;
     dut->eval();
