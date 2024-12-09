@@ -3,7 +3,7 @@
 
 #include "cpu_testbench.h"
 
-#define CYCLES 50
+#define CYCLES 1290
 
 TEST_F(CpuTestbench, TestAddiBne)
 {

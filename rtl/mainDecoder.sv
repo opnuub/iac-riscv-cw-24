@@ -48,6 +48,7 @@ module mainDecoder (
                 Branch    = 1;     // Indicates branch instruction
                 immSrc    = 2'b10; // Branch immediate
                 aluOp     = 2'b01; // ALU for branch comparison
+                aluSrc    = 0;
             end
             7'b0000011: begin // Load instructions
                 regWrite  = 1;

@@ -21,18 +21,21 @@ module PRegDecode #(
     input   logic                   MemWriteD,
     input   logic                   JumpD,
     input   logic                   BranchD,
-    input   logic [2:0]             ALUControl,
+    input   logic [3:0]             ALUControl,
     input   logic                   ALUSrcD,
     output  logic                   RegWriteE,
     output  logic [1:0]             ResultSrcE,
     output  logic                   MemWriteE,
     output  logic                   JumpE,
     output  logic                   BranchE,
-    output  logic [2:0]             ALUControlE,
+    output  logic [3:0]             ALUControlE,
     output  logic                   ALUSrcE,
     input   logic [2:0]             sizeSrcD,
     output  logic [2:0]             sizeSrcE
 );
+    // always_ff @ (posedge clk)begin
+    // $display("hello -> rd1: %d, rd2: %d, rd1E: %d, rd2E: %d", rd1, rd2, rd1E, rd2E);
+    // end
 
     // Sequential logic with reset and flush
     always_ff @(posedge clk or posedge rst) begin
@@ -49,7 +52,7 @@ module PRegDecode #(
             MemWriteE   <= 1'b0;
             JumpE       <= 1'b0;
             BranchE     <= 1'b0;
-            ALUControlE <= 3'b0;
+            ALUControlE <= 4'b0;
             ALUSrcE     <= 1'b0;
             sizeSrcE    <= 3'b0;
         end else if (Flush) begin
@@ -65,7 +68,7 @@ module PRegDecode #(
             MemWriteE   <= 1'b0;
             JumpE       <= 1'b0;
             BranchE     <= 1'b0;
-            ALUControlE <= 3'b0;
+            ALUControlE <= 4'b0;
             ALUSrcE     <= 1'b0;
         end else begin
             // Normal operation: Pass inputs to outputs

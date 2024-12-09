@@ -1,5 +1,4 @@
 module HazardUnit #(
-    parameter DATA_WIDTH = 32
 ) (
     input   logic   zero,
     output  logic   Flush

@@ -79,7 +79,7 @@ module top #(
     ) DataMemory (
         .clk (clk),
         .SizeCtr (instr[14:12]), // not set
-        .ALUResult (aluResult[MEM_ADDR_WIDTH-1:0]),rr44444453545555555555547777777777777777777777777777
+        .ALUResult (aluResult[MEM_ADDR_WIDTH-1:0]),
         .WriteData (regOp2),
         .MemWrite (memWrite),
         .ReadData (readData)
