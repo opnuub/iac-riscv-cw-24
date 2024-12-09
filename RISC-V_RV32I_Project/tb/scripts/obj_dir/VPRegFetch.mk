@@ -4,13 +4,15 @@
 # Execute this makefile from the object directory:
 #    make -f VPRegFetch.mk
 
-default: /home/fg723/Documents/iac/lab0-devtools/autumn/workspace/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/scripts/obj_dir/VPRegFetch
+default: /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/scripts/obj_dir/VPRegFetch
 
 ### Constants...
-# Perl executable (from $PERL)
+# Perl executable (from $PERL, defaults to 'perl' if not set)
 PERL = perl
+# Python3 executable (from $PYTHON3, defaults to 'python3' if not set)
+PYTHON3 = python3
 # Path to Verilator kit (from $VERILATOR_ROOT)
-VERILATOR_ROOT = /usr/local/share/verilator
+VERILATOR_ROOT = /opt/homebrew/Cellar/verilator/5.028/share/verilator
 # SystemC include directory with systemc.h (from $SYSTEMC_INCLUDE)
 SYSTEMC_INCLUDE ?= 
 # SystemC library directory with libsystemc.a (from $SYSTEMC_LIBDIR)
@@ -35,11 +37,11 @@ VM_PREFIX = VPRegFetch
 VM_MODPREFIX = VPRegFetch
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
-	-I/usr/include/gtest \
+	-isystem /opt/homebrew/Cellar/googletest/1.15.2/include \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
-	-L/usr/lib -lgtest -lgtest_main \
+	-L/opt/homebrew/Cellar/googletest/1.15.2/lib -lgtest -lgtest_main \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
@@ -47,7 +49,7 @@ VM_USER_CLASSES = \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
-	/home/fg723/Documents/iac/lab0-devtools/autumn/workspace/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/tests \
+	/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/tests \
 
 
 ### Default rules...
@@ -59,11 +61,11 @@ include $(VERILATOR_ROOT)/include/verilated.mk
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-PRegFetch_tb.o: /home/fg723/Documents/iac/lab0-devtools/autumn/workspace/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/tests/PRegFetch_tb.cpp
-	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST) -c -o $@ $<
+PRegFetch_tb.o: /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/tests/PRegFetch_tb.cpp 
+	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST)  -c -o $@ $<
 
 ### Link rules... (from --exe)
-/home/fg723/Documents/iac/lab0-devtools/autumn/workspace/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/scripts/obj_dir/VPRegFetch: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/RISC-V_RV32I_Project/tb/scripts/obj_dir/VPRegFetch: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 
