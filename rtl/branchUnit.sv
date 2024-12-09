@@ -3,18 +3,21 @@ module branchUnit #(
 ) (
     input   logic [DATA_WIDTH-1:0]  srcA,
     input   logic [DATA_WIDTH-1:0]  srcB,
-    input   logic [2:0]             aluControl,
+    input   logic [3:0]             aluControl,
     output  logic                   zero
 );
 
     always_comb begin
+
+        // $display("srcA: %d, srcB %d", srcA, srcB);
+        
         case (aluControl)
-            3'b000: zero = ((srcA - srcB) === 32'b0); // beq
-            3'b001: zero = ((srcA - srcB) !== 32'b0); // bne
-            3'b100: zero = $signed(srcA) < $signed(srcB);
-            3'b101: zero = $signed(srcA) >= $signed(srcB);
-            3'b110: zero = $unsigned(srcA) < $unsigned(srcB);
-            3'b111: zero = $unsigned(srcA) >= $unsigned(srcB);
+            4'b1000: zero = ((srcA - srcB) === 32'b0); // beq
+            4'b1001: zero = ((srcA - srcB) !== 32'b0); // bne
+            4'b1100: zero = $signed(srcA) < $signed(srcB);
+            4'b1101: zero = $signed(srcA) >= $signed(srcB);
+            4'b1110: zero = $unsigned(srcA) < $unsigned(srcB);
+            4'b1111: zero = $unsigned(srcA) >= $unsigned(srcB);
             default: zero = 0;
         endcase
     end

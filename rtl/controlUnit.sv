@@ -7,7 +7,7 @@ module controlUnit(
     output  logic       jalrSrc,
     output  logic [1:0] resultSrc,
     output  logic       memWrite,
-    output  logic [2:0] aluControl,
+    output  logic [3:0] aluControl,
     output  logic       aluSrc,
     output  logic [1:0] immSrc,
     output  logic       regWrite,

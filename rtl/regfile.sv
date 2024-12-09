@@ -18,9 +18,12 @@ module regfile #(
 
     $display("a0: %d", rom_array[10]);
     $display("a1: %d", rom_array[11]);
+    $display("t1: %d", rom_array[6]);
 
  end
     logic [DATA_WIDTH-1:0] rom_array [2**REG_DATA_WIDTH-1:0];
+
+    assign a0 = rom_array[10];
 
     always_comb begin
         ALUop1 = rom_array[rs1]; // Read first operand
@@ -30,7 +33,6 @@ module regfile #(
     always_ff @(negedge clk) begin //negedge
         if (RegWrite && rd!=5'd0)
             rom_array[rd] <= ResultW;  // Write to register
-        a0 <= ResultW;
     end
 
 endmodule
