@@ -31,7 +31,11 @@ module PRegDecode #(
     output  logic [3:0]             ALUControlE,
     output  logic                   ALUSrcE,
     input   logic [2:0]             sizeSrcD,
-    output  logic [2:0]             sizeSrcE
+    output  logic [2:0]             sizeSrcE,
+    input   logic [4:0]             Rs1D,
+    input   logic [4:0]             Rs2D,
+    output  logic [4:0]             Rs1E,
+    output  logic [4:0]             Rs2E
 );
     // always_ff @ (posedge clk)begin
     // $display("hello -> rd1: %d, rd2: %d, rd1E: %d, rd2E: %d", rd1, rd2, rd1E, rd2E);
@@ -55,6 +59,8 @@ module PRegDecode #(
             ALUControlE <= 4'b0;
             ALUSrcE     <= 1'b0;
             sizeSrcE    <= 3'b0;
+            Rs1E        <= 5'b0;
+            Rs2E        <= 5'b0;
         end else if (Flush) begin
             // Flush all outputs to default values
             rd1E        <= {DATA_WIDTH{1'b0}};
@@ -70,6 +76,8 @@ module PRegDecode #(
             BranchE     <= 1'b0;
             ALUControlE <= 4'b0;
             ALUSrcE     <= 1'b0;
+            Rs1E        <= 5'b0;
+            Rs2E        <= 5'b0;
         end else begin
             // Normal operation: Pass inputs to outputs
             rd1E        <= rd1;
@@ -85,7 +93,9 @@ module PRegDecode #(
             BranchE     <= BranchD;
             ALUControlE <= ALUControl;
             ALUSrcE     <= ALUSrcD;
-            sizeSrcE   <= sizeSrcD;
+            sizeSrcE    <= sizeSrcD;
+            Rs1E        <= Rs1D;
+            Rs2E        <= Rs2D;
         end
     end
 
