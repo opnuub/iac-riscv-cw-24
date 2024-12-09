@@ -13,14 +13,14 @@ module regfile #(
     output  logic [DATA_WIDTH-1:0]      a0
 );
 
-    always_ff @ (posedge clk)
- begin 
+//     always_ff @ (posedge clk)
+//  begin 
 
-    $display("a0: %d", rom_array[10]);
-    $display("a1: %d", rom_array[11]);
-    $display("t1: %d", rom_array[6]);
+//     $display("a0: %d", rom_array[10]);
+//     $display("a1: %d", rom_array[11]);
+//     $display("t1: %d", rom_array[6]);
 
- end
+//  end
     logic [DATA_WIDTH-1:0] rom_array [2**REG_DATA_WIDTH-1:0];
 
     assign a0 = rom_array[10];
