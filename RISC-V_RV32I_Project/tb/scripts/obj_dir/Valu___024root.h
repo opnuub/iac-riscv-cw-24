@@ -15,11 +15,6 @@ class alignas(VL_CACHE_LINE_BYTES) Valu___024root final : public VerilatedModule
 
     // DESIGN SPECIFIC STATE
     VL_IN8(aluControl,2,0);
-<<<<<<< HEAD
-    VL_IN(srcA,31,0);
-    VL_IN(srcB,31,0);
-    VL_OUT(aluResult,31,0);
-=======
     CData/*0:0*/ __VstlFirstIteration;
     CData/*0:0*/ __VicoFirstIteration;
     CData/*0:0*/ __VactContinue;
@@ -31,7 +26,6 @@ class alignas(VL_CACHE_LINE_BYTES) Valu___024root final : public VerilatedModule
     VlTriggerVec<1> __VicoTriggered;
     VlTriggerVec<0> __VactTriggered;
     VlTriggerVec<0> __VnbaTriggered;
->>>>>>> e196d578041264977e0c3743a08c2822d1681fa1
 
     // INTERNAL VARIABLES
     Valu__Syms* const vlSymsp;
