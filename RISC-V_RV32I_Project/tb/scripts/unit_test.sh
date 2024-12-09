@@ -5,10 +5,12 @@ if [ -z "$1" ]; then
     exit 1
 fi
 
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 MODULE_NAME=$1 
-RTL_FOLDER=$(realpath "../../rtl")
-TB_FOLDER=$(realpath "../tests")
-OUTPUT_DIR=$(realpath "./obj_dir")
+RTL_FOLDER="${SCRIPT_DIR}/../../rtl"
+TB_FOLDER="${SCRIPT_DIR}/tests"
+OUTPUT_DIR="${SCRIPT_DIR}/build"
 
 mkdir -p ${OUTPUT_DIR}
 
@@ -22,10 +24,28 @@ else
     echo "Detected non-MacOS: Default configuration"
 fi
 
-verilator --cc ${RTL_FOLDER}/${MODULE_NAME}.sv \
-          --exe ${TB_FOLDER}/${MODULE_NAME}_tb.sv ${TB_FOLDER}/${MODULE_NAME}_tb.cpp \
+
+if [ ! -f "${RTL_FOLDER}/${MODULE_NAME}.sv" ]; then
+    echo "Error: RTL file ${RTL_FOLDER}/${MODULE_NAME}.sv not found"
+    exit 1
+fi
+
+if [ ! -f "${TB_FOLDER}/${MODULE_NAME}_tb.cpp" ]; then
+    echo "Error: Test file ${TB_FOLDER}/${MODULE_NAME}_tb.cpp not found"
+    exit 1
+fi
+
+if [ ! -f "${TB_FOLDER}/${MODULE_NAME}_tb.sv" ]; then
+    echo "Error: Test file ${TB_FOLDER}/${MODULE_NAME}_tb.sv not found"
+    exit 1
+fi
+
+
+verilator --cc "${RTL_FOLDER}/${MODULE_NAME}.sv" \
+          --exe "${TB_FOLDER}/${MODULE_NAME}_tb.sv" "${TB_FOLDER}/${MODULE_NAME}_tb.cpp" \
           --top-module ${MODULE_NAME} \
-          -o ${OUTPUT_DIR}/V${MODULE_NAME} \
+          -o "${OUTPUT_DIR}/V${MODULE_NAME}" \
+          --Mdir "${OUTPUT_DIR}" \
           -CFLAGS "${GTEST_INCLUDE}" \
           -LDFLAGS "${GTEST_LIB} -lgtest -lgtest_main"
 
@@ -34,14 +54,17 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
-make -j -C ${OUTPUT_DIR}/ -f V${MODULE_NAME}.mk VERBOSE=1
+
+cd "${OUTPUT_DIR}"
+make -j -f "V${MODULE_NAME}.mk" VERBOSE=1
 
 if [ $? -ne 0 ]; then
     echo "Make failed for module '${MODULE_NAME}'"
     exit 1
 fi
 
-${OUTPUT_DIR}/V${MODULE_NAME}
+
+"${OUTPUT_DIR}/V${MODULE_NAME}"
 
 if [ $? -ne 0 ]; then
     echo "Test failed for module '${MODULE_NAME}'"

@@ -1,12 +1,7 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Model implementation (design independent parts)
 
-<<<<<<< HEAD
-#include "Valu.h"
-#include "Valu__Syms.h"
-=======
 #include "Valu__pch.h"
->>>>>>> e196d578041264977e0c3743a08c2822d1681fa1
 
 //============================================================
 // Constructors
