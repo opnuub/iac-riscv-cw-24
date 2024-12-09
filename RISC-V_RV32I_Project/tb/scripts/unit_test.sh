@@ -8,9 +8,9 @@ fi
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 MODULE_NAME=$1 
-RTL_FOLDER="${SCRIPT_DIR}/../../rtl"
-TB_FOLDER="${SCRIPT_DIR}/tests"
-OUTPUT_DIR="${SCRIPT_DIR}/build"
+RTL_FOLDER=$(realpath "../../rtl")
+TB_FOLDER=$(realpath "../tests")
+OUTPUT_DIR=$(realpath "./obj_dir")
 
 mkdir -p ${OUTPUT_DIR}
 
