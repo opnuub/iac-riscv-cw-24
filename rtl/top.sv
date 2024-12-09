@@ -53,7 +53,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     // Additional Signals
     logic jalrSrc, pcSrc, zero;
 
-
+    /*
     always_ff @(posedge clk) begin
     $display(" "); // Blank line for readability
     $display("********** Pipeline Debug **********");
@@ -89,8 +89,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     $display("Hazard Unit:");
     $display("Flush Signal: %b", Flush);
 
-    $display("************************************");
-end
+    $display("************************************"); 
+end*/
 
     always_comb begin 
 
