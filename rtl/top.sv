@@ -24,7 +24,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic [3:0] ALUControlD;
 
     // Execute Stage
-    logic [DATA_WIDTH-1:0] PCe, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult;
+    logic [DATA_WIDTH-1:0] PCe, PCEn, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult;
     logic [4:0] RdE;
     logic RegWriteE, MemWriteE, JumpE, BranchE, ALUSrcE;
     logic [2:0] sizeSrcE;
@@ -51,7 +51,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic [4:0] Rs1E, Rs2E;
 
     // Additional Signals
-    logic jalrSrc, pcSrc, zero;
+    logic jalrSrc, pcSrc, zero, JalrE;
 
     
 //     always_ff @(posedge clk) begin
@@ -283,7 +283,9 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .JumpE(JumpE),
         .BranchE(BranchE),
         .ALUControlE(ALUControlE),
-        .ALUSrcE(ALUSrcE)
+        .ALUSrcE(ALUSrcE),
+        .jalrSrc(jalrSrc),
+        .JalrE(JalrE)
     );
 
     aluMux #(
@@ -313,14 +315,21 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .zero(zero)
     );
 
+    JalrMux #(
+    .ADDR_WIDTH(ADDR_WIDTH)
+    ) JalrMux1 (
+    .Rd1E(rd1E),
+    .PcE(PCe),
+    .JalrE(JalrE),
+    .PCEn(PCEn)
+    );
+
     extendPC #(   
     .DATA_WIDTH(DATA_WIDTH),
     .ADDR_WIDTH(ADDR_WIDTH)
     ) extendPC (
-    .pc(PCe),
+    .PCEn(PCEn),
     .immOp(ImmExtE),
-    .result(ResultW),
-    .jalrSrc(jalrSrc),
     .PCTargetE(PCTargetE)
     );
 
