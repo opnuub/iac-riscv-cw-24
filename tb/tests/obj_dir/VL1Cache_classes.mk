@@ -30,6 +30,7 @@ VM_CLASSES_FAST += \
 # Generated module classes, non-fast-path, compile with low/medium optimization
 VM_CLASSES_SLOW += \
 	VL1Cache___024root__Slow \
+	VL1Cache___024root__DepSet_he8082e3b__0__Slow \
 	VL1Cache___024root__DepSet_hcaeda20b__0__Slow \
 
 # Generated support classes, fast-path, compile with highest optimization

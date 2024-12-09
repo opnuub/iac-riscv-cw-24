@@ -11,12 +11,20 @@ VL1Cache::VL1Cache(VerilatedContext* _vcontextp__, const char* _vcname__)
     : VerilatedModel{*_vcontextp__}
     , vlSymsp{new VL1Cache__Syms(contextp(), _vcname__, this)}
     , clk{vlSymsp->TOP.clk}
-    , reset{vlSymsp->TOP.reset}
-    , writeEnable{vlSymsp->TOP.writeEnable}
+    , rst_n{vlSymsp->TOP.rst_n}
+    , load{vlSymsp->TOP.load}
+    , store{vlSymsp->TOP.store}
+    , mem_ready{vlSymsp->TOP.mem_ready}
     , hit{vlSymsp->TOP.hit}
+    , miss{vlSymsp->TOP.miss}
+    , mem_write{vlSymsp->TOP.mem_write}
+    , mem_read{vlSymsp->TOP.mem_read}
+    , busy{vlSymsp->TOP.busy}
     , address{vlSymsp->TOP.address}
-    , writeData{vlSymsp->TOP.writeData}
-    , readData{vlSymsp->TOP.readData}
+    , data_in{vlSymsp->TOP.data_in}
+    , mem_data{vlSymsp->TOP.mem_data}
+    , data_out{vlSymsp->TOP.data_out}
+    , mem_write_data{vlSymsp->TOP.mem_write_data}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context

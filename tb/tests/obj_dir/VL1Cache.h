@@ -30,12 +30,20 @@ class alignas(VL_CACHE_LINE_BYTES) VL1Cache VL_NOT_FINAL : public VerilatedModel
     // The application code writes and reads these signals to
     // propagate new values into/out from the Verilated model.
     VL_IN8(&clk,0,0);
-    VL_IN8(&reset,0,0);
-    VL_IN8(&writeEnable,0,0);
+    VL_IN8(&rst_n,0,0);
+    VL_IN8(&load,0,0);
+    VL_IN8(&store,0,0);
+    VL_IN8(&mem_ready,0,0);
     VL_OUT8(&hit,0,0);
+    VL_OUT8(&miss,0,0);
+    VL_OUT8(&mem_write,0,0);
+    VL_OUT8(&mem_read,0,0);
+    VL_OUT8(&busy,0,0);
     VL_IN(&address,31,0);
-    VL_IN(&writeData,31,0);
-    VL_OUT(&readData,31,0);
+    VL_IN(&data_in,31,0);
+    VL_IN(&mem_data,31,0);
+    VL_OUT(&data_out,31,0);
+    VL_OUT(&mem_write_data,31,0);
 
     // CELLS
     // Public to allow access to /* verilator public */ items.
