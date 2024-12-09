@@ -1,7 +1,7 @@
 // Verilated -*- C++ -*-
 // DESCRIPTION: Verilator output: Symbol table implementation internals
 
-#include "VPRegFetch__Syms.h"
+#include "VPRegFetch__pch.h"
 #include "VPRegFetch.h"
 #include "VPRegFetch___024root.h"
 
@@ -17,6 +17,8 @@ VPRegFetch__Syms::VPRegFetch__Syms(VerilatedContext* contextp, const char* namep
     // Setup module instances
     , TOP{this, namep}
 {
+        // Check resources
+        Verilated::stackCheck(11);
     // Configure time unit / time precision
     _vm_contextp__->timeunit(-12);
     _vm_contextp__->timeprecision(-12);

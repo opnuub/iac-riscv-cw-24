@@ -2,12 +2,7 @@
 // DESCRIPTION: Verilator output: Design implementation internals
 // See Valu.h for the primary calling header
 
-<<<<<<< HEAD
-#include "verilated.h"
-
-=======
 #include "Valu__pch.h"
->>>>>>> e196d578041264977e0c3743a08c2822d1681fa1
 #include "Valu__Syms.h"
 #include "Valu___024root.h"
 

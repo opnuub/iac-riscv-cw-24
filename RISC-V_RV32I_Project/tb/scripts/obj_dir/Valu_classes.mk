@@ -43,11 +43,7 @@ VM_SUPPORT_SLOW += \
 # Global classes, need linked once per executable, fast-path, compile with highest optimization
 VM_GLOBAL_FAST += \
 	verilated \
-<<<<<<< HEAD
-=======
-	verilated_dpi \
 	verilated_threads \
->>>>>>> e196d578041264977e0c3743a08c2822d1681fa1
 
 # Global classes, need linked once per executable, non-fast-path, compile with low/medium optimization
 VM_GLOBAL_SLOW += \
