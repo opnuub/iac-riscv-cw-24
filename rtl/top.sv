@@ -373,10 +373,30 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .clk(clk),
         .SizeCtr(sizeSrcM),
         .ALUResult(ALUResultM[MEM_ADDR_WIDTH-1:0]),
-        .WriteData(WriteDataM),
-        .MemWrite(MemWriteM),
-        .ReadData(ReadData)
+        .WriteData(WriteDataM), //.WriteData(cache_mem_write_data),
+        .MemWrite(MemWriteM), //.MemWrite(cache_mem_write),
+        .ReadData(ReadData) //.ReadData(cache_data_out)
     );
+    /*
+    L1Cache #(
+    .DATA_WIDTH(DATA_WIDTH),
+    .SET_WIDTH(5)
+    ) cache (
+        .clk(clk),
+        .rst_n(~rst),
+        .load(ResultSrcM == 2'b01), // Load signal from CPU
+        .store(MemWriteM),         // Store signal from CPU
+        .address(ALUResultM),      // Address for memory operation
+        .data_in(WriteDataM),      // Data to write
+        .mem_data(cache_data_out), // Data from DataMemory
+        .mem_ready(1'b1),          // Placeholder for memory ready
+        .hit(cache_hit),           // Hit signal
+        .miss(cache_miss),         // Miss signal
+        .mem_write(cache_mem_write), // Write enable to DataMemory
+        .mem_read(cache_mem_read),   // Read enable to DataMemory
+        .busy(cache_busy),           // Busy signal
+        .data_out(ReadData)          // Data from cache to CPU
+    );*/
 
     resultMux #(
         .DATA_WIDTH(DATA_WIDTH)

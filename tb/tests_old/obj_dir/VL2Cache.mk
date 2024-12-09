@@ -2,9 +2,9 @@
 # DESCRIPTION: Verilator output: Makefile for building Verilated archive or executable
 #
 # Execute this makefile from the object directory:
-#    make -f VL1Cache.mk
+#    make -f VL2Cache.mk
 
-default: /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/tb/tests_old/test_out/L1Cache_sim
+default: /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/tb/tests_old/test_out/L2Cache_sim
 
 ### Constants...
 # Perl executable (from $PERL, defaults to 'perl' if not set)
@@ -32,9 +32,9 @@ VM_SC_TARGET_ARCH = linux
 
 ### Vars...
 # Design prefix (from --prefix)
-VM_PREFIX = VL1Cache
+VM_PREFIX = VL2Cache
 # Module prefix (from --prefix)
-VM_MODPREFIX = VL1Cache
+VM_MODPREFIX = VL2Cache
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
 	-I/opt/homebrew/opt/googletest/include \
@@ -45,7 +45,7 @@ VM_USER_LDLIBS = \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
-	L1Cache_tb \
+	L2Cache_tb \
 
 # User .cpp directories (from .cpp's on Verilator command line)
 VM_USER_DIR = \
@@ -54,18 +54,18 @@ VM_USER_DIR = \
 
 ### Default rules...
 # Include list of all generated classes
-include VL1Cache_classes.mk
+include VL2Cache_classes.mk
 # Include global rules
 include $(VERILATOR_ROOT)/include/verilated.mk
 
 ### Executable rules... (from --exe)
 VPATH += $(VM_USER_DIR)
 
-L1Cache_tb.o: L1Cache_tb.cpp 
+L2Cache_tb.o: L2Cache_tb.cpp 
 	$(OBJCACHE) $(CXX) $(CXXFLAGS) $(CPPFLAGS) $(OPT_FAST)  -c -o $@ $<
 
 ### Link rules... (from --exe)
-/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/tb/tests_old/test_out/L1Cache_sim: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
+/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/tb/tests_old/test_out/L2Cache_sim: $(VK_USER_OBJS) $(VK_GLOBAL_OBJS) $(VM_PREFIX)__ALL.a $(VM_HIER_LIBS)
 	$(LINK) $(LDFLAGS) $^ $(LOADLIBES) $(LDLIBS) $(LIBS) $(SC_LIBS) -o $@
 
 

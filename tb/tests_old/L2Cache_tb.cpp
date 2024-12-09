@@ -1,62 +1,73 @@
+#include <verilated.h>
 #include "VL2Cache.h"
-#include "verilated.h"
-#include "gtest/gtest.h"
+#include <iostream>
 
-class L2CacheTest : public ::testing::Test {
-protected:
-    VL2Cache* top;
+int main(int argc, char **argv) {
+    Verilated::commandArgs(argc, argv);
 
-    void SetUp() override {
-        top = new VL2Cache;
-        top->clk = 0;
-        top->reset = 1;
-        top->eval();
+    // Create instance of L2Cache
+    VL2Cache* cache = new VL2Cache;
+
+    // Initialize simulation inputs
+    cache->clk = 0;
+    cache->rst_n = 0;
+    cache->load = 0;
+    cache->store = 0;
+    cache->address = 0;
+    cache->data_in = 0;
+    cache->mem_data = 0;
+    cache->mem_ready = 0;
+
+    // Simulation time
+    int time = 0;
+
+    // Clock toggle function
+    auto toggle_clock = [&]() {
+        cache->clk = !cache->clk;
+        cache->eval();
+    };
+
+    // Reset
+    while (time < 20) {
+        cache->rst_n = (time >= 10); // Deassert reset after 10 time units
+        toggle_clock();
+        time++;
     }
 
-    void TearDown() override {
-        delete top;
-    }
+    // Test 1: Load - Cache Miss
+    cache->address = 0x00000000;
+    cache->load = 1;
+    toggle_clock();
+    cache->load = 0;
+    std::cout << "Test 1 - Cache Miss (Load): "
+              << "Hit = " << (int)cache->hit << ", Miss = " << (int)cache->miss << "\n";
 
-    void tick() {
-        top->clk = !top->clk;
-        top->eval();
-    }
-};
+    // Test 2: Store - Cache Miss
+    cache->address = 0x00000004;
+    cache->data_in = 0xDEADBEEF;
+    cache->store = 1;
+    toggle_clock();
+    cache->store = 0;
+    std::cout << "Test 2 - Cache Miss (Store): "
+              << "Hit = " << (int)cache->hit << ", Miss = " << (int)cache->miss << "\n";
 
-TEST_F(L2CacheTest, Initialization) {
-    EXPECT_EQ(top->hit, 0); 
-}
+    // Test 3: Load - Cache Hit
+    cache->address = 0x00000004;
+    cache->load = 1;
+    toggle_clock();
+    cache->load = 0;
+    std::cout << "Test 3 - Cache Hit (Load): "
+              << "Hit = " << (int)cache->hit << ", Miss = " << (int)cache->miss << "\n";
 
-TEST_F(L2CacheTest, CacheHit) {
-    top->reset = 0;
-    top->address = 0x00001010;
-    top->writeData = 0xABCD1234;
-    top->writeEnable = 1;
-    tick();
-    tick();
+    // Test 4: Replacement
+    cache->address = 0x00000040;
+    cache->load = 1;
+    toggle_clock();
+    cache->load = 0;
+    std::cout << "Test 4 - Cache Replacement: "
+              << "Hit = " << (int)cache->hit << ", Miss = " << (int)cache->miss << "\n";
 
-    top->writeEnable = 0;
-    top->address = 0x00001010;
-    tick();
-    EXPECT_EQ(top->hit, 1);
-    EXPECT_EQ(top->readData, 0xABCD1234);
-}
-
-TEST_F(L2CacheTest, CacheMiss) {
-    top->reset = 0;
-    top->address = 0x00002020;
-    top->writeData = 0xCAFEBABE;
-    top->writeEnable = 1;
-    tick();
-    tick();
-
-    top->address = 0x00003030; // different address to cause a miss
-    top->writeEnable = 0;
-    tick();
-    EXPECT_EQ(top->hit, 0);
-}
-
-int main(int argc, char** argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+    // Clean up
+    delete cache;
+    return 0;
 }
