@@ -54,45 +54,45 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic jalrSrc, pcSrc, zero;
 
     
-    always_ff @(posedge clk) begin
-    $display(" "); // Blank line for readability
-    $display("********** Pipeline Debug **********");
+//     always_ff @(posedge clk) begin
+//     $display(" "); // Blank line for readability
+//     $display("********** Pipeline Debug **********");
 
-    // Fetch Stage
-    $display("Fetch Stage:");
-    $display("Current PC: %h, Fetched Instruction: %h", pc, instr);
-    $display("Next PC: %h, PC+4: %h", nextPC, PCPlus4F);
+//     // Fetch Stage
+//     $display("Fetch Stage:");
+//     $display("Current PC: %h, Fetched Instruction: %h", pc, instr);
+//     $display("Next PC: %h, PC+4: %h", nextPC, PCPlus4F);
 
-    // Decode Stage
-    $display("Decode Stage:");
-    $display("Instruction Decode: rd: %0d, rs1: %0d, rs2: %0d", instrD[11:7], instrD[19:15], instrD[24:20]);
-    $display("Decoded Immediate: %h, Branch: %b, Jump: %b, ALU Src: %b, ALU Control D: %b", ImmExtD, BranchD, JumpD, ALUSrcD, ALUControlD);
-    $display("Control Signals: RegWrite: %b, MemWrite: %b, ResultSrc: %b", RegWriteD, MemWriteD, ResultSrcD);
+//     // Decode Stage
+//     $display("Decode Stage:");
+//     $display("Instruction Decode: rd: %0d, rs1: %0d, rs2: %0d", instrD[11:7], instrD[19:15], instrD[24:20]);
+//     $display("Decoded Immediate: %h, Branch: %b, Jump: %b, ALU Src: %b, ALU Control D: %b", ImmExtD, BranchD, JumpD, ALUSrcD, ALUControlD);
+//     $display("Control Signals: RegWrite: %b, MemWrite: %b, ResultSrc: %b", RegWriteD, MemWriteD, ResultSrcD);
 
-    // Execute Stage
-    $display("Execute Stage:");
-    $display("ALU Inputs: SrcA: %d, SrcB: %d, ALU Control: %b", SrcAE, srcB, ALUControlE);
-    $display("ALU Output: %d, Zero: %b, PC Target: %h", aluResult, zero, PCTargetE);
-    $display("Control Signals: Branch: %b, Jump: %b, RegWrite: %b", BranchE, JumpE, RegWriteE);
-    $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
+//     // Execute Stage
+//     $display("Execute Stage:");
+//     $display("ALU Inputs: SrcA: %d, SrcB: %d, ALU Control: %b", SrcAE, srcB, ALUControlE);
+//     $display("ALU Output: %d, Zero: %b, PC Target: %h", aluResult, zero, PCTargetE);
+//     $display("Control Signals: Branch: %b, Jump: %b, RegWrite: %b", BranchE, JumpE, RegWriteE);
+//     $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
 
-    // Memory Stage
-    $display("Memory Stage:");
-    $display("Memory Address: %h, Write Data: %h, Read Data: %h", ALUResultM, WriteDataM, ReadData);
-    $display("Control Signals: MemWrite: %b, RegWrite: %b, ResultSrc: %b", MemWriteM, RegWriteM, ResultSrcM);
+//     // Memory Stage
+//     $display("Memory Stage:");
+//     $display("Memory Address: %h, Write Data: %h, Read Data: %h", ALUResultM, WriteDataM, ReadData);
+//     $display("Control Signals: MemWrite: %b, RegWrite: %b, ResultSrc: %b", MemWriteM, RegWriteM, ResultSrcM);
 
-    // Write-Back Stage
-    $display("Write-Back Stage:");
-    $display("Write Back Data: %h, ALU Result: %h, PC+4: %h", ResultW, ALUResultW, PCPlus4W);
-    $display("Destination Register: %0d, RegWrite: %b", RdW, RegWriteW);
+//     // Write-Back Stage
+//     $display("Write-Back Stage:");
+//     $display("Write Back Data: %h, ALU Result: %h, PC+4: %h", ResultW, ALUResultW, PCPlus4W);
+//     $display("Destination Register: %0d, RegWrite: %b", RdW, RegWriteW);
 
-    // Hazard Unit
-    $display("Hazard Unit:");
-    $display("Flush Signal: %b, Stall Signal: %b", Flush, stall); // Flush and stall signals
-    $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
+//     // Hazard Unit
+//     $display("Hazard Unit:");
+//     $display("Flush Signal: %b, Stall Signal: %b", Flush, stall); // Flush and stall signals
+//     $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
 
-    $display("************************************");
-end
+//     $display("************************************");
+// end
 
 
     always_comb begin 
