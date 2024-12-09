@@ -81,6 +81,7 @@ class Vdut___024root final : public VerilatedModule {
         IData/*31:0*/ top__DOT__SrcAE;
     };
     struct {
+        IData/*31:0*/ top__DOT__WriteDataE;
         IData/*31:0*/ __Vdlyvval__top__DOT__regfile__DOT__rom_array__v0;
         VlUnpacked<CData/*7:0*/, 4096> top__DOT__instrMemory__DOT__rom;
         VlUnpacked<IData/*31:0*/, 32> top__DOT__regfile__DOT__rom_array;

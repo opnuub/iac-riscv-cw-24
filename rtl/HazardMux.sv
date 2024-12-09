@@ -16,8 +16,10 @@ module HazardMux #(
             2'b00: Out = rdE;
             2'b01: Out = ResultW;
             2'b10: Out = ALUResultM;
-            default: Out = '0;
+            default: Out = rdE;
         endcase
+
+        $display("HazardMux: Forward=%b, rdE=%h, ResultW=%h, ALUResultM=%h, Out=%h", Forward, rdE, ResultW, ALUResultM, Out);
     end
 
 endmodule

@@ -188,16 +188,22 @@ VL_ATTR_COLD void Vdut___024root___settle__TOP__0(Vdut___024root* vlSelf) {
                                     ? vlSelf->top__DOT__ResultW
                                     : ((2U == (IData)(vlSelf->top__DOT__ForwardAE))
                                         ? vlSelf->top__DOT__ALUResultM
-                                        : 0U)));
-    vlSelf->top__DOT__srcB = ((IData)(vlSelf->top__DOT__ALUSrcE)
-                               ? vlSelf->top__DOT__ImmExtE
-                               : ((0U == (IData)(vlSelf->top__DOT__ForwardBE))
-                                   ? vlSelf->top__DOT__rd2E
-                                   : ((1U == (IData)(vlSelf->top__DOT__ForwardBE))
-                                       ? vlSelf->top__DOT__ResultW
-                                       : ((2U == (IData)(vlSelf->top__DOT__ForwardBE))
-                                           ? vlSelf->top__DOT__ALUResultM
-                                           : 0U))));
+                                        : vlSelf->top__DOT__rd1E)));
+    VL_WRITEF("HazardMux: Forward=%b, rdE=%x, ResultW=%x, ALUResultM=%x, Out=%x\n",
+              2,vlSelf->top__DOT__ForwardAE,32,vlSelf->top__DOT__rd1E,
+              32,vlSelf->top__DOT__ResultW,32,vlSelf->top__DOT__ALUResultM,
+              32,vlSelf->top__DOT__SrcAE);
+    vlSelf->top__DOT__WriteDataE = ((0U == (IData)(vlSelf->top__DOT__ForwardBE))
+                                     ? vlSelf->top__DOT__rd2E
+                                     : ((1U == (IData)(vlSelf->top__DOT__ForwardBE))
+                                         ? vlSelf->top__DOT__ResultW
+                                         : ((2U == (IData)(vlSelf->top__DOT__ForwardBE))
+                                             ? vlSelf->top__DOT__ALUResultM
+                                             : vlSelf->top__DOT__rd2E)));
+    VL_WRITEF("HazardMux: Forward=%b, rdE=%x, ResultW=%x, ALUResultM=%x, Out=%x\n",
+              2,vlSelf->top__DOT__ForwardBE,32,vlSelf->top__DOT__rd2E,
+              32,vlSelf->top__DOT__ResultW,32,vlSelf->top__DOT__ALUResultM,
+              32,vlSelf->top__DOT__WriteDataE);
     vlSelf->top__DOT__ImmExtD = ((2U & (IData)(vlSelf->top__DOT__immSrcD))
                                   ? ((1U & (IData)(vlSelf->top__DOT__immSrcD))
                                       ? ((IData)(vlSelf->top__DOT__JumpD)
@@ -255,6 +261,9 @@ VL_ATTR_COLD void Vdut___024root___settle__TOP__0(Vdut___024root* vlSelf) {
                                  >> 0xaU)) | (IData)(vlSelf->top__DOT__controlUnit__DOT__aluOp)));
     vlSelf->top__DOT__ALUControlD = Vdut__ConstPool__TABLE_hf06b9b74_0
         [__Vtableidx2];
+    vlSelf->top__DOT__srcB = ((IData)(vlSelf->top__DOT__ALUSrcE)
+                               ? vlSelf->top__DOT__ImmExtE
+                               : vlSelf->top__DOT__WriteDataE);
     if (((((((((0U == (IData)(vlSelf->top__DOT__ALUControlE)) 
                | (1U == (IData)(vlSelf->top__DOT__ALUControlE))) 
               | (2U == (IData)(vlSelf->top__DOT__ALUControlE))) 
@@ -310,17 +319,17 @@ VL_ATTR_COLD void Vdut___024root___settle__TOP__0(Vdut___024root* vlSelf) {
                                               ? ((1U 
                                                   & (IData)(vlSelf->top__DOT__ALUControlE))
                                                   ? 
-                                                 (vlSelf->top__DOT__rd1E 
+                                                 (vlSelf->top__DOT__SrcAE 
                                                   >= vlSelf->top__DOT__srcB)
                                                   : 
-                                                 (vlSelf->top__DOT__rd1E 
+                                                 (vlSelf->top__DOT__SrcAE 
                                                   < vlSelf->top__DOT__srcB))
                                               : ((1U 
                                                   & (IData)(vlSelf->top__DOT__ALUControlE))
                                                   ? 
-                                                 VL_GTES_III(32, vlSelf->top__DOT__rd1E, vlSelf->top__DOT__srcB)
+                                                 VL_GTES_III(32, vlSelf->top__DOT__SrcAE, vlSelf->top__DOT__srcB)
                                                   : 
-                                                 VL_LTS_III(32, vlSelf->top__DOT__rd1E, vlSelf->top__DOT__srcB)))
+                                                 VL_LTS_III(32, vlSelf->top__DOT__SrcAE, vlSelf->top__DOT__srcB)))
                                           : ((~ ((IData)(vlSelf->top__DOT__ALUControlE) 
                                                  >> 1U)) 
                                              & ((1U 
@@ -328,12 +337,12 @@ VL_ATTR_COLD void Vdut___024root___settle__TOP__0(Vdut___024root* vlSelf) {
                                                  ? 
                                                 (0U 
                                                  != 
-                                                 (vlSelf->top__DOT__rd1E 
+                                                 (vlSelf->top__DOT__SrcAE 
                                                   - vlSelf->top__DOT__srcB))
                                                  : 
                                                 (0U 
                                                  == 
-                                                 (vlSelf->top__DOT__rd1E 
+                                                 (vlSelf->top__DOT__SrcAE 
                                                   - vlSelf->top__DOT__srcB))))));
     vlSelf->top__DOT__Flush = ((IData)(vlSelf->top__DOT__zero) 
                                | (IData)(vlSelf->top__DOT__JumpE));
@@ -439,6 +448,7 @@ VL_ATTR_COLD void Vdut___024root___ctor_var_reset(Vdut___024root* vlSelf) {
     vlSelf->top__DOT__ForwardAE = VL_RAND_RESET_I(2);
     vlSelf->top__DOT__ForwardBE = VL_RAND_RESET_I(2);
     vlSelf->top__DOT__SrcAE = VL_RAND_RESET_I(32);
+    vlSelf->top__DOT__WriteDataE = VL_RAND_RESET_I(32);
     vlSelf->top__DOT__Rs1E = VL_RAND_RESET_I(5);
     vlSelf->top__DOT__Rs2E = VL_RAND_RESET_I(5);
     vlSelf->top__DOT__jalrSrc = VL_RAND_RESET_I(1);

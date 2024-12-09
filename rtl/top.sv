@@ -53,7 +53,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     // Additional Signals
     logic jalrSrc, pcSrc, zero;
 
-    /*
+    
     always_ff @(posedge clk) begin
     $display(" "); // Blank line for readability
     $display("********** Pipeline Debug **********");
@@ -71,9 +71,10 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 
     // Execute Stage
     $display("Execute Stage:");
-    $display("ALU Inputs: SrcA: %d, SrcB: %d, ALU Control: %b", rd1E, srcB, ALUControlE);
+    $display("ALU Inputs: SrcA: %d, SrcB: %d, ALU Control: %b", SrcAE, srcB, ALUControlE);
     $display("ALU Output: %d, Zero: %b, PC Target: %h", aluResult, zero, PCTargetE);
     $display("Control Signals: Branch: %b, Jump: %b, RegWrite: %b", BranchE, JumpE, RegWriteE);
+    $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
 
     // Memory Stage
     $display("Memory Stage:");
@@ -87,10 +88,12 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 
     // Hazard Unit
     $display("Hazard Unit:");
-    $display("Flush Signal: %b", Flush);
+    $display("Flush Signal: %b, Stall Signal: %b", Flush, stall); // Flush and stall signals
+    $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
 
-    $display("************************************"); 
-end*/
+    $display("************************************");
+end
+
 
     always_comb begin 
 
@@ -304,7 +307,7 @@ end*/
     branchUnit #(
         .DATA_WIDTH(DATA_WIDTH)
     ) branchUnit_inst (
-        .srcA(rd1E),
+        .srcA(SrcAE),
         .srcB(srcB),
         .aluControl(ALUControlE),
         .zero(zero)
