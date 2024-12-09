@@ -45,12 +45,15 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic [1:0] ResultSrcW;
 
     //Hazard Unit
-    logic Flush;
+    logic Flush, stall, memoryRead;
+    logic [1:0] ForwardAE, ForwardBE;
+    logic [DATA_WIDTH-1:0] SrcAE, WriteDataE;
+    logic [4:0] Rs1E, Rs2E;
 
     // Additional Signals
     logic jalrSrc, pcSrc, zero;
 
-
+    /*
     always_ff @(posedge clk) begin
     $display(" "); // Blank line for readability
     $display("********** Pipeline Debug **********");
@@ -86,14 +89,64 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     $display("Hazard Unit:");
     $display("Flush Signal: %b", Flush);
 
-    $display("************************************");
-end
+    $display("************************************"); 
+end*/
+
+    always_comb begin 
+
+        if (ResultSrcE == 1)begin 
+
+            memoryRead = 1;
+
+        end else begin 
+
+            memoryRead = 0;
+
+        end
+
+
+    end
 
     HazardUnit #(
     ) HazardUnit (
-    .zero(zero),
+    .Rs1E(Rs1E), 
+    .Rs2E(Rs2E),  
+    .Rs1D(instrD[19:15]), 
+    .Rs2D(instrD[24:20]),     
+    .RdE(RdE),
+    .destReg_m(RdM),  
+    .destReg_w(RdW),
+    .memoryRead_e(memoryRead),//when you are doing load -> loading data from memory //
+    .RegWriteM(RegWriteM),     
+    .RegWriteW(RegWriteW),   
+    .zero_hazard(zero),   
+    .jump_hazard(JumpE),
+    .ForwardAE(ForwardAE),
+    .ForwardBE(ForwardBE),  
+    .stall(stall),          
     .Flush(Flush)
     );
+
+    HazardMux #(
+    .DATA_WIDTH(DATA_WIDTH)
+    ) HazardMux1 (
+    .rdE(rd1E),
+    .ResultW(ResultW),
+    .ALUResultM(ALUResultM),
+    .Forward(ForwardAE),
+    .Out(SrcAE)
+    );
+
+    HazardMux #(
+    .DATA_WIDTH(DATA_WIDTH)
+    ) HazardMux2 (
+    .rdE(rd2E),
+    .ResultW(ResultW),
+    .ALUResultM(ALUResultM),
+    .Forward(ForwardBE),
+    .Out(WriteDataE)
+    );
+
 
     pcMux #(
     .ADDR_WIDTH(ADDR_WIDTH)
@@ -117,6 +170,7 @@ end
         .ADDR_WIDTH(ADDR_WIDTH),
         .OFFSET(OFFSET)
     ) pcReg (
+        .stall(stall),
         .clk(clk),
         .rst(rst),
         .nextPC(nextPC),
@@ -135,6 +189,7 @@ end
     PRegFetch #(
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegFetch (
+        .stall(stall),
         .instr(instr),
         .Flush(Flush),
         .rst(rst),
@@ -191,6 +246,10 @@ end
     PRegDecode #(
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegDecode (
+        .Rs1D(instrD[19:15]), 
+        .Rs2D(instrD[24:20]),
+        .Rs1E(Rs1E),
+        .Rs2E(Rs2E),
         .Flush(Flush),
         .sizeSrcD(sizeSrcD),
         .sizeSrcE(sizeSrcE),
@@ -228,7 +287,7 @@ end
         .DATA_WIDTH(DATA_WIDTH)
     ) aluMux (
         .immOp(ImmExtE),
-        .regOp2(rd2E),
+        .regOp2(WriteDataE),
         .aluSrc(ALUSrcE),
         .srcB(srcB)
     );
@@ -236,7 +295,7 @@ end
     alu #(
         .DATA_WIDTH(DATA_WIDTH)
     ) alu (
-        .srcA(rd1E),
+        .srcA(SrcAE),
         .srcB(srcB),
         .aluControl(ALUControlE),
         .aluResult(aluResult)

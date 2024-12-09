@@ -4,7 +4,8 @@ module pcReg #(
 ) (
     input   logic [ADDR_WIDTH-1:0]  nextPC,
     input   logic                   clk,
-    input   logic                   rst,        
+    input   logic                   rst,    
+    input   logic                   stall,    
     output  logic [ADDR_WIDTH-1:0]  PCPlus4F,
     output  logic [ADDR_WIDTH-1:0]  pc
 );
@@ -16,7 +17,7 @@ module pcReg #(
     always_ff @ (posedge clk or posedge rst)
         if (rst)
             pc <= 32'hBFC00000; // instruction 
-        else
+        else if (!stall)
             pc <= nextPC;
 
 endmodule

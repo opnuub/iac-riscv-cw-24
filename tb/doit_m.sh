@@ -5,7 +5,7 @@
 
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 TEST_FOLDER=$(realpath "$SCRIPT_DIR/tests")
-RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl_single_cycle")
+RTL_FOLDER=$(realpath "$SCRIPT_DIR/../rtl")
 OUTPUT_FOLDER=$(realpath "$SCRIPT_DIR/test_out")
 GREEN=$(tput setaf 2)
 RED=$(tput setaf 1)

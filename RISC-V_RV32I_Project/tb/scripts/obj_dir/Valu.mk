@@ -37,11 +37,11 @@ VM_PREFIX = Valu
 VM_MODPREFIX = Valu
 # User CFLAGS (from -CFLAGS on Verilator command line)
 VM_USER_CFLAGS = \
-	-isystem /opt/homebrew/Cellar/googletest/1.15.2/include \
+	-I/usr/include/gtest \
 
 # User LDLIBS (from -LDFLAGS on Verilator command line)
 VM_USER_LDLIBS = \
-	-L/opt/homebrew/Cellar/googletest/1.15.2/lib -lgtest -lgtest_main \
+	-L/usr/lib -lgtest -lgtest_main \
 
 # User .cpp files (from .cpp's on Verilator command line)
 VM_USER_CLASSES = \
