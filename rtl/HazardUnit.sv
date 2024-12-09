@@ -1,6 +1,4 @@
 module HazardUnit #(
-
-
 ) ( // notes say to check if source register in execute stage matches destination register in memory or writeback stage         
     input logic [4:0]       Rs1E, 
     input logic [4:0]       Rs2E,  
