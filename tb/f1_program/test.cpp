@@ -1,7 +1,3 @@
-/*
-This version of the code implements a very simple trigger to activate the f1 lights. 
-No randmoiser is implemented yet
- */
 #include "Vf1.h"
 #include "verilated.h"
 #include "verilated_vcd_c.h"
@@ -37,11 +33,6 @@ int main(int argc, char **argv, char **env)
     // run simulation for MAX_SIM_CYC clock cycles
     for (simcyc = 0; simcyc < MAX_SIM_CYC; simcyc++)
     {
-        for (tick = 0; tick < 2; tick++) {
-                    tfp->dump(2 * simcyc + tick);
-                    top->clk = !top->clk;
-                    top->eval();
-        }
         // Start by polling vbdFlag() directly in C++ to manage flow
         if (vbdFlag()) {
             // Here, vbdFlag() is active, so continue simulation
@@ -67,7 +58,7 @@ int main(int argc, char **argv, char **env)
         }
         else {
             // If vbdFlag() is not set, handle accordingly
-            vbdHeader("Flag not set");
+            vbdHeader("Flag is not set, resetting or doing other tasks.");
         }
     }
 
