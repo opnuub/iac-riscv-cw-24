@@ -18,9 +18,9 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     output  logic [DATA_WIDTH-1:0]  a6,
     output  logic [DATA_WIDTH-1:0]  s1,
     output  logic [DATA_WIDTH-1:0]  t1,
-    output  logic [DATA_WIDTH-1:0]  t0,
-    output  logic [DATA_WIDTH-1:0]  rega5,
-    output  logic [DATA_WIDTH-1:0]  rega6
+    output  logic [DATA_WIDTH-1:0]  s0,
+    output  logic [DATA_WIDTH-1:0]  regs0,
+    output  logic [DATA_WIDTH-1:0]  t0
 
 );
 
@@ -66,102 +66,27 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic jalrSrc, pcSrc, zero, JalrE;
 
     
-//     always_ff @(posedge clk) begin
-//     $display(" "); // Blank line for readability
-//     $display("********** Pipeline Debug **********");
-
-//     // Fetch Stage
-//     $display("Fetch Stage:");
-//     $display("Current PC: %h, Fetched Instruction: %h", pc, instr);
-//     $display("Next PC: %h, PC+4: %h", nextPC, PCPlus4F);
-
-//     // Decode Stage
-//     $display("Decode Stage:");
-//     $display("Instruction Decode: rd: %0d, rs1: %0d, rs2: %0d", instrD[11:7], instrD[19:15], instrD[24:20]);
-//     $display("Decoded Immediate: %h, Branch: %b, Jump: %b, ALU Src: %b, ALU Control D: %b", ImmExtD, BranchD, JumpD, ALUSrcD, ALUControlD);
-//     $display("Control Signals: RegWrite: %b, MemWrite: %b, ResultSrc: %b", RegWriteD, MemWriteD, ResultSrcD);
-
-//     // Execute Stage
-//     $display("Execute Stage:");
-//     $display("ALU Inputs: SrcA: %d, SrcB: %d, ALU Control: %b", SrcAE, srcB, ALUControlE);
-//     $display("ALU Output: %d, Zero: %b, PC Target: %h", aluResult, zero, PCTargetE);
-//     $display("Control Signals: Branch: %b, Jump: %b, RegWrite: %b", BranchE, JumpE, RegWriteE);
-//     $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
-
-//     // Memory Stage
-//     $display("Memory Stage:");
-//     $display("Memory Address: %h, Write Data: %h, Read Data: %h", ALUResultM, WriteDataM, ReadData);
-//     $display("Control Signals: MemWrite: %b, RegWrite: %b, ResultSrc: %b", MemWriteM, RegWriteM, ResultSrcM);
-
-//     // Write-Back Stage
-//     $display("Write-Back Stage:");
-//     $display("Write Back Data: %h, ALU Result: %h, PC+4: %h", ResultW, ALUResultW, PCPlus4W);
-//     $display("Destination Register: %0d, RegWrite: %b", RdW, RegWriteW);
-
-//     // Hazard Unit
-//     $display("Hazard Unit:");
-//     $display("Flush Signal: %b, Stall Signal: %b", Flush, stall); // Flush and stall signals
-//     $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
-
-//     $display("************************************");
-// end
-
-// always_ff @ (posedge clk)begin
-// $display("sizeSrcD: %d, sizeSrcE: %d, sizeSrcM: %d", sizeSrcD, sizeSrcE, sizeSrcM);
-// end
-
-// always_ff @(posedge clk) begin
-//     if (MemWriteM) begin
-//         $display("[WRITE] At clk=%0d, ALUResultM: %h, WriteDataM: %h, SizeCtr (sizeSrcM): %b", $time, ALUResultM, WriteDataM, sizeSrcM);
-//     end
-//     $display("a0: %h", a0);
-// end
-
-
-// always_comb begin
-//     $display("ALUResultM: %h, ReadData: %h, ReadDataW: %h, ResultSrcW %b, ResultW %d", ALUResultM, ReadData, ReadDataW, ResultSrcW, ResultW);
-//     $display("RdW: %d", RdW);
-//     $display("Fetch Stage:");
-//     $display("Current PC: %h, Fetched Instruction: %h", pc, instr);
-//     $display("Next PC: %h, PC+4: %h", nextPC, PCPlus4F);
-// end
-
-
-    always_comb begin 
-
-        if (ResultSrcE == 1)begin 
-
-            memoryRead = 1;
-
-        end else begin 
-
-            memoryRead = 0;
-
-        end
-
-
-    end
-
-    HazardUnit #(
+// 
+HazardUnit #(
     ) HazardUnit (
-    .Rs1E(Rs1E), 
-    .Rs2E(Rs2E),  
-    .Rs1D(instrD[19:15]), 
-    .Rs2D(instrD[24:20]),     
-    .RdE(RdE),
-    .destReg_m(RdM),  
-    .destReg_w(RdW),
-    .memoryRead_e(memoryRead),//when you are doing load -> loading data from memory //
-    .RegWriteM(RegWriteM),     
-    .RegWriteW(RegWriteW),   
-    .zero_hazard(zero),   
-    .jump_hazard(JumpE),
-    .ForwardAE(ForwardAE),
-    .ForwardBE(ForwardBE),  
-    .stall(stall),          
-    .Flush(Flush)
+        .Rs1E(Rs1E), 
+        .Rs2E(Rs2E),  
+        .Rs1D(instrD[19:15]), 
+        .Rs2D(instrD[24:20]),     
+        .RdE(RdE),
+        .destReg_m(RdM),  
+        .destReg_w(RdW),
+        .memoryRead_e(memoryRead),
+        .RegWriteM(RegWriteM),     
+        .RegWriteW(RegWriteW),   
+        .zero_hazard(zero),   
+        .jump_hazard(JumpE),
+        .mem_stall(mem_stall),     
+        .ForwardAE(ForwardAE),
+        .ForwardBE(ForwardBE),  
+        .stall(stall),          
+        .Flush(Flush)
     );
-
     HazardMux #(
     .DATA_WIDTH(DATA_WIDTH)
     ) HazardMux1 (
@@ -226,7 +151,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     ) PRegFetch (
         .stall(stall),
         .instr(instr),
-        .Flush(Flush),
+        .Flush(),
         .rst(rst),
         .PCf(pc),
         .PCPlus4F(PCPlus4F),
@@ -263,7 +188,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .immExt(ImmExtD)
     );
 
-    regfile #(
+regfile #(
         .DATA_WIDTH(DATA_WIDTH),
         .REG_DATA_WIDTH(REG_DATA_WIDTH)
     ) regfile (
@@ -276,7 +201,6 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .ALUop1(rd1),
         .regOp2(rd2),
         .a0(a0),
-        //for Testing:
         .a1(a1),
         .a2(a2),
         .a3(a3),
@@ -284,10 +208,10 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .a5(a5),
         .a6(a6),
         .t1(t1),
-        .s1(s1)
-
+        .s1(s1),
+        .t0(t0),           // Add these missing connections
+        .s0(s0)
     );
-
     PRegDecode #(
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegDecode (
@@ -382,7 +306,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .sizeSrcM(sizeSrcM),
         .rst(rst),
         .ALUout(aluResult),
-        .WriteData(rd2E),
+        .WriteData(WriteDataE),
         .PCPlus4E(PCPlus4E),
         .clk(clk),
         .RdE(RdE),
@@ -398,25 +322,26 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .MemWriteM(MemWriteM)
     );
 
-    PRegMemory # (
+    PRegMemory #(
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegMemory (
-    .ALUResultM(ALUResultM),
-    .DMRd(ReadData),
-    .RdM(RdM),
-    .PCPlus4M(PCPlus4M),
-    .clk(clk),
-    .rst(rst),         // Reset signal
-    .RdW(RdW),
-    .ALUResultW(ALUResultW),
-    .ReadDataW(ReadDataW),
-    .PCPlus4W(PCPlus4W),
-    .RegWriteM(RegWriteM),
-    .ResultSrcM(ResultSrcM),
-    .RegWriteW(RegWriteW),
-    .ResultSrcW(ResultSrcW)
+        .ALUResultM(ALUResultM),
+        .DMRd(ReadData),
+        .RdM(RdM),
+        .PCPlus4M(PCPlus4M),
+        .clk(clk),
+        .rst(rst),
+        .mem_stall(mem_stall),    // Add this connection
+        .RdW(RdW),
+        .ALUResultW(ALUResultW),
+        .ReadDataW(ReadDataW),
+        .PCPlus4W(PCPlus4W),
+        .RegWriteM(RegWriteM),
+        .ResultSrcM(ResultSrcM),
+        .RegWriteW(RegWriteW),
+        .ResultSrcW(ResultSrcW)
     );
-
+/*
     DataMemory #(
         .DATA_WIDTH(DATA_WIDTH),
         .ADDR_WIDTH(MEM_ADDR_WIDTH)
@@ -427,6 +352,28 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .WriteData(WriteDataM),
         .MemWrite(MemWriteM),
         .ReadData(ReadData)
+    );
+*/
+logic mem_ready;
+    logic mem_stall;
+    assign mem_stall = !mem_ready && (ResultSrcM == 2'b01 || MemWriteM); // Stall on memory operations when not ready
+
+    // Add new Memory Controller instantiation
+    MemoryController #(
+        .DATA_WIDTH(DATA_WIDTH),
+        .ADDR_WIDTH(MEM_ADDR_WIDTH)
+    ) memory_controller (
+        .clk(clk),
+        .rst_n(!rst),  // Convert active-high to active-low reset
+        .MemWrite(MemWriteM),
+        .SizeCtr(sizeSrcM),
+        .addr(ALUResultM[MEM_ADDR_WIDTH-1:0]),
+        .WriteData(WriteDataM),
+        .ReadData(ReadData),
+        .MemReady(mem_ready),
+        .regs0(regs0),
+        .s0(s0)
+
     );
 
     resultMux #(

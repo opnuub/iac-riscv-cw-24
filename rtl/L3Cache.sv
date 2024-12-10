@@ -11,7 +11,8 @@ module L3Cache (
     parameter CACHE_SIZE = 4096;   
     parameter LINE_SIZE = 16;      
     parameter TAG_WIDTH = 14;      
-
+    parameter INDEX_BITS = 12;
+    parameter OFFSET_BITS = 4;
 
     typedef struct {
         logic [TAG_WIDTH-1:0] tag;       
@@ -22,37 +23,37 @@ module L3Cache (
 
     CacheLine cache[CACHE_SIZE];  
 
+    // Internal signals with proper widths
+    logic [INDEX_BITS-1:0] index;
+    logic [OFFSET_BITS-1:0] offset;
+    logic [TAG_WIDTH-1:0] tag_in;
+
+    // Address breakdown
+    assign index = address[13:2];
+    assign offset = address[3:0];
+    assign tag_in = address[31:14];
 
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
-
             for (int i = 0; i < CACHE_SIZE; i++) begin
                 cache[i].valid <= 0;
                 cache[i].dirty <= 0;
+                cache[i].tag <= '0;
             end
             hit <= 0;
+            readData <= '0;
         end else begin
-
-            int index = address[13:2]; 
-            int offset = address[3:0];
-
-            if (cache[index].valid && cache[index].tag == address[31:14]) begin
+            if (cache[index].valid && cache[index].tag == tag_in) begin
                 hit <= 1;
                 readData <= cache[index].data[offset];
             end else begin
                 hit <= 0;
-
-
-                if (cache[index].valid && cache[index].dirty) begin
-
-                    // $write_memory(cache[index].tag, cache[index].data);
+                if (writeEnable) begin
+                    cache[index].tag <= tag_in;
+                    cache[index].data[offset] <= writeData;
+                    cache[index].valid <= 1;
+                    cache[index].dirty <= 1;
                 end
-
-
-                cache[index].tag <= address[31:14];
-                cache[index].data[offset] <= writeData; 
-                cache[index].valid <= 1;
-                cache[index].dirty <= writeEnable;
             end
 
             if (writeEnable) begin

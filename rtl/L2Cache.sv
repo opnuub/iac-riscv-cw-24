@@ -38,11 +38,12 @@ module L2Cache #(
     logic hit_way;
     logic way;
 
-    typedef enum logic [1:0] {
+    typedef enum logic [2:0] {
         IDLE,
         READ_MISS,
         WRITE_MISS,
-        WRITE_BACK
+        WRITE_BACK,
+        UPDATE
     } state_t;
 
     state_t state;

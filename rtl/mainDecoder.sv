@@ -84,7 +84,19 @@ module mainDecoder (
             7'b0110011: begin // R-type
                 regWrite  = 1;
                 aluOp     = 2'b10; // ALU performs operation
+            end 
+            
+            7'b0110111: begin // upper immediate 6:24 lui
+                regWrite = 1;
+                immSrc = 2'b11;
+                aluSrc = 1;
+                memWrite = 0;
+                resultSrc = 0;
+                aluOp = 2'b11;
+                jalrSrc = 0;
+                jumpSrc = 0;
             end
+            
             default: begin
                 // Default case: all control signals inactive
                 regWrite  = 0;
