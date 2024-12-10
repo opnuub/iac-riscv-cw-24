@@ -9,7 +9,17 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     input   logic                   clk,
     input   logic                   rst,
     //input   logic                 trigger,
-    output  logic [DATA_WIDTH-1:0]  a0
+    output  logic [DATA_WIDTH-1:0]  a0,
+    output  logic [DATA_WIDTH-1:0]  a1,
+    output  logic [DATA_WIDTH-1:0]  a2,
+    output  logic [DATA_WIDTH-1:0]  a3,
+    output  logic [DATA_WIDTH-1:0]  a4,
+    output  logic [DATA_WIDTH-1:0]  a5,
+    output  logic [DATA_WIDTH-1:0]  a6,
+    output  logic [DATA_WIDTH-1:0]  s1,
+    output  logic [DATA_WIDTH-1:0]  t1,
+    output  logic [DATA_WIDTH-1:0]  t0
+
 );
 
     // Declare all internal signals
@@ -92,6 +102,26 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 //     $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
 
 //     $display("************************************");
+// end
+
+// always_ff @ (posedge clk)begin
+// $display("sizeSrcD: %d, sizeSrcE: %d, sizeSrcM: %d", sizeSrcD, sizeSrcE, sizeSrcM);
+// end
+
+// always_ff @(posedge clk) begin
+//     if (MemWriteM) begin
+//         $display("[WRITE] At clk=%0d, ALUResultM: %h, WriteDataM: %h, SizeCtr (sizeSrcM): %b", $time, ALUResultM, WriteDataM, sizeSrcM);
+//     end
+//     $display("a0: %h", a0);
+// end
+
+
+// always_comb begin
+//     $display("ALUResultM: %h, ReadData: %h, ReadDataW: %h, ResultSrcW %b, ResultW %d", ALUResultM, ReadData, ReadDataW, ResultSrcW, ResultW);
+//     $display("RdW: %d", RdW);
+//     $display("Fetch Stage:");
+//     $display("Current PC: %h, Fetched Instruction: %h", pc, instr);
+//     $display("Next PC: %h, PC+4: %h", nextPC, PCPlus4F);
 // end
 
 
@@ -243,7 +273,17 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .ResultW(ResultW),
         .ALUop1(rd1),
         .regOp2(rd2),
-        .a0(a0)
+        .a0(a0),
+        //for Testing:
+        .a1(a1),
+        .a2(a2),
+        .a3(a3),
+        .a4(a4),
+        .a5(a5),
+        .a6(a6),
+        .t1(t1),
+        .s1(s1)
+
     );
 
     PRegDecode #(
