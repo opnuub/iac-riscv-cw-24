@@ -35,7 +35,7 @@ module aluDecoder (
                     end
                     3'b001: aluControl = 4'b0110; // sll
                     3'b010: aluControl = 4'b0101; // slt
-                    3'b011: aluControl = 4'b0100; // sltu
+                    3'b011: aluControl = 4'b0100; // li
                     3'b100: aluControl = 4'b0010; // xor
                     3'b101: aluControl = 4'b0111; // srl
                     3'b110: aluControl = 4'b0011; // or
