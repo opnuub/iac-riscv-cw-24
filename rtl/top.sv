@@ -1,30 +1,22 @@
-module top #( //!!!!!!this file is still filled with errors, I am not finished yet
+module top #(
     parameter DATA_WIDTH = 32,
     parameter INSTR_WIDTH = 32,
     parameter ADDR_WIDTH = 32,
     parameter MEM_ADDR_WIDTH = 17,
     parameter REG_DATA_WIDTH = 5,
-    parameter OFFSET = 4
+    parameter OFFSET = 4,
+    
+    // Cache-related parameters
+    parameter L1_SET_WIDTH = 5,
+    parameter L2_SET_WIDTH = 6,
+    parameter L3_SET_WIDTH = 8
 ) (
     input   logic                   clk,
     input   logic                   rst,
-    //input   logic                 trigger,
-    output  logic [DATA_WIDTH-1:0]  a0,
-    output  logic [DATA_WIDTH-1:0]  a1,
-    output  logic [DATA_WIDTH-1:0]  a2,
-    output  logic [DATA_WIDTH-1:0]  a3,
-    output  logic [DATA_WIDTH-1:0]  a4,
-    output  logic [DATA_WIDTH-1:0]  a5,
-    output  logic [DATA_WIDTH-1:0]  a6,
-    output  logic [DATA_WIDTH-1:0]  s1,
-    output  logic [DATA_WIDTH-1:0]  t1,
-    output  logic [DATA_WIDTH-1:0]  s0,
-    output  logic [DATA_WIDTH-1:0]  regs0,
-    output  logic [DATA_WIDTH-1:0]  t0
-
+    output  logic [DATA_WIDTH-1:0]  a0
 );
 
-    // Declare all internal signals
+    // Internal signals
     // Fetch Stage
     logic [DATA_WIDTH-1:0] PCPlus4F, instr, pc, PCTargetE, nextPC;
 
@@ -56,19 +48,24 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic RegWriteW;
     logic [1:0] ResultSrcW;
 
-    //Hazard Unit
-    logic Flush, stall, memoryRead;
+    // Hazard Unit
+    logic FlushD, FlushE, stall, memoryRead;
     logic [1:0] ForwardAE, ForwardBE;
     logic [DATA_WIDTH-1:0] SrcAE, WriteDataE;
     logic [4:0] Rs1E, Rs2E;
 
     // Additional Signals
     logic jalrSrc, pcSrc, zero, JalrE;
-
     
-// 
-HazardUnit #(
-    ) HazardUnit (
+    // Memory System Signals
+    logic MemReady;
+
+    always_comb begin
+        memoryRead = (ResultSrcE == 2'b01);
+    end
+
+    // Hazard detection and forwarding
+    HazardUnit HazardUnit (
         .Rs1E(Rs1E), 
         .Rs2E(Rs2E),  
         .Rs1D(instrD[19:15]), 
@@ -81,51 +78,53 @@ HazardUnit #(
         .RegWriteW(RegWriteW),   
         .zero_hazard(zero),   
         .jump_hazard(JumpE),
-        .mem_stall(mem_stall),     
+        .mem_stall(!MemReady),
         .ForwardAE(ForwardAE),
         .ForwardBE(ForwardBE),  
         .stall(stall),          
-        .Flush(Flush)
+        .FlushD(FlushD),
+        .FlushE(FlushE)
     );
+
+    // Forwarding muxes
     HazardMux #(
-    .DATA_WIDTH(DATA_WIDTH)
+        .DATA_WIDTH(DATA_WIDTH)
     ) HazardMux1 (
-    .rdE(rd1E),
-    .ResultW(ResultW),
-    .ALUResultM(ALUResultM),
-    .Forward(ForwardAE),
-    .Out(SrcAE)
+        .rdE(rd1E),
+        .ResultW(ResultW),
+        .ALUResultM(ALUResultM),
+        .Forward(ForwardAE),
+        .Out(SrcAE)
     );
 
     HazardMux #(
-    .DATA_WIDTH(DATA_WIDTH)
+        .DATA_WIDTH(DATA_WIDTH)
     ) HazardMux2 (
-    .rdE(rd2E),
-    .ResultW(ResultW),
-    .ALUResultM(ALUResultM),
-    .Forward(ForwardBE),
-    .Out(WriteDataE)
+        .rdE(rd2E),
+        .ResultW(ResultW),
+        .ALUResultM(ALUResultM),
+        .Forward(ForwardBE),
+        .Out(WriteDataE)
     );
 
-
+    // PC control
     pcMux #(
-    .ADDR_WIDTH(ADDR_WIDTH)
+        .ADDR_WIDTH(ADDR_WIDTH)
     ) pcMux (
-    .branchPC(PCTargetE),
-    .PCPlus4F(PCPlus4F),
-    .PCsrc(pcSrc),
-    .nextPC(nextPC)
+        .branchPC(PCTargetE),
+        .PCPlus4F(PCPlus4F),
+        .PCsrc(pcSrc),
+        .nextPC(nextPC)
     );
 
-    PCMuxSelect #(
-    ) PCMuxSelect (
-    .zero(zero),
-    .JumpE(JumpE),
-    .BranchE(BranchE),
-    .pcSrcE(pcSrc)
+    PCMuxSelect PCMuxSelect (
+        .zero(zero),
+        .JumpE(JumpE),
+        .BranchE(BranchE),
+        .pcSrcE(pcSrc)
     );
 
-    // Fetch Stage
+    // Fetch stage
     pcReg #(
         .ADDR_WIDTH(ADDR_WIDTH),
         .OFFSET(OFFSET)
@@ -151,7 +150,7 @@ HazardUnit #(
     ) PRegFetch (
         .stall(stall),
         .instr(instr),
-        .Flush(),
+        .Flush(FlushD),
         .rst(rst),
         .PCf(pc),
         .PCPlus4F(PCPlus4F),
@@ -161,7 +160,7 @@ HazardUnit #(
         .InstrD(instrD)
     );
 
-    // Decode Stage
+    // Decode stage
     controlUnit controlUnit (
         .op(instrD[6:0]),
         .funct3(instrD[14:12]),
@@ -188,7 +187,7 @@ HazardUnit #(
         .immExt(ImmExtD)
     );
 
-regfile #(
+    regfile #(
         .DATA_WIDTH(DATA_WIDTH),
         .REG_DATA_WIDTH(REG_DATA_WIDTH)
     ) regfile (
@@ -200,18 +199,9 @@ regfile #(
         .ResultW(ResultW),
         .ALUop1(rd1),
         .regOp2(rd2),
-        .a0(a0),
-        .a1(a1),
-        .a2(a2),
-        .a3(a3),
-        .a4(a4),
-        .a5(a5),
-        .a6(a6),
-        .t1(t1),
-        .s1(s1),
-        .t0(t0),           // Add these missing connections
-        .s0(s0)
+        .a0(a0)
     );
+
     PRegDecode #(
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegDecode (
@@ -219,7 +209,7 @@ regfile #(
         .Rs2D(instrD[24:20]),
         .Rs1E(Rs1E),
         .Rs2E(Rs2E),
-        .Flush(Flush),
+        .Flush(FlushE),
         .sizeSrcD(sizeSrcD),
         .sizeSrcE(sizeSrcE),
         .rd1(rd1),
@@ -254,6 +244,7 @@ regfile #(
         .JalrE(JalrE)
     );
 
+    // Execute stage
     aluMux #(
         .DATA_WIDTH(DATA_WIDTH)
     ) aluMux (
@@ -282,21 +273,21 @@ regfile #(
     );
 
     JalrMux #(
-    .ADDR_WIDTH(ADDR_WIDTH)
+        .ADDR_WIDTH(ADDR_WIDTH)
     ) JalrMux1 (
-    .Rd1E(rd1E),
-    .PcE(PCe),
-    .JalrE(JalrE),
-    .PCEn(PCEn)
+        .Rd1E(rd1E),
+        .PcE(PCe),
+        .JalrE(JalrE),
+        .PCEn(PCEn)
     );
 
     extendPC #(   
-    .DATA_WIDTH(DATA_WIDTH),
-    .ADDR_WIDTH(ADDR_WIDTH)
+        .DATA_WIDTH(DATA_WIDTH),
+        .ADDR_WIDTH(ADDR_WIDTH)
     ) extendPC (
-    .PCEn(PCEn),
-    .immOp(ImmExtE),
-    .PCTargetE(PCTargetE)
+        .PCEn(PCEn),
+        .immOp(ImmExtE),
+        .PCTargetE(PCTargetE)
     );
 
     PRegExecute #(
@@ -322,6 +313,7 @@ regfile #(
         .MemWriteM(MemWriteM)
     );
 
+    // Memory stage
     PRegMemory #(
         .DATA_WIDTH(DATA_WIDTH)
     ) PRegMemory (
@@ -331,7 +323,6 @@ regfile #(
         .PCPlus4M(PCPlus4M),
         .clk(clk),
         .rst(rst),
-        .mem_stall(mem_stall),    // Add this connection
         .RdW(RdW),
         .ALUResultW(ALUResultW),
         .ReadDataW(ReadDataW),
@@ -341,41 +332,24 @@ regfile #(
         .RegWriteW(RegWriteW),
         .ResultSrcW(ResultSrcW)
     );
-/*
-    DataMemory #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(MEM_ADDR_WIDTH)
-    ) DataMemory (
-        .clk(clk),
-        .SizeCtr(sizeSrcM),
-        .ALUResult(ALUResultM[MEM_ADDR_WIDTH-1:0]),
-        .WriteData(WriteDataM),
-        .MemWrite(MemWriteM),
-        .ReadData(ReadData)
-    );
-*/
-logic mem_ready;
-    logic mem_stall;
-    assign mem_stall = !mem_ready && (ResultSrcM == 2'b01 || MemWriteM); // Stall on memory operations when not ready
 
-    // Add new Memory Controller instantiation
     MemoryController #(
         .DATA_WIDTH(DATA_WIDTH),
         .ADDR_WIDTH(MEM_ADDR_WIDTH)
-    ) memory_controller (
+    ) MemoryController (
         .clk(clk),
-        .rst_n(!rst),  // Convert active-high to active-low reset
+        .rst_n(!rst),
         .MemWrite(MemWriteM),
         .SizeCtr(sizeSrcM),
         .addr(ALUResultM[MEM_ADDR_WIDTH-1:0]),
         .WriteData(WriteDataM),
         .ReadData(ReadData),
-        .MemReady(mem_ready),
-        .regs0(regs0),
-        .s0(s0)
-
+        .MemReady(MemReady),
+        .regs0(),
+        .s0()
     );
 
+    // Writeback stage
     resultMux #(
         .DATA_WIDTH(DATA_WIDTH)
     ) resultMux (
