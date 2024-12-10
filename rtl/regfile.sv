@@ -22,9 +22,7 @@ module regfile #(
     output  logic [DATA_WIDTH-1:0]      a6,
     output  logic [DATA_WIDTH-1:0]      s1,
     output  logic [DATA_WIDTH-1:0]      t1,
-    output  logic [DATA_WIDTH-1:0]      t0,
-    output  logic [DATA_WIDTH-1:0]      rega5,
-    output  logic [DATA_WIDTH-1:0]      rega6
+    output  logic [DATA_WIDTH-1:0]      t0
 );
 
 //     always_ff @ (posedge clk)
@@ -56,8 +54,8 @@ module regfile #(
 
     
     assign s1 =    rom_array[9];
-    assign rega5 = rom_array[a5];
-    assign rega6 = rom_array[a6];
+
+
 
     always_comb begin
         ALUop1 = rom_array[rs1]; // Read first operand

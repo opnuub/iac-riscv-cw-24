@@ -19,51 +19,60 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     output  logic [DATA_WIDTH-1:0]  s1,
     output  logic [DATA_WIDTH-1:0]  t1,
     output  logic [DATA_WIDTH-1:0]  t0,
-    output  logic [DATA_WIDTH-1:0]  rega5,
-    output  logic [DATA_WIDTH-1:0]  rega6
+    // output  logic [DATA_WIDTH-1:0]  rega5,
+    // output  logic [DATA_WIDTH-1:0]  rega6,
+
+output logic [DATA_WIDTH-1:0] PCPlus4F, instr, pc, PCTargetE, nextPC, PCd, PCPlus4D, rd1, rd2, ImmExtD, instrD, PCe, PCEn, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult, ALUResultM, WriteDataM, ReadData, PCPlus4M, ALUResultW, ReadDataW, PCPlus4W, ResultW, SrcAE, WriteDataE,
+output logic [4:0] RdE, RdM, RdW, Rs1E, Rs2E,
+output logic RegWriteD, MemWriteD, JumpD, BranchD, ALUSrcD, RegWriteE, MemWriteE, JumpE, BranchE, ALUSrcE, RegWriteM, MemWriteM, RegWriteW, FlushD, FlushE, stall, memoryRead, jalrSrc, pcSrc, zero, JalrE,
+output logic [2:0] sizeSrcD, sizeSrcE, sizeSrcM,
+output logic [1:0] ResultSrcD, immSrcD, ResultSrcE, ResultSrcM, ResultSrcW, ForwardAE, ForwardBE,
+output logic [3:0] ALUControlD, ALUControlE
+
 
 );
 
     // Declare all internal signals
     // Fetch Stage
-    logic [DATA_WIDTH-1:0] PCPlus4F, instr, pc, PCTargetE, nextPC;
 
-    // Decode Stage
-    logic [DATA_WIDTH-1:0] PCd, PCPlus4D, rd1, rd2, ImmExtD, instrD;
-    logic RegWriteD, MemWriteD, JumpD, BranchD, ALUSrcD;
-    logic [2:0] sizeSrcD;
-    logic [1:0] ResultSrcD, immSrcD;
-    logic [3:0] ALUControlD;
+    // logic [DATA_WIDTH-1:0] PCPlus4F, instr, pc, PCTargetE, nextPC;
 
-    // Execute Stage
-    logic [DATA_WIDTH-1:0] PCe, PCEn, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult;
-    logic [4:0] RdE;
-    logic RegWriteE, MemWriteE, JumpE, BranchE, ALUSrcE;
-    logic [2:0] sizeSrcE;
-    logic [1:0] ResultSrcE;
-    logic [3:0] ALUControlE;
+    // // Decode Stage
+    // logic [DATA_WIDTH-1:0] PCd, PCPlus4D, rd1, rd2, ImmExtD, instrD;
+    // logic RegWriteD, MemWriteD, JumpD, BranchD, ALUSrcD;
+    // logic [2:0] sizeSrcD;
+    // logic [1:0] ResultSrcD, immSrcD;
+    // logic [3:0] ALUControlD;
 
-    // Memory Stage
-    logic [DATA_WIDTH-1:0] ALUResultM, WriteDataM, ReadData, PCPlus4M;
-    logic [4:0] RdM;
-    logic RegWriteM, MemWriteM;
-    logic [2:0] sizeSrcM;
-    logic [1:0] ResultSrcM;
+    // // Execute Stage
+    // logic [DATA_WIDTH-1:0] PCe, PCEn, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult;
+    // logic [4:0] RdE;
+    // logic RegWriteE, MemWriteE, JumpE, BranchE, ALUSrcE;
+    // logic [2:0] sizeSrcE;
+    // logic [1:0] ResultSrcE;
+    // logic [3:0] ALUControlE;
 
-    // Write-Back Stage
-    logic [DATA_WIDTH-1:0] ALUResultW, ReadDataW, PCPlus4W, ResultW;
-    logic [4:0] RdW;
-    logic RegWriteW;
-    logic [1:0] ResultSrcW;
+    // // Memory Stage
+    // logic [DATA_WIDTH-1:0] ALUResultM, WriteDataM, ReadData, PCPlus4M;
+    // logic [4:0] RdM;
+    // logic RegWriteM, MemWriteM;
+    // logic [2:0] sizeSrcM;
+    // logic [1:0] ResultSrcM;
 
-    //Hazard Unit
-    logic Flush, stall, memoryRead;
-    logic [1:0] ForwardAE, ForwardBE;
-    logic [DATA_WIDTH-1:0] SrcAE, WriteDataE;
-    logic [4:0] Rs1E, Rs2E;
+    // // Write-Back Stage
+    // logic [DATA_WIDTH-1:0] ALUResultW, ReadDataW, PCPlus4W, ResultW;
+    // logic [4:0] RdW;
+    // logic RegWriteW;
+    // logic [1:0] ResultSrcW;
 
-    // Additional Signals
-    logic jalrSrc, pcSrc, zero, JalrE;
+    // //Hazard Unit
+    // logic FlushD, FlushE, stall, memoryRead;
+    // logic [1:0] ForwardAE, ForwardBE;
+    // logic [DATA_WIDTH-1:0] SrcAE, WriteDataE;
+    // logic [4:0] Rs1E, Rs2E;
+
+    // // Additional Signals
+    // logic jalrSrc, pcSrc, zero, JalrE;
 
     
 //     always_ff @(posedge clk) begin
@@ -127,19 +136,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 // end
 
 
-    always_comb begin 
-
-        if (ResultSrcE == 1)begin 
-
-            memoryRead = 1;
-
-        end else begin 
-
-            memoryRead = 0;
-
-        end
-
-
+    always_comb begin
+    memoryRead = (ResultSrcE == 1); // Set memoryRead if ResultSrcE indicates a memory operation.
     end
 
     HazardUnit #(
@@ -159,7 +157,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     .ForwardAE(ForwardAE),
     .ForwardBE(ForwardBE),  
     .stall(stall),          
-    .Flush(Flush)
+    .FlushD(FlushD),
+    .FlushE(FlushE)
     );
 
     HazardMux #(
@@ -172,7 +171,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     .Out(SrcAE)
     );
 
-    HazardMux #(
+    HazardMux2 #(
     .DATA_WIDTH(DATA_WIDTH)
     ) HazardMux2 (
     .rdE(rd2E),
@@ -181,7 +180,6 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     .Forward(ForwardBE),
     .Out(WriteDataE)
     );
-
 
     pcMux #(
     .ADDR_WIDTH(ADDR_WIDTH)
@@ -226,7 +224,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     ) PRegFetch (
         .stall(stall),
         .instr(instr),
-        .Flush(Flush),
+        .Flush(FlushD),
         .rst(rst),
         .PCf(pc),
         .PCPlus4F(PCPlus4F),
@@ -284,8 +282,8 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .a5(a5),
         .a6(a6),
         .t1(t1),
-        .s1(s1)
-
+        .s1(s1),
+        .t0(t0)
     );
 
     PRegDecode #(
@@ -295,7 +293,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .Rs2D(instrD[24:20]),
         .Rs1E(Rs1E),
         .Rs2E(Rs2E),
-        .Flush(Flush),
+        .Flush(FlushE),
         .sizeSrcD(sizeSrcD),
         .sizeSrcE(sizeSrcE),
         .rd1(rd1),
@@ -382,7 +380,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .sizeSrcM(sizeSrcM),
         .rst(rst),
         .ALUout(aluResult),
-        .WriteData(rd2E),
+        .WriteData(WriteDataE),
         .PCPlus4E(PCPlus4E),
         .clk(clk),
         .RdE(RdE),
@@ -426,7 +424,11 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .ALUResult(ALUResultM[MEM_ADDR_WIDTH-1:0]),
         .WriteData(WriteDataM),
         .MemWrite(MemWriteM),
-        .ReadData(ReadData)
+        .ReadData(ReadData),
+        // .rega5(rega5),
+        // .rega6(rega6),
+        .a5(a5),
+        .a6(a6)
     );
 
     resultMux #(
