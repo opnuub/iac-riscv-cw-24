@@ -1,0 +1,8 @@
+**/obj_dir/
+**/test_out/
+/.vscode/
+*.log
+*.tmp
+node_modules/
+.DS_Store
+./tb/tb
