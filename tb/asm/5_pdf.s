@@ -37,7 +37,7 @@ _loop2:                         # repeat
     RET
 
 display:    # function send PDF array value to a0 for display
-    LI      s1, 0               # s1 = counter to sum pdf values (not in original)
+    LI      s1, 0               # s1 = counter to sum pdf values (not in original) change back to 0 !!!!!!!!!!!!!!!!
     LI      a1, 0               # a1 = offset into pdf array
     LI      a2, 255             # a2 = max index of pdf array
 _loop3:                         # repeat
