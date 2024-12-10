@@ -40,7 +40,7 @@
 TEST_F(CpuTestbench, TestPdf)
 {
     setupTest("5_pdf");
-    setData("/home/fg723/Documents/iac/lab0-devtools/autumn/workspace/iac-riscv-cw-24/tb/reference/gaussian.mem");
+    setData("../reference/gaussian.mem");
     initSimulation();
     runSimulation(CYCLES * 100);
     EXPECT_EQ(top_->a0, 15363);

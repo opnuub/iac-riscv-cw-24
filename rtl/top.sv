@@ -18,7 +18,9 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     output  logic [DATA_WIDTH-1:0]  a6,
     output  logic [DATA_WIDTH-1:0]  s1,
     output  logic [DATA_WIDTH-1:0]  t1,
-    output  logic [DATA_WIDTH-1:0]  t0
+    output  logic [DATA_WIDTH-1:0]  t0,
+    output  logic [DATA_WIDTH-1:0]  rega5,
+    output  logic [DATA_WIDTH-1:0]  rega6
 
 );
 
