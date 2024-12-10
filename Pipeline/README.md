@@ -1,5 +1,125 @@
 # Pipeline CPU 
 
+# Pipelined CPU Implementation
+
+### Author
+This pipelined CPU was designed and implemented by **Flavio Gazzetta**, leveraging the single-cycle version as a foundation and enhancing it with a modular, multi-stage pipeline structure. My work involved designing, coding, and debugging each component of the pipeline, integrating them into the final CPU, and ensuring they interact seamlessly to achieve efficient and accurate instruction execution.
+
+---
+
+## Overview of the Pipelined CPU
+
+A pipelined CPU is an advanced design that allows for overlapping instruction execution across multiple stages, significantly improving performance by increasing instruction throughput. The pipeline divides instruction execution into discrete stages, with each stage performing a specific task. 
+
+This CPU implements a **5-stage pipeline** with the following stages:
+1. **Fetch Stage (IF):** Fetches the instruction from memory.
+2. **Decode Stage (ID):** Decodes the instruction and reads necessary registers.
+3. **Execute Stage (EX):** Performs arithmetic or logical operations using the ALU.
+4. **Memory Stage (MEM):** Accesses memory for load or store instructions.
+5. **Writeback Stage (WB):** Writes the result back to the register file.
+
+Each stage operates simultaneously on different instructions, separated by **pipeline registers** to maintain data and control signal flow.
+
+---
+
+## Key Components and Pipeline Stages
+
+The CPU’s operation is governed by components described below, as implemented in the `top` file.
+
+### **1. Fetch Stage**
+**Components:**
+- `pcReg`: Manages the program counter (PC) and computes `PC + 4` for sequential instruction flow.
+- `instrMemory`: Fetches the instruction at the address specified by the PC.
+- `pcMux`: Selects the next PC value based on branch or jump decisions.
+
+**Operation:**
+- The PC is updated either to the next sequential instruction (`PC + 4`) or to a branch/jump target, determined by the `pcMux`.
+- The fetched instruction is passed to the Decode stage through the `PRegFetch` pipeline register.
+
+---
+
+### **2. Decode Stage**
+**Components:**
+- `controlUnit`: Decodes the instruction opcode and generates control signals (e.g., `aluControl`, `Branch`, `resultSrc`).
+- `extend`: Generates the immediate value for ALU or memory operations.
+- `regfile`: Reads the source register values (`rd1`, `rd2`) based on the instruction.
+- `PRegFetch`: Passes the fetched instruction and PC values to the Decode stage.
+
+**Operation:**
+- The instruction is decoded, and control signals are generated.
+- Register values and an immediate value are prepared for the Execute stage.
+- Control signals, register data, and immediate values are passed to the Execute stage through the `PRegDecode` pipeline register.
+
+---
+
+### **3. Execute Stage**
+**Components:**
+- `alu`: Performs arithmetic and logical operations based on the `aluControl` signal.
+- `branchUnit`: Evaluates branch conditions using the `zero` signal for instructions like `beq` and `blt`.
+- `aluMux`: Selects between register data and the immediate value as the second ALU operand.
+- `HazardMux`: Resolves data hazards by forwarding results from later stages back to the ALU inputs.
+- `PCMuxSelect`: Determines whether the next PC should come from the branch target or sequential logic.
+
+**Operation:**
+- The ALU computes the result of the instruction.
+- Branch decisions are evaluated using the `branchUnit` and `zero` signal.
+- The result, along with control signals, is passed to the Memory stage through the `PRegExecute` pipeline register.
+
+---
+
+### **4. Memory Stage**
+**Components:**
+- `DataMemory`: Accesses memory for load or store instructions.
+- `PRegExecute`: Passes the ALU result and write data from the Execute stage.
+
+**Operation:**
+- For load instructions, data is read from memory into the pipeline.
+- For store instructions, data is written to memory.
+- Results are passed to the Writeback stage through the `PRegMemory` pipeline register.
+
+---
+
+### **5. Writeback Stage**
+**Components:**
+- `resultMux`: Selects the final result source (e.g., ALU result, memory data, or `PC + 4`) based on `resultSrc`.
+- `regfile`: Writes the result back to the destination register.
+
+**Operation:**
+- The final result is written to the destination register specified in the instruction.
+- The pipeline completes the instruction execution, freeing resources for subsequent instructions.
+
+---
+
+## Data and Control Hazards
+To ensure correct operation, the CPU resolves hazards (data dependencies and control conflicts) using:
+1. **Hazard Unit:**
+   - Detects data hazards and generates forwarding or stall signals.
+   - Ensures the pipeline executes correctly by controlling forwarding paths and flushes.
+2. **Hazard Muxes:**
+   - Forward data from the Memory or Writeback stage to the ALU inputs, avoiding stalls.
+3. **Branch Unit:**
+   - Evaluates branch conditions and determines whether to flush instructions in the pipeline.
+
+---
+
+## Integration of Components in the `top` File
+
+The `top` file integrates all components into a cohesive pipelined CPU. Key highlights include:
+- **Pipeline Registers:** (`PRegFetch`, `PRegDecode`, `PRegExecute`, `PRegMemory`) maintain data and control signal flow between stages.
+- **Control Logic:** The `controlUnit` generates and propagates signals for all stages, ensuring synchronized operation.
+- **Hazard Management:** The `Hazard Unit` and `Hazard Muxes` resolve data dependencies and control hazards.
+- **Branch and Jump Handling:** The `branchUnit` and `PCMuxSelect` coordinate precise branching and jumping decisions.
+
+---
+
+## How the Pipelined CPU Executes Instructions
+1. The **Fetch stage** retrieves the next instruction and updates the PC.
+2. The **Decode stage** decodes the instruction, prepares control signals, and fetches register values.
+3. The **Execute stage** computes the result using the ALU, evaluates branch conditions, and prepares memory addresses.
+4. The **Memory stage** performs load/store operations or forwards data to the Writeback stage.
+5. The **Writeback stage** completes the instruction by writing the result back to the destination register.
+
+
 ## Pipeline Registers
 
 ### Overview
