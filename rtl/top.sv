@@ -171,7 +171,7 @@ output logic [3:0] ALUControlD, ALUControlE
     .Out(SrcAE)
     );
 
-    HazardMux2 #(
+    HazardMux #(
     .DATA_WIDTH(DATA_WIDTH)
     ) HazardMux2 (
     .rdE(rd2E),
