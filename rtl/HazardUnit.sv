@@ -27,11 +27,6 @@ module HazardUnit #(
         ForwardAE = 2'b00;
         ForwardBE = 2'b00;
 
-        // ==========================================================
-        //                     Forwarding Logic
-        // ==========================================================
-
-        // Forwarding for Source A in Execute stage
         if (RegWriteM && (destReg_m != 0) && (destReg_m == Rs1E)) begin
             ForwardAE = 2'b10;  // Forward from ALU result in Memory stage
         end 
@@ -53,12 +48,6 @@ module HazardUnit #(
             ForwardBE = 2'b00;  // No forwarding
         end
 
-        // ==========================================================
-        //                       Stalling Logic
-        // ==========================================================
-        // Stall the pipeline when:
-        // - Memory read in Execute stage (load instruction)
-        // - Destination register in Execute matches source registers in Decode
         if (memoryRead_e && ((RdE == Rs1D) || (RdE == Rs2D))) begin
             stall = 1'b1;
         end 
@@ -66,13 +55,6 @@ module HazardUnit #(
             stall = 1'b0;
         end
 
-        // ==========================================================
-        //                       Flushing Logic
-        // ==========================================================
-        // Flush Decode and Execute stages for hazards:
-        // - Branch taken (zero hazard)
-        // - Jump instruction hazard
-        // - Stall due to data hazards
         if (zero_hazard || jump_hazard) begin
             FlushD = 1'b1;
             FlushE = 1'b1;

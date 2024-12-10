@@ -7,17 +7,10 @@ module DataMemory #(
     input  logic [ADDR_WIDTH-1:0]  ALUResult,
     input  logic [DATA_WIDTH-1:0]  WriteData,
     input  logic                   MemWrite,
-    output logic [DATA_WIDTH-1:0]  ReadData,
-    // output logic [DATA_WIDTH-1:0]  rega5,
-    // output logic [DATA_WIDTH-1:0]  rega6,
-    input  logic [DATA_WIDTH-1:0]  a5,
-    output logic [DATA_WIDTH-1:0]  a6
+    output logic [DATA_WIDTH-1:0]  ReadData
 );
 
     logic [7:0] memory [2**ADDR_WIDTH-1:0];
-
-    // assign rega5 = memory[a5];
-    // assign rega6 = memory[a6];
 
     initial begin
         $display("Attempting to load 'data.hex'...");

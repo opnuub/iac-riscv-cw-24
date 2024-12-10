@@ -39,9 +39,6 @@ module PRegDecode #(
     input   logic                   jalrSrc,
     output  logic                   JalrE
 );
-    // always_ff @ (posedge clk)begin
-    // $display("hello -> rd1: %d, rd2: %d, rd1E: %d, rd2E: %d", rd1, rd2, rd1E, rd2E);
-    // end
 
     // Sequential logic with reset and flush
     always_ff @(posedge clk or posedge rst) begin

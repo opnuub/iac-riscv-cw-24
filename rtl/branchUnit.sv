@@ -9,7 +9,6 @@ module branchUnit #(
 
     always_comb begin
 
-        // $display("srcA: %d, srcB %d", srcA, srcB);
         
         case (aluControl)
             4'b1000: zero = ((srcA - srcB) === 32'b0); // beq
