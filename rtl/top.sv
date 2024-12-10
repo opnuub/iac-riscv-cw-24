@@ -9,7 +9,19 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     input   logic                   clk,
     input   logic                   rst,
     //input   logic                 trigger,
-    output  logic [DATA_WIDTH-1:0]  a0
+    output  logic [DATA_WIDTH-1:0]  a0,
+    output  logic [DATA_WIDTH-1:0]  a1,
+    output  logic [DATA_WIDTH-1:0]  a2,
+    output  logic [DATA_WIDTH-1:0]  a3,
+    output  logic [DATA_WIDTH-1:0]  a4,
+    output  logic [DATA_WIDTH-1:0]  a5,
+    output  logic [DATA_WIDTH-1:0]  a6,
+    output  logic [DATA_WIDTH-1:0]  s1,
+    output  logic [DATA_WIDTH-1:0]  t1,
+    output  logic [DATA_WIDTH-1:0]  t0,
+    output  logic [DATA_WIDTH-1:0]  rega5,
+    output  logic [DATA_WIDTH-1:0]  rega6
+
 );
 
     // Declare all internal signals
@@ -24,7 +36,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic [3:0] ALUControlD;
 
     // Execute Stage
-    logic [DATA_WIDTH-1:0] PCe, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult;
+    logic [DATA_WIDTH-1:0] PCe, PCEn, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult;
     logic [4:0] RdE;
     logic RegWriteE, MemWriteE, JumpE, BranchE, ALUSrcE;
     logic [2:0] sizeSrcE;
@@ -51,7 +63,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
     logic [4:0] Rs1E, Rs2E;
 
     // Additional Signals
-    logic jalrSrc, pcSrc, zero;
+    logic jalrSrc, pcSrc, zero, JalrE;
 
     
 //     always_ff @(posedge clk) begin
@@ -92,6 +104,26 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 //     $display("Forwarding: ForwardAE: %b, ForwardBE: %b", ForwardAE, ForwardBE); // Forwarding signals
 
 //     $display("************************************");
+// end
+
+// always_ff @ (posedge clk)begin
+// $display("sizeSrcD: %d, sizeSrcE: %d, sizeSrcM: %d", sizeSrcD, sizeSrcE, sizeSrcM);
+// end
+
+// always_ff @(posedge clk) begin
+//     if (MemWriteM) begin
+//         $display("[WRITE] At clk=%0d, ALUResultM: %h, WriteDataM: %h, SizeCtr (sizeSrcM): %b", $time, ALUResultM, WriteDataM, sizeSrcM);
+//     end
+//     $display("a0: %h", a0);
+// end
+
+
+// always_comb begin
+//     $display("ALUResultM: %h, ReadData: %h, ReadDataW: %h, ResultSrcW %b, ResultW %d", ALUResultM, ReadData, ReadDataW, ResultSrcW, ResultW);
+//     $display("RdW: %d", RdW);
+//     $display("Fetch Stage:");
+//     $display("Current PC: %h, Fetched Instruction: %h", pc, instr);
+//     $display("Next PC: %h, PC+4: %h", nextPC, PCPlus4F);
 // end
 
 
@@ -243,7 +275,17 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .ResultW(ResultW),
         .ALUop1(rd1),
         .regOp2(rd2),
-        .a0(a0)
+        .a0(a0),
+        //for Testing:
+        .a1(a1),
+        .a2(a2),
+        .a3(a3),
+        .a4(a4),
+        .a5(a5),
+        .a6(a6),
+        .t1(t1),
+        .s1(s1)
+
     );
 
     PRegDecode #(
@@ -283,7 +325,9 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .JumpE(JumpE),
         .BranchE(BranchE),
         .ALUControlE(ALUControlE),
-        .ALUSrcE(ALUSrcE)
+        .ALUSrcE(ALUSrcE),
+        .jalrSrc(jalrSrc),
+        .JalrE(JalrE)
     );
 
     aluMux #(
@@ -313,14 +357,21 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .zero(zero)
     );
 
+    JalrMux #(
+    .ADDR_WIDTH(ADDR_WIDTH)
+    ) JalrMux1 (
+    .Rd1E(rd1E),
+    .PcE(PCe),
+    .JalrE(JalrE),
+    .PCEn(PCEn)
+    );
+
     extendPC #(   
     .DATA_WIDTH(DATA_WIDTH),
     .ADDR_WIDTH(ADDR_WIDTH)
     ) extendPC (
-    .pc(PCe),
+    .PCEn(PCEn),
     .immOp(ImmExtE),
-    .result(ResultW),
-    .jalrSrc(jalrSrc),
     .PCTargetE(PCTargetE)
     );
 
@@ -373,30 +424,10 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
         .clk(clk),
         .SizeCtr(sizeSrcM),
         .ALUResult(ALUResultM[MEM_ADDR_WIDTH-1:0]),
-        .WriteData(WriteDataM), //.WriteData(cache_mem_write_data),
-        .MemWrite(MemWriteM), //.MemWrite(cache_mem_write),
-        .ReadData(ReadData) //.ReadData(cache_data_out)
+        .WriteData(WriteDataM),
+        .MemWrite(MemWriteM),
+        .ReadData(ReadData)
     );
-    /*
-    L1Cache #(
-    .DATA_WIDTH(DATA_WIDTH),
-    .SET_WIDTH(5)
-    ) cache (
-        .clk(clk),
-        .rst_n(~rst),
-        .load(ResultSrcM == 2'b01), // Load signal from CPU
-        .store(MemWriteM),         // Store signal from CPU
-        .address(ALUResultM),      // Address for memory operation
-        .data_in(WriteDataM),      // Data to write
-        .mem_data(cache_data_out), // Data from DataMemory
-        .mem_ready(1'b1),          // Placeholder for memory ready
-        .hit(cache_hit),           // Hit signal
-        .miss(cache_miss),         // Miss signal
-        .mem_write(cache_mem_write), // Write enable to DataMemory
-        .mem_read(cache_mem_read),   // Read enable to DataMemory
-        .busy(cache_busy),           // Busy signal
-        .data_out(ReadData)          // Data from cache to CPU
-    );*/
 
     resultMux #(
         .DATA_WIDTH(DATA_WIDTH)
