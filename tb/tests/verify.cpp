@@ -3,7 +3,7 @@
 
 #include "cpu_testbench.h"
 
-#define CYCLES 1000
+#define CYCLES 1000000
 
 TEST_F(CpuTestbench, TestAddiBne)
 {
@@ -38,14 +38,14 @@ TEST_F(CpuTestbench, TestJalRet)
     EXPECT_EQ(top_->a0, 53);
 }
 
-// TEST_F(CpuTestbench, TestPdf)
-// {
-//     setupTest("5_pdf");
-//     setData("/../reference/gaussian.mem");
-//     initSimulation();
-//     runSimulation(CYCLES * 100);
-//     EXPECT_EQ(top_->a0, 15363);
-// } 
+TEST_F(CpuTestbench, TestPdf)
+{
+    setupTest("5_pdf");
+    setData("/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/tb/reference/gaussian.mem");
+    initSimulation();
+    runSimulation(CYCLES * 100);
+    EXPECT_EQ(top_->a0, 15363);
+} 
 
 
 int main(int argc, char **argv)

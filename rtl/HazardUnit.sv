@@ -47,14 +47,14 @@ always_comb begin
     end
 
     // Load-use hazard detection
-    load_use_hazard = memoryRead_e && 
+    assign load_use_hazard = memoryRead_e && 
                       ((RdE == Rs1D && Rs1D != 5'b0) || (RdE == Rs2D && Rs2D != 5'b0));
     
     // Control hazard detection
-    control_hazard = zero_hazard || jump_hazard;
+    assign control_hazard = zero_hazard || jump_hazard;
 
     // Stall and flush logic
-    if (load_use_hazard || mem_stall) begin
+    if (load_use_hazard) begin // memstall might required!!!
         stall = 1'b1;   // Pipeline stall due to load-use or memory stall
         FlushE = 1'b1;  // Flush Execute stage to avoid incorrect execution
         FlushD = 1'b0;  // Decode stage is retained to prevent instruction loss
@@ -62,6 +62,14 @@ always_comb begin
         stall = 1'b0;   // No stall for control hazards
         FlushD = 1'b1;  // Flush Decode stage
         FlushE = 1'b1;  // Flush Execute stage
+    end else if (mem_stall) begin
+        stall = 1'b1;   // Pipeline stall due to memory stall
+        FlushE = 1'b1;  // Flush Execute stage to avoid incorrect execution
+        FlushD = 1'b0;  // Decode stage is retained to prevent instruction loss
+    end else begin
+        stall = 1'b0;  
+        FlushD = 1'b0;
+        FlushE = 1'b0;
     end
 end
 endmodule
