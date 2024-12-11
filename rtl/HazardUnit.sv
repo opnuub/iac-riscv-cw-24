@@ -10,9 +10,9 @@ module HazardUnit #(
     input logic            memoryRead_e,     // Memory read enable in Execute stage
     input logic            RegWriteM,        // Register write enable in Memory stage
     input logic            RegWriteW,        // Register write enable in Writeback stage
-    input logic            zero_hazard,      // Branch condition for zero hazard
-    input logic            jump_hazard,      // Hazard due to jump instructions
-    input logic            mem_stall,        // New: Memory stall signal from cache
+    input logic            zero_hazard,      // Branch taken signal
+    input logic            jump_hazard,      // Jump instruction in Execute stage
+    input logic            mem_stall,        // Memory/Cache stall signal
     output logic [1:0]     ForwardAE,       // Forwarding control for Source A
     output logic [1:0]     ForwardBE,       // Forwarding control for Source B
     output logic           stall,           // Pipeline stall signal
@@ -20,51 +20,48 @@ module HazardUnit #(
     output logic           FlushE           // Flush Execute stage
 );
 
-    // Reset hazard outputs
-    always_comb begin
-        // Data hazard forwarding logic
-        if (RegWriteM && (destReg_m != 0) && (destReg_m == Rs1E)) begin
-            ForwardAE = 2'b10;  // Forward from Memory stage
-        end 
-        else if (RegWriteW && (destReg_w != 0) && (destReg_w == Rs1E)) begin
-            ForwardAE = 2'b01;  // Forward from Writeback stage
-        end 
-        else begin
-            ForwardAE = 2'b00;  // No forwarding
-        end
+    // Default assignments
+    logic load_use_hazard;
+    logic control_hazard;
+    
+always_comb begin
+    // Initialize outputs
+    ForwardAE = 2'b00;
+    ForwardBE = 2'b00;
+    stall = 1'b0;
+    FlushD = 1'b0;
+    FlushE = 1'b0;
 
-        // Forwarding for Source B
-        if (RegWriteM && (destReg_m != 0) && (destReg_m == Rs2E)) begin
-            ForwardBE = 2'b10;  // Forward from Memory stage
-        end 
-        else if (RegWriteW && (destReg_w != 0) && (destReg_w == Rs2E)) begin
-            ForwardBE = 2'b01;  // Forward from Writeback stage
-        end 
-        else begin
-            ForwardBE = 2'b00;  // No forwarding
-        end
-
-        // Stall logic
-        if ((memoryRead_e && ((RdE == Rs1D) || (RdE == Rs2D))) || mem_stall) begin
-            stall = 1'b1;
-        end 
-        else begin
-            stall = 1'b0;
-        end
-
-        // Control hazard handling
-        if (zero_hazard || jump_hazard) begin
-            FlushD = 1'b1;
-            FlushE = 1'b1;
-        end
-        else if (stall) begin
-            FlushE = 1'b1;
-            FlushD = 1'b0;
-        end
-        else begin
-            FlushD = 1'b0;
-            FlushE = 1'b0;
-        end
+    // Data forwarding logic for Source A
+    if (RegWriteM && (destReg_m != 5'b0) && (destReg_m == Rs1E)) begin
+        ForwardAE = 2'b10;  // Forward from Memory stage
+    end else if (RegWriteW && (destReg_w != 5'b0) && (destReg_w == Rs1E)) begin
+        ForwardAE = 2'b01;  // Forward from Writeback stage
     end
 
+    // Data forwarding logic for Source B
+    if (RegWriteM && (destReg_m != 5'b0) && (destReg_m == Rs2E)) begin
+        ForwardBE = 2'b10;  // Forward from Memory stage
+    end else if (RegWriteW && (destReg_w != 5'b0) && (destReg_w == Rs2E)) begin
+        ForwardBE = 2'b01;  // Forward from Writeback stage
+    end
+
+    // Load-use hazard detection
+    load_use_hazard = memoryRead_e && 
+                      ((RdE == Rs1D && Rs1D != 5'b0) || (RdE == Rs2D && Rs2D != 5'b0));
+    
+    // Control hazard detection
+    control_hazard = zero_hazard || jump_hazard;
+
+    // Stall and flush logic
+    if (load_use_hazard || mem_stall) begin
+        stall = 1'b1;   // Pipeline stall due to load-use or memory stall
+        FlushE = 1'b1;  // Flush Execute stage to avoid incorrect execution
+        FlushD = 1'b0;  // Decode stage is retained to prevent instruction loss
+    end else if (control_hazard) begin
+        stall = 1'b0;   // No stall for control hazards
+        FlushD = 1'b1;  // Flush Decode stage
+        FlushE = 1'b1;  // Flush Execute stage
+    end
+end
 endmodule
