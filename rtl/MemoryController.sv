@@ -34,18 +34,6 @@ module MemoryController #(
     logic mem_access;
     assign mem_access = MemWrite || (SizeCtr != 3'b111);
 
-    // // Memory read/write debug
-    // always_ff @(posedge clk) begin
-    // if (MemWrite) begin
-    //     $display("[MEMORY] SB Memory Write: Addr=%h, Data=%h", ALUResult, WriteData);
-    // end
-    // end
-
-    // always_ff @(posedge clk) begin
-    // if (MemRead) begin
-    //     $display("[MEMORY] LBU Memory Read: Addr=%h, Data=%h", ALUResult, ReadData);
-    // end
-    // end
 
     
     L1Cache #(
@@ -138,7 +126,7 @@ module MemoryController #(
                 3'b000: begin // Byte
                     main_memory[addr]     <= WriteData[7:0];
                 end
-                default: ; // No operation for other cases
+                default: ; 
             endcase
             main_mem_ready_reg <= 1;
         end else begin

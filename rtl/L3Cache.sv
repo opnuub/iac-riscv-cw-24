@@ -36,29 +36,29 @@ module L3Cache (
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             for (int i = 0; i < CACHE_SIZE; i++) begin
-                cache[i].valid <= 0;
-                cache[i].dirty <= 0;
-                cache[i].tag <= '0;
+                cache[i].valid = 0;
+                cache[i].dirty = 0;
+                cache[i].tag = '0;
             end
-            hit <= 0;
-            readData <= '0;
+            hit = 0;
+            readData = '0;
         end else begin
             if (cache[index].valid && cache[index].tag == tag_in) begin
-                hit <= 1;
-                readData <= cache[index].data[offset];
+                hit = 1;
+                readData = cache[index].data[offset];
             end else begin
-                hit <= 0;
+                hit = 0;
                 if (writeEnable) begin
-                    cache[index].tag <= tag_in;
-                    cache[index].data[offset] <= writeData;
-                    cache[index].valid <= 1;
-                    cache[index].dirty <= 1;
+                    cache[index].tag = tag_in;
+                    cache[index].data[offset] = writeData;
+                    cache[index].valid = 1;
+                    cache[index].dirty = 1;
                 end
             end
 
             if (writeEnable) begin
-                cache[index].data[offset] <= writeData;
-                cache[index].dirty <= 1;
+                cache[index].data[offset] = writeData;
+                cache[index].dirty = 1;
             end
         end
     end
