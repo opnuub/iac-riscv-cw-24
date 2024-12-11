@@ -55,17 +55,17 @@ always_comb begin
 
     // Stall and flush logic
     if (load_use_hazard) begin // memstall might required!!!
-        stall = 1'b1;   // Pipeline stall due to load-use or memory stall
-        FlushE = 1'b1;  // Flush Execute stage to avoid incorrect execution
-        FlushD = 1'b0;  // Decode stage is retained to prevent instruction loss
+        stall = 1'b1;   
+        FlushE = 1'b1;  
+        FlushD = 1'b0;  
     end else if (control_hazard) begin
-        stall = 1'b0;   // No stall for control hazards
-        FlushD = 1'b1;  // Flush Decode stage
-        FlushE = 1'b1;  // Flush Execute stage
+        stall = 1'b0;   
+        FlushD = 1'b1;  
+        FlushE = 1'b1;  
     end else if (mem_stall) begin
-        stall = 1'b1;   // Pipeline stall due to memory stall
-        FlushE = 1'b1;  // Flush Execute stage to avoid incorrect execution
-        FlushD = 1'b0;  // Decode stage is retained to prevent instruction loss
+        stall = 1'b1;   
+        FlushE = 1'b1;   
+        FlushD = 1'b0; 
     end else begin
         stall = 1'b0;  
         FlushD = 1'b0;
