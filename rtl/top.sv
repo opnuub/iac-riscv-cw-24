@@ -12,14 +12,13 @@ module top #(
     output  logic [DATA_WIDTH-1:0]  a0
 );
 
-    // 原有的信号声明 [保持不变]
     logic [DATA_WIDTH-1:0] PCPlus4F, instr, pc, PCTargetE, nextPC;
     logic [DATA_WIDTH-1:0] PCd, PCPlus4D, rd1, rd2, ImmExtD, instrD;
     logic [DATA_WIDTH-1:0] PCe, PCEn, PCPlus4E, ImmExtE, rd1E, rd2E, srcB, aluResult;
     logic [DATA_WIDTH-1:0] ALUResultM, WriteDataM, ReadData, PCPlus4M;
     logic [DATA_WIDTH-1:0] ALUResultW, ReadDataW, PCPlus4W, ResultW;
     
-    // 控制信号 [保持不变]
+
     logic RegWriteD, MemWriteD, JumpD, BranchD, ALUSrcD;
     logic RegWriteE, MemWriteE, JumpE, BranchE, ALUSrcE;
     logic RegWriteM, MemWriteM;
@@ -29,18 +28,17 @@ module top #(
     logic [3:0] ALUControlD, ALUControlE;
     logic [4:0] RdE, RdM, RdW, Rs1E, Rs2E;
     
-    // Hazard相关信号 [保持不变]
+
     logic FlushD, FlushE, stall, memoryRead;
     logic [1:0] ForwardAE, ForwardBE;
     logic [DATA_WIDTH-1:0] SrcAE, WriteDataE;
     
-    // 其他控制信号 [保持不变]
+
     logic jalrSrc, pcSrc, zero, JalrE;
 
-    // 新增Memory系统相关信号
-    logic mem_data_valid;    // 内存数据有效信号
 
-    // Memory Top模块实例化 (替换原有的DataMemory)
+    logic mem_data_valid;    
+
     MemoryTop #(
         .ADDR_WIDTH(ADDR_WIDTH),
         .DATA_WIDTH(DATA_WIDTH),
@@ -56,7 +54,6 @@ module top #(
         .data_valid_o   (mem_data_valid)
     );
 
-    // memoryRead logic [保持不变]
     always_comb begin
         memoryRead = (ResultSrcE == 1);
     end
@@ -325,17 +322,17 @@ module top #(
     .ResultSrcW(ResultSrcW)
     );
 
-    DataMemory #(
-        .DATA_WIDTH(DATA_WIDTH),
-        .ADDR_WIDTH(MEM_ADDR_WIDTH)
-    ) DataMemory (
-        .clk(clk),
-        .SizeCtr(sizeSrcM),
-        .ALUResult(ALUResultM[MEM_ADDR_WIDTH-1:0]),
-        .WriteData(WriteDataM),
-        .MemWrite(MemWriteM),
-        .ReadData(ReadData)
-    );
+    // DataMemory #(
+    //     .DATA_WIDTH(DATA_WIDTH),
+    //     .ADDR_WIDTH(MEM_ADDR_WIDTH)
+    // ) DataMemory (
+    //     .clk(clk),
+    //     .SizeCtr(sizeSrcM),
+    //     .ALUResult(ALUResultM[MEM_ADDR_WIDTH-1:0]),
+    //     .WriteData(WriteDataM),
+    //     .MemWrite(MemWriteM),
+    //     .ReadData(ReadData)
+    // );
 
     resultMux #(
         .DATA_WIDTH(DATA_WIDTH)
