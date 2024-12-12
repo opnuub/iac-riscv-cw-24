@@ -23,7 +23,6 @@ module HazardUnit #(
     output logic            FlushE
 );
 
-    // Default assignments
     logic load_use_hazard;
     logic control_hazard;
     logic memory_hazard;   
@@ -36,11 +35,13 @@ module HazardUnit #(
         FlushE = 1'b0;
         
         //Data forwarding logic for Source A
-        if (RegWriteM && (destReg_m != 5'b0) && (destReg_m == Rs1E)) begin
-            ForwardAE = 2'b10;  // Forward from Memory stage
-        end else if (RegWriteW && (destReg_w != 5'b0) && (destReg_w == Rs1E)) begin
-            ForwardAE = 2'b01;  // Forward from Writeback stage
-        end
+        if (RegWriteM && (destReg_m != 5'b0) && (destReg_m == Rs1E))
+            ForwardAE = 2'b10;  
+        else if (RegWriteW && (destReg_w != 5'b0) && (destReg_w == Rs1E) && 
+                !(RegWriteM && destReg_m != 5'b0 && destReg_m == Rs1E))
+            ForwardAE = 2'b01; 
+        else 
+            ForwardAE = 2'b00;
 
         // Data forwarding logic for Source B
         if (RegWriteM && (destReg_m != 5'b0) && (destReg_m == Rs2E)) begin
@@ -50,7 +51,7 @@ module HazardUnit #(
         end
 
         // Load-use hazard detection
-        load_use_hazard = memoryRead_e && 
+        assign load_use_hazard = memoryRead_e && 
                          ((RdE == Rs1D && Rs1D != 5'b0) || (RdE == Rs2D && Rs2D != 5'b0));
         
         // Control hazard detection
@@ -60,7 +61,7 @@ module HazardUnit #(
         memory_hazard = mem_stall || l1_miss || l2_miss || cache_busy;
 
         // Combined stall and flush logic
-        if (load_use_hazard || memory_hazard) begin
+        if (load_use_hazard) begin
             stall = 1'b1;
             FlushE = 1'b1;
             FlushD = 1'b0;
@@ -68,10 +69,15 @@ module HazardUnit #(
             stall = 1'b0;
             FlushD = 1'b1;
             FlushE = 1'b1;
+        end else if (l1_miss || l2_miss || cache_busy) begin
+            stall = 1'b1;  
+            FlushD = 1'b0;
+            FlushE = 1'b0;
         end else if (mem_stall) begin
             stall = 1'b1;   
             FlushE = 1'b1;   
             FlushD = 1'b0; 
+
         end else begin
             stall = 1'b0;  
             FlushD = 1'b0;
