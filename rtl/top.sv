@@ -63,25 +63,67 @@ module top #(
     always_comb begin
         memoryRead = (ResultSrcE == 2'b01);
     end
+    MMU #(
+        .ADDR_WIDTH(ADDR_WIDTH)
+    ) mmu (
+        .clk(clk),
+        .rst_n(!rst),
+        .virtual_addr(ALUResultM),
+        .read_enable(ResultSrcE == 2'b01),
+        .write_enable(MemWriteM),
+        .physical_addr(physical_addr),
+        .access_fault(mmu_access_fault),
+        .page_fault(mmu_page_fault),
+        .busy(mmu_busy),
+        .privilege_mode(privilege_mode),
+        .mem_read(mmu_mem_read),
+        .mem_write(mmu_mem_write),
+        .mem_addr(mmu_mem_addr),
+        .mem_rdata(ReadData),
+        .mem_ready(MemReady)
+    );
+    ExceptionHandler #(
+        .ADDR_WIDTH(ADDR_WIDTH)
+    ) exception_handler (
+        .clk(clk),
+        .rst_n(!rst),
+        .exception_raised(mmu_access_fault || mmu_page_fault),
+        .exception_cause({1'b0, mmu_page_fault, mmu_access_fault}),
+        .exception_pc(pc),
+        .handler_pc(exception_handler_pc),
+        .exception_handled(exception_handled),
+        .new_privilege_mode(new_privilege_mode)
+    );
+    MemoryProtectionUnit #(
+        .ADDR_WIDTH(ADDR_WIDTH)
+    ) mpu (
+        .address(ALUResultM),
+        .privilege_mode(privilege_mode),
+        .read_access(ResultSrcE == 2'b01),
+        .write_access(MemWriteM),
+        .protection_fault(mpu_fault)
+    );
 
     // Hazard detection and forwarding
-    HazardUnit HazardUnit (
-        .Rs1E(Rs1E), 
-        .Rs2E(Rs2E),  
-        .Rs1D(instrD[19:15]), 
-        .Rs2D(instrD[24:20]),     
+    assign mem_stall = mmu_busy || !MemReady;
+
+    HazardUnit hazard_unit (
+        .Rs1E(Rs1E),
+        .Rs2E(Rs2E),
+        .Rs1D(instrD[19:15]),
+        .Rs2D(instrD[24:20]),
         .RdE(RdE),
-        .destReg_m(RdM),  
+        .destReg_m(RdM),
         .destReg_w(RdW),
         .memoryRead_e(memoryRead),
-        .RegWriteM(RegWriteM),     
-        .RegWriteW(RegWriteW),   
-        .zero_hazard(zero),   
+        .RegWriteM(RegWriteM),
+        .RegWriteW(RegWriteW),
+        .zero_hazard(zero),
         .jump_hazard(JumpE),
-        .mem_stall(!MemReady),
+        .mem_stall(mem_stall),  // Modified to include MMU stalls
         .ForwardAE(ForwardAE),
-        .ForwardBE(ForwardBE),  
-        .stall(stall),          
+        .ForwardBE(ForwardBE),
+        .stall(stall),
         .FlushD(FlushD),
         .FlushE(FlushE)
     );
@@ -336,12 +378,12 @@ module top #(
     MemoryController #(
         .DATA_WIDTH(DATA_WIDTH),
         .ADDR_WIDTH(MEM_ADDR_WIDTH)
-    ) MemoryController (
+    ) memory_controller (
         .clk(clk),
         .rst_n(!rst),
-        .MemWrite(MemWriteM),
+        .MemWrite(mmu_mem_write && !mmu_busy),
         .SizeCtr(sizeSrcM),
-        .addr(ALUResultM[MEM_ADDR_WIDTH-1:0]),
+        .addr(physical_addr[MEM_ADDR_WIDTH-1:0]),
         .WriteData(WriteDataM),
         .ReadData(ReadData),
         .MemReady(MemReady),
