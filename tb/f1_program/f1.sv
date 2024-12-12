@@ -7,27 +7,27 @@ module f1 #(
     output  logic [DATA_WIDTH-1:0]  a0
 );
 
-    logic           triggerRst;
-    logic           delayed_clk;
+    logic       delayed_clk;
+    logic [3:0] random_delay;
 
-    clkdiv clkdiv (
-        .delay (8'hF),
-        .rst (rst),
-        .clkin (clk),
-        .clkout (delayed_clk)
+    lfsr lfsr (
+        .clk (clk),
+        .data_out (random_delay)
     );
 
-    triggerFSM triggerFSM (
-        .clk (clk),
+    clktick clktick (
+        .N (32'd38),
+        .random_delay (random_delay),
+        .a0 (a0),
         .rst (rst),
-        .trigger (trigger),
-        .triggerRst (triggerRst)
+        .clk_i (clk),
+        .clk_o (delayed_clk)
     );
 
     top top (
         .clk (delayed_clk),
         .rst (rst),
-        .trigger (triggerRst),
+        .trigger (trigger),
         .a0 (a0)
     );
 

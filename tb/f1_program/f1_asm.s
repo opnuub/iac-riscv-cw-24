@@ -28,8 +28,5 @@ subroutine:
     addi 	a0, zero, 0x3f
     addi 	a0, zero, 0x7f
     addi    a0, zero, 0xff
-<<<<<<<< HEAD:tb/f1_program/f1_asm.s
+    addi    a0, zero, 0x0
     ret
-========
-    ret
->>>>>>>> pipeline:Pipeline/tb/asm/6_f1_lights.s
