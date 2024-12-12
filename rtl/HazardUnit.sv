@@ -34,6 +34,13 @@ module HazardUnit #(
         stall = 1'b0;
         FlushD = 1'b0;
         FlushE = 1'b0;
+        
+        //Data forwarding logic for Source A
+        if (RegWriteM && (destReg_m != 5'b0) && (destReg_m == Rs1E)) begin
+            ForwardAE = 2'b10;  // Forward from Memory stage
+        end else if (RegWriteW && (destReg_w != 5'b0) && (destReg_w == Rs1E)) begin
+            ForwardAE = 2'b01;  // Forward from Writeback stage
+        end
 
         // Data forwarding logic for Source B
         if (RegWriteM && (destReg_m != 5'b0) && (destReg_m == Rs2E)) begin
