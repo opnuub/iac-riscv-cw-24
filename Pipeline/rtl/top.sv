@@ -1,4 +1,4 @@
-module top #( //!!!!!!this file is still filled with errors, I am not finished yet
+module top #(
     parameter DATA_WIDTH = 32,
     parameter INSTR_WIDTH = 32,
     parameter ADDR_WIDTH = 32,
