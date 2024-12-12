@@ -43,7 +43,7 @@ int main(int argc, char **argv, char **env)
 
         // Display toggle neopixel
         vbdBar(top->a0 & 0xFF);
-        top->trigger = vbdFlag();
+        top->rst = vbdFlag();
         vbdCycle(simcyc);
 
         if (Verilated::gotFinish() || vbdGetkey() == 'q')
