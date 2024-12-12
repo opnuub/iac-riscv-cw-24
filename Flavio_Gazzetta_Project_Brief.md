@@ -135,8 +135,10 @@ end
 ```
 This ensures any incorrectly fetched instructions are removed. 
 
-In order to implement fulsh and stall I also changed the fregisters between [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv) and [Decode -> Execute](Pipeline/rtl/PRegDecode.sv), only allowing the values to pass from Fetch to Decode when ```systemverilog
-!stall```
+In order to implement fulsh and stall I also changed the fregisters between [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv) and [Decode -> Execute](Pipeline/rtl/PRegDecode.sv), only allowing the values to pass from Fetch to Decode when 
+```systemverilog
+!stall
+```
  is high and making all outputs <= 0 
 
 Initial Pipeline - No Hazard Unit:
