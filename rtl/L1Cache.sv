@@ -1,6 +1,6 @@
 module L1Cache #(
     parameter DATA_WIDTH = 32,
-    parameter SET_WIDTH = 5,
+    parameter SET_WIDTH = 9,
     parameter TAG_WIDTH = DATA_WIDTH - SET_WIDTH - 2
 ) (
     input  logic clk,
@@ -69,6 +69,7 @@ module L1Cache #(
     end
     
     always_ff @(posedge clk or negedge rst_n) begin
+        
         if(!rst_n) begin
             state <= IDLE;
             busy <= 0;
@@ -101,6 +102,8 @@ module L1Cache #(
                             cache[index][hit_way].data <= data_in;
                             cache[index][hit_way].dirty <= 1;
                             lru[index] <= !hit_way;
+                        end else if(store) begin 
+                            cache[index][way].dirty <= 1;
                         end
                     end
                 end

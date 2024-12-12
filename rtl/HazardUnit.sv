@@ -25,6 +25,7 @@ module HazardUnit #(
     logic control_hazard;
     
 always_comb begin
+    //mem_stall = cache_busy || cache_miss;
     // Initialize outputs
     ForwardAE = 2'b00;
     ForwardBE = 2'b00;

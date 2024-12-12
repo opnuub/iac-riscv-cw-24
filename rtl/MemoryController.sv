@@ -32,7 +32,7 @@ module MemoryController #(
 
     // Memory read/write control
     logic mem_access;
-    assign mem_access = MemWrite || (SizeCtr != 3'b111);
+    assign mem_access = MemWrite || (SizeCtr != 3'b111 && !MemWrite);
 
 
     

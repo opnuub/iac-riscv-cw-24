@@ -1,6 +1,6 @@
 module L2Cache #(
     parameter DATA_WIDTH = 32,
-    parameter SET_WIDTH = 6,
+    parameter SET_WIDTH = 9,
     parameter TAG_WIDTH = DATA_WIDTH - SET_WIDTH - 2
 ) (
     input  logic clk,
