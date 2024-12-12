@@ -136,7 +136,6 @@ module L2Cache #(
                         if (cache[index][way].valid && cache[index][way].dirty) begin
                             mem_write = 1;
                             state = WRITE_BACK;
-                            
                             mem_write_data = cache[index][way].data[0];
                         end else if (load) begin
                             mem_read = 1;

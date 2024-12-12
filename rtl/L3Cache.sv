@@ -78,7 +78,8 @@ module L3Cache #(
         end else begin
             case (state)
                 IDLE: begin
-                    stall <= 1'b1;
+                    stall <= 1'b0;
+                    hit<= 1'b0;
                     if (cache[index].valid && cache[index].tag == tag) begin
                         hit <= 1'b1;
                         readData <= cache[index].data[line_offset];

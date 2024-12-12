@@ -58,30 +58,49 @@ module HazardUnit #(
         control_hazard = zero_hazard || jump_hazard;
 
         // Memory hazard detection (enhanced)
-        memory_hazard = mem_stall || l1_miss || l2_miss || cache_busy;
+        memory_hazard = l1_miss || l2_miss || cache_busy;
 
+
+        
         // Combined stall and flush logic
+
+
+
         if (load_use_hazard) begin
             stall = 1'b1;
-            FlushE = 1'b1;
-            FlushD = 1'b0;
+            // FlushE = 1'b1;
+            // FlushD = 1'b0;
         end else if (control_hazard) begin
             stall = 1'b0;
             FlushD = 1'b1;
             FlushE = 1'b1;
-        end else if (l1_miss || l2_miss || cache_busy) begin
+        end else if ((l1_miss || l2_miss || cache_busy)&mem_stall) begin
             stall = 1'b1;  
             FlushD = 1'b0;
             FlushE = 1'b0;
         end else if (mem_stall) begin
             stall = 1'b1;   
-            FlushE = 1'b1;   
-            FlushD = 1'b0; 
+            FlushD = 1'b1;   
+            FlushE = 1'b1; 
+        end
 
-        end else begin
-            stall = 1'b0;  
-            FlushD = 1'b0;
-            FlushE = 1'b0;
-    end
+
+        // if (load_use_hazard) begin
+        //     stall = 1'b1;
+        //     FlushE = 1'b1;
+        //     FlushD = 1'b0;
+        // end else if (control_hazard) begin
+        //     stall = 1'b0;
+        //     FlushD = 1'b1;
+        //     FlushE = 1'b1;
+        // end else if ((l1_miss || l2_miss || cache_busy)&mem_stall) begin
+        //     stall = 1'b1;  
+        //     FlushD = 1'b0;
+        //     FlushE = 1'b0;
+        // end else if (mem_stall) begin
+        //     stall = 1'b1;   
+        //     FlushE = 1'b1;   
+        //     FlushD = 1'b0; 
+        // end
 end
 endmodule

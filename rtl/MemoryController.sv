@@ -10,7 +10,7 @@ module MemoryController #(
     input  logic [DATA_WIDTH-1:0]  WriteData,
     output logic [DATA_WIDTH-1:0]  ReadData,
     output logic                   MemReady,
-    // Add new output signals
+
     output logic                   l1_miss_o,    // Changed from l1_miss to l1_miss_o
     output logic                   l2_miss_o,    // Changed from l2_miss to l2_miss_o
     output logic                   cache_busy_o  // Changed from cache_busy to cache_busy_o
@@ -47,10 +47,10 @@ module MemoryController #(
         .rst_n(rst_n),
         .load(!MemWrite && mem_access),
         .store(MemWrite && mem_access),
-        .address({15'b0, addr}),  // Extend address to 32 bits
+        .address({15'b0, addr}),  
         .data_in(WriteData),
-        .mem_data(l2_data_out),   // Connect to L2 cache
-        .mem_ready(!l2_busy),     // L2 cache ready signal
+        .mem_data(l2_data_out),   
+        .mem_ready(!l2_busy),     
         .hit(l1_hit),
         .miss(l1_miss),
         .busy(l1_busy),
@@ -63,7 +63,7 @@ module MemoryController #(
     // L2 Cache
     L2Cache #(
         .DATA_WIDTH(DATA_WIDTH),
-        .SET_WIDTH(10)  // Larger than L1
+        .SET_WIDTH(10)  
     ) l2_cache (
         .clk(clk),
         .rst_n(rst_n),
@@ -71,8 +71,8 @@ module MemoryController #(
         .store(l1_mem_write),
         .address({15'b0, addr}),
         .data_in(l1_mem_write_data),
-        .mem_data(l3_data_out),   // Connect to L3 cache
-        .mem_ready(!l3_stall),    // L3 cache ready signal
+        .mem_data(l3_data_out),   
+        .mem_ready(!l3_stall),   
         .hit(l2_hit),
         .miss(l2_miss),
         .busy(l2_busy),
@@ -96,8 +96,8 @@ module MemoryController #(
         .mem_write(l3_mem_write),
         .mem_address(l3_mem_address),
         .mem_write_data(l3_mem_write_data),
-        .mem_read_data(main_mem_read_data),    // Connect to main memory
-        .mem_ready(main_mem_ready)         // Connect to main memory ready signal
+        .mem_read_data(main_mem_read_data),    
+        .mem_ready(main_mem_ready)         
     );
 
     // Output assignments
@@ -105,8 +105,7 @@ module MemoryController #(
                      l2_hit ? l2_data_out :
                      l3_hit ? l3_data_out : 32'b0;
                      
-    assign MemReady = (l1_hit || (!l1_busy && l2_hit) || (!l1_busy && !l2_busy && l3_hit)) &&
-                     !l3_stall;
+    assign MemReady = (l1_hit || (!l1_busy && l2_hit) || (!l1_busy && !l2_busy && l3_hit)) && !l3_stall;
 
     // Main Memory signals
     logic main_mem_ready;
