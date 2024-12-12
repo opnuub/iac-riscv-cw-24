@@ -11,9 +11,9 @@ touch ../tb/data.hex
 
 cd ../../rtl
 
-VERILOG_FILES=$(find ../tb/f1_program -name "*.sv" ! -name "f1.sv")
+VERILOG_FILES=$(find ../tb/f1_program -name "*.sv")
 
-verilator -Wall --cc --trace ../tb/f1_program/f1.sv $VERILOG_FILES --exe f1_tb.cpp
+verilator -Wall --cc --trace $VERILOG_FILES --exe f1_tb.cpp --top-module f1
 
 mv obj_dir ../tb/f1_program
 
