@@ -65,27 +65,35 @@ module top #(
     end
 
     // Hazard detection and forwarding
+    logic l1_miss, l2_miss;
+    logic cache_busy;
+    wire l1_miss_wire;
+    wire l2_miss_wire;
+    wire cache_busy_wire;
+    //Modify HazardUnit instantiation
     HazardUnit HazardUnit (
-        .Rs1E(Rs1E), 
-        .Rs2E(Rs2E),  
-        .Rs1D(instrD[19:15]), 
-        .Rs2D(instrD[24:20]),     
+        .Rs1E(Rs1E),
+        .Rs2E(Rs2E),
+        .Rs1D(instrD[19:15]),
+        .Rs2D(instrD[24:20]),
         .RdE(RdE),
-        .destReg_m(RdM),  
+        .destReg_m(RdM),
         .destReg_w(RdW),
         .memoryRead_e(memoryRead),
-        .RegWriteM(RegWriteM),     
-        .RegWriteW(RegWriteW),   
-        .zero_hazard(zero),   
+        .RegWriteM(RegWriteM),
+        .RegWriteW(RegWriteW),
+        .zero_hazard(zero),
         .jump_hazard(JumpE),
         .mem_stall(!MemReady),
+        .l1_miss(l1_miss_wire),       // Connect to wire instead of variable
+        .l2_miss(l2_miss_wire),       // Connect to wire instead of variable
+        .cache_busy(cache_busy_wire),  // Connect to wire instead of variable
         .ForwardAE(ForwardAE),
-        .ForwardBE(ForwardBE),  
-        .stall(stall),          
+        .ForwardBE(ForwardBE),
+        .stall(stall),
         .FlushD(FlushD),
         .FlushE(FlushE)
     );
-
     // Forwarding muxes
     HazardMux #(
         .DATA_WIDTH(DATA_WIDTH)
@@ -345,8 +353,9 @@ module top #(
         .WriteData(WriteDataM),
         .ReadData(ReadData),
         .MemReady(MemReady),
-        .regs0(),
-        .s0()
+        .l1_miss_o(l1_miss_wire),     // Connect to output signal
+        .l2_miss_o(l2_miss_wire),     // Connect to output signal
+        .cache_busy_o(cache_busy_wire) // Connect to output signal
     );
 
     // Writeback stage
