@@ -8,7 +8,7 @@ module top #( //!!!!!!this file is still filled with errors, I am not finished y
 ) (
     input   logic                   clk,
     input   logic                   rst,
-    //input   logic                 trigger,
+    input   logic                 trigger,
     output  logic [DATA_WIDTH-1:0]  a0
 
 );
