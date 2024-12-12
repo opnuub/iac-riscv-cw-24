@@ -117,6 +117,7 @@ module MemoryController #(
         .DATA_WIDTH(DATA_WIDTH),
         .ADDR_WIDTH(ADDR_WIDTH)
     ) main_memory (
+        .SizeCtr(SizeCtr),
         .clk(clk),
         .rst_n(rst_n),
         .mem_read(l3_mem_read),
