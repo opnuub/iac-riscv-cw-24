@@ -59,5 +59,6 @@
   "files.associations": {
     "cstdlib": "cpp",
     "random": "cpp"
-  }
+  },
+  "cmake.sourceDirectory": "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/RISC-V_RV32I_Project"
 }
