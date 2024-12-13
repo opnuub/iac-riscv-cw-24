@@ -142,7 +142,19 @@ always_ff @ (posedge clk)
 
 This block updates the pc on the positive edge of the clock. If the reset (rst) signal is active, pc is initialized to 32'hBFC00000, a common boot address. Otherwise, pc is updated to the value of nextPC, supporting jumps or branch instructions.
 
-#### Block Diagram
+#### Block Diagrams
+
+Program Counter:
+
+<img src="Pipeline/images/ISSIE_PC.png" width="750" height="250" alt="debugging with GTK wave">
+
+PC Register:
+
+<img src="Pipeline/images/ISSIE_PCReg.png" width="750" height="350" alt="debugging with GTK wave">
+
+PCMux:
+
+<img src="Pipeline/images/ISSIE_PCMux.png" width="750" height="350" alt="debugging with GTK wave">
 
 ##### Links to Module  
 
@@ -189,6 +201,8 @@ This block uses a case statement to determine the ALU operation based on the 3-b
 Purpose:
 
 #### Block Diagram
+
+<img src="Pipeline/images/Block_DIagram_SC_ALU.png" width="1150" height="550" alt="ISSIE SC_ALU">
 
 #### Link to Module  
 
