@@ -82,7 +82,7 @@ and I have also implemnted all the different cases in the module using a case sc
 
 To verify that this works, I improved the testbench files I used for Lab4, adding new testing logics for Branch and Load type instructions, with also illegal instructions to verify the workability of this submodule:
 Controller Test
-![alt text](Cache/images/BenchController.png)
+![alt text](Cache/images/BenchController.jpg)
 
 - **Instruction Memory (imem.sv)**: These modules simulated the memory components of a real CPU, allowing for the storage and retrieval of data and instructions.
 
@@ -101,22 +101,22 @@ Instruction Fetching
  ```
 To verify this works and Cole could use it in the later stage when integration, I also unit Tested it with test functions of: Sequential Read, Unaligned Read and Boundary Conditions.
 
-![alt text](Cache/images/BenchImem.png)
+![alt text](Cache/images/BenchImem.jpg)
 
 ### 1.3 Testing and Validation
 
 To ensure the correctness and reliability of my designs, I meticulously wrote unit test benches for some component. These test benches simulated various scenarios and edge cases, allowing me to identify and rectify any issues in the design. The process of testing and validation was iterative, with each iteration bringing me closer to a fully functional and efficient CPU.
 
 Register File Test:
-![alt text](Cache/images/BenchReg.png)
+![alt text](Cache/images/BenchReg.jpg)
 Branch Test
-![alt text](Cache/images/BenchBranch.png)
+![alt text](Cache/images/BenchBranch.jpg)
 Data Memory Test
-![alt text](Cache/images/BenchDmem.png)
+![alt text](Cache/images/BenchDmem.jpg)
 PC Unit Test
-![alt text](Cache/images/BenchPC.png)
+![alt text](Cache/images/BenchPC.jpg)
 ALU Test
-![alt text](Cache/images/BenchALU.png)
+![alt text](Cache/images/BenchALU.jpg)
 
 Evidence in this folder Under the Branch PC&Instmem: [Link]
 
@@ -346,8 +346,8 @@ logic [2**SET_WIDTH-1:0] lru;  // One bit per set
 ```mermaid
 flowchart TD
     A[Memory Access] --> B{Cache Hit or Miss?}
-    B -->|Cache Hit| C[Update LRU Bits for Accessed Cache Line]
-    B -->|Cache Miss| D[Find LRU Block in the Set]
+    B -->|Hit| C[Update LRU Bits for Accessed Cache Line]
+    B -->|Miss| D[Find LRU Block in the Set]
     C --> E[Continue Program]
     D --> F[Evict LRU Cache Line]
     F --> G[Load New Memory Block to LRU Line]
