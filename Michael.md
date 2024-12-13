@@ -465,7 +465,7 @@ Reflecting on the cache design process, I recognize that there are several areas
 ## 6. Full Instruction CPU 
 
 After finishing the major branches. We have found out we are only missing a few instructions from completing a Full instruction CPU based on the stretched goals. The missing instructions were: 
-- R-type: SRA (Arithmetic right shift)
+- R-type: SRA (Arithmetic right shift), SRAI
 - I-type: SRAI (Arithmetic right shift immediate), SLTIU (Set less than immediate unsigned)
 - U-type: AUIPC (Add upper immediate to PC)
 

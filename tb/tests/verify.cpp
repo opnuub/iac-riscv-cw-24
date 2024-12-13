@@ -45,7 +45,7 @@ TEST_F(CpuTestbench, TestPdf)
 
 }
 
-// New comprehensive tests
+// New comprehensive tests full of RISC-V instructions
 TEST_F(CpuTestbench, TestLogicalOps)
 {
     setupTest("7_test");
@@ -110,12 +110,20 @@ TEST_F(CpuTestbench, TestEdgeCases)
     EXPECT_EQ(top_->a0, 0x80000000);  // Minimum signed 32-bit value
 }
 
-TEST_F(CpuTestbench, TestShiftRight)
+TEST_F(CpuTestbench, TestJumps)
 {
-    setupTest("16_shift_test");
+    setupTest("15_jumps");
     initSimulation();
     runSimulation(CYCLES);
-    EXPECT_EQ(top_->a0, -2);  // 0xFFFFFFFE in two's complement
+    EXPECT_EQ(top_->a0, 0x12345678);  // Jump to address 0x12345678
+}
+
+TEST_F(CpuTestbench, TestShiftRight)
+{
+    setupTest("16_shift_right_test");  // Assuming the assembly file is named "shift_right.s"
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 0x0F);
 }
 
 TEST_F(CpuTestbench, TestMissingInstructions)

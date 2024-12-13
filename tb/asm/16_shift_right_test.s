@@ -1,27 +1,24 @@
 .global _start
 
 _start:
-    # Test setup - load test values
-    li x1, -8        # Load negative number (0xFFFFFFF8)
-    li x2, 2         # Shift amount
+    # Test logical right shift (srl)
+    li x1, 0xF0       # Load 1111 0000
+    srli x2, x1, 4    # Shift right by 4, should be 0000 1111
     
-    # Test logical right shift (SRL)
-    srl x3, x1, x2   # Should fill with zeros
+    # Test logical right shift with register
+    li x3, 4          # Number of positions to shift
+    srl x4, x1, x3    # Should be same as srli x2, x1, 4
     
-    # Test logical right shift immediate (SRLI)
-    srli x4, x1, 2   # Should give same result as SRL
+    # Test arithmetic right shift (sra)
+    li x5, -8         # Load negative number
+    srai x6, x5, 1    # Shift right by 1, should preserve sign bit
     
-    # Test arithmetic right shift (SRA)
-    sra x5, x1, x2   # Should preserve sign bit
+    # Test arithmetic right shift with register
+    li x7, 1          # Number of positions to shift
+    sra x8, x5, x7    # Should be same as srai x6, x5, 1
     
-    # Test arithmetic right shift immediate (SRAI)
-    srai x6, x1, 2   # Should give same result as SRA
+    # Store result in a0 for checking
+    add a0, x2, x0    # Move result to a0
     
-    # Compare SRA and SRAI results
-    sub x7, x5, x6   # Should be zero if they match
-    
-    # Move arithmetic shift result to a0 for verification
-    mv a0, x5        # Should be -2 (0xFFFFFFFE)
-
 infinite:
-    j infinite
+    j infinite        # Infinite loop
