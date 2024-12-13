@@ -39,12 +39,12 @@ int main(int argc, char **argv, char **env){
         //vbdPlot(int (),0, 255);
         if (int(top->a0) == -1){
             startDisplaying = true;
-            discyc = simcyc+2;
+            discyc = simcyc+3;
         }
 
         if (startDisplaying and simcyc == discyc and norm_dist.size()<240){
             norm_dist.push_back(int(top->a0));
-            discyc += 2;
+            discyc += 3;
         }
 
         if(Verilated::gotFinish() || (vbdGetkey()=='q')){
