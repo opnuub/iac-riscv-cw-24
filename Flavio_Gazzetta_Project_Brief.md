@@ -69,11 +69,11 @@ This project involved designing and implementing a RISC-V RV32I processor in bot
 
 [Jump to Relevant Single Cycle commits](#Single_Cycle-Added_or_edited_Components)
 
-When considering the single cycle CPU, my work on it consisted on making, debugging and editing various components starting from ones from lab4 and augmenting them in order to better fit to the more advanced CPU. Strarting with the program counter ([PC Register](rtl/pcReg.sv) and [PC Mux](rtl/pcMux.sv)) where at first I focused on trying to apply compartmentalisation and separated the add4 component with the counter itself, however later decided to combine the 2 into a single component allowing for simplification in debugging and in the top file. 
+When considering the single cycle CPU, my work on it consisted of making, debugging and editing various components starting with some from Lab 4 and augmenting them in order to better fit to the more advanced CPU. Strarting with the program counter ([PC Register](rtl/pcReg.sv) and [PC Mux](rtl/pcMux.sv)) where at first I focused on trying to apply compartmentalisation and separated the add4 component with the counter itself, however, I later decided to combine the 2 into a single component allowing for simplification in debugging and in the top file. 
 <img src="Pipeline/images/SC_PC.png" width="650" height="350" alt="SC_PC"> 
-After that I worked on the [alu](rtl/alu.sv) where I innitially started with a 4-bit version allowing for a large range of instructions, later deciding to shrink it down to 3 bits given that this would still keep the main operations and allowed for a lot of simplicfication(this would then be changed back to 4-bits in the pipeline).
+After that I worked on the [alu](rtl/alu.sv) where I innitially started with a 4-bit version allowing for a large range of instructions, later deciding to shrink it down to 3 bits given that this would still keep the main operations and allowed for a lot of simplification (this would then be changed back to 4 bits in the pipeline).
 <img src="Pipeline/images/SC_ALU.png" width="650" height="350" alt="SC_ALU">
-I then spent some time making the [register file](Pipeline/rtl/regfile.sv), which turned out to be a lot simpler than expected. A issue that I at first had with this component was that I was convinced I neeed a .mem file to store values which eventually I noticed not to be the case. 
+I then spent some time making the [register file](Pipeline/rtl/regfile.sv), which turned out to be a lot simpler than expected. A issue that I at first had with this component was that I was convinced I need a .mem file to store values which eventually I noticed not to be the case. 
 <img src="Pipeline/images/SC_Register_file.png" width="650" height="350" alt="SC_Reg">
 The last single-cycle component which I made very significant changes to was the [Data Memory](rtl/dataMemory.sv), which on the second attempt I got to both work and select between a byte, half word and word size.
 <img src="Pipeline/images/SC_Data_Memory.png" width="650" height="350" alt="SC_Dmem">
@@ -188,13 +188,11 @@ Purpose:
 
 2) [Added mux connecting to ALU](https://github.com/opnuub/iac-riscv-cw-16/commit/56752057c5c8f5cf7abfee144f58caf270d2d0e9)
 
-3) [upadtes to ALU including singed and unsigned smaller than](https://github.com/opnuub/iac-riscv-cw-16/commit/29db9d2eeab6de3a390bccd528c7f5b89459afd2)
+3) [updates to ALU including signed and unsigned smaller than](https://github.com/opnuub/iac-riscv-cw-16/commit/29db9d2eeab6de3a390bccd528c7f5b89459afd2)
 
-4) [added unchange SrcB to to allow for lui](https://github.com/opnuub/iac-riscv-cw-16/commit/4e4d1629e8dce89d05d143472dde3d0a2a077e4e)
+4) [added unchanged SrcB to allow for lui](https://github.com/opnuub/iac-riscv-cw-16/commit/4e4d1629e8dce89d05d143472dde3d0a2a077e4e)
 
 5) [changed ALU back to 3 bits](https://github.com/opnuub/iac-riscv-cw-16/commit/5a6290178d83b32d25e95a0dfc2205948b976b7c)
-
-this was then changed further by Cole for integration
 
 ---
 
@@ -244,8 +242,12 @@ initial begin
     $readmemh("../tb/data.hex", memory, 17'h10000);
 end
 ```
-The memory array represents a byte-addressable memory space with 2^ADDR_WIDTH locations, each 8 bits wide.
+The memory array represents a byte-addressable memory space with 2^17 locations, each 8 bits wide.
 At startup, memory is initialized with data from an external file (data.hex), starting at address 0x10000.
+
+the reason why it is 2^17 bits is because the memory is allocated in the following way:
+<img src="Pipeline/images/Memory_allocation.png" width="250" height="450" alt="Memory">
+
 Write Logic:
 
 ```systemverilog
@@ -326,7 +328,7 @@ Sign extension fills higher bits with the most significant bit of the data if si
 
 <img src="Pipeline/images/no_hazard_pipeline.png" width="950" height="550" alt="Pipeline 5 stages passed">
 
-For the Pipeline CPU I made various changes both to separate the stages Fetch, Decode, Execute, Memory and WriteBack, and to various components in order to adjust them to these stages. First of all I added 4 regsters to separate the stages [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv), [Decode -> Execute](Pipeline/rtl/PRegDecode.sv), [Execute -> Memory](Pipeline/rtl/PRegExecute.sv), [Memory -> WriteBack](Pipeline/rtl/PRegMemory.sv). Initially these only rook the inputs from one stage and passed them to the next after a clock tick, at first here I thought it would be a good idea to give these registers a memory, but later I decide to make them act like 32-bit flip flops. After having made these I edited the [control unit](Pipeline/rtl/controlUnit.sv) (specifically making changes in the [aluDecoder.sv](Pipeline/rtl/aluDecoder.sv) and the [mainDecoder.sv](Pipeline/rtl/mainDecoder.sv)) and added outputs including JumpD to decide when I would Jump, BranchD to decide when I would Branch, I then used the component [PCMuxSelect](Pipeline/rtl/mainDecoder.sv) to AND the zeroE output of the [Branch Unit](Pipeline/rtl/branchUnit.sv) with JumpE (JumpD output after passing through the Decode -> Execute stage), and then OR'ed the output of this AND gate with BranchE. I removed the PCsrc Output and then changed my ReultSrc output from 1 to 2 bits, this is because I wanted the [result Mux](Pipeline/rtl/resultMux.sv) (register in the in the writeback stage of the alu) to select between 3 values (where I made the 4th input be a default 00 as this would never be used). The reason for now using a 4 input mux was that i combined 2 muxes from the single-cycle stage (resultMux and JumpMux) to better follow the schematic given to us and to keep everything as compact as possible. I also changed ALUControl from 3 to 4 bits, this change was made in order to allow the [alu](Pipeline/rtl/alu.sv) and [Branch Unit](Pipeline/rtl/branchUnit.sv) to act separateley, as with 3 bits their operations would overlap in the same stage and leed to errors. Hence, due to this change in ALUControl I changed the bit allocation in the [Branch Unit](Pipeline/rtl/branchUnit.sv) and [alu](Pipeline/rtl/alu.sv) (adding adding a 1 as MSB for the [Branch Unit](Pipeline/rtl/branchUnit.sv) and a 0 for the [alu](Pipeline/rtl/alu.sv)). I also added a Jalrsrc output to act as a select bit for a [Jalr Mux](Pipeline/rtl/JalrMux.sv) located in the execute stage which would select between the last program counter value or the last register1 value to be passed into the [extend PC component](Pipeline/rtl/extendPC.sv) component which would add the immediate value in the execute stage with the value passed on by the [Jalr Mux](Pipeline/rtl/JalrMux.sv), with the ouput of this component being the other input in the [PC Register](Pipeline/rtl/pcReg.sv). 
+For the Pipeline CPU I made various changes both to separate the stages Fetch, Decode, Execute, Memory and WriteBack, and to various components in order to adjust them to these stages. First of all I added 4 regsters to separate the stages [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv), [Decode -> Execute](Pipeline/rtl/PRegDecode.sv), [Execute -> Memory](Pipeline/rtl/PRegExecute.sv), [Memory -> WriteBack](Pipeline/rtl/PRegMemory.sv). Initially these only took the inputs from one stage and passed them to the next after a clock tick, at first here I thought it would be a good idea to give these registers a memory, but later I decide to make them act like 32-bit flip flops. After having made these I edited the [control unit](Pipeline/rtl/controlUnit.sv) (specifically making changes in the [aluDecoder.sv](Pipeline/rtl/aluDecoder.sv) and the [mainDecoder.sv](Pipeline/rtl/mainDecoder.sv)) and added outputs including JumpD to decide when I would Jump, BranchD to decide when I would Branch, I then used the component [PCMuxSelect](Pipeline/rtl/mainDecoder.sv) to AND the zeroE output of the [Branch Unit](Pipeline/rtl/branchUnit.sv) with JumpE (JumpD output after passing through the Decode -> Execute stage), and then OR'ed the output of this AND gate with BranchE. I removed the PCsrc Output and then changed my ResultSrc output from 1 to 2 bits, this is because I wanted the [result Mux](Pipeline/rtl/resultMux.sv) (register in the in the writeback stage of the alu) to select between 3 values (where I made the 4th input be a default 00 as this would never be used). The reason for now using a 4 input mux was that i combined 2 muxes from the single-cycle stage (resultMux and JumpMux) to better follow the schematic given to us and to keep everything as compact as possible. I also changed ALUControl from 3 to 4 bits, this change was made in order to allow the [alu](Pipeline/rtl/alu.sv) and [Branch Unit](Pipeline/rtl/branchUnit.sv) to act separately, as with 3 bits their operations would overlap in the same stage and lead to errors. Hence, due to this change in ALUControl I changed the bit allocation in the [Branch Unit](Pipeline/rtl/branchUnit.sv) and [alu](Pipeline/rtl/alu.sv) (adding a 1 as MSB for the [Branch Unit](Pipeline/rtl/branchUnit.sv) and a 0 for the [alu](Pipeline/rtl/alu.sv)). I also added a Jalrsrc output to act as a select bit for a [Jalr Mux](Pipeline/rtl/JalrMux.sv) located in the execute stage which would select between the last program counter value or the last register1 value to be passed into the [extend PC component](Pipeline/rtl/extendPC.sv) component which would add the immediate value in the execute stage with the value passed on by the [Jalr Mux](Pipeline/rtl/JalrMux.sv), with the ouput of this component being the other input in the [PC Register](Pipeline/rtl/pcReg.sv). 
 
 <a name="Hazard_Unit_description"></a>
 
@@ -334,7 +336,7 @@ For the Pipeline CPU I made various changes both to separate the stages Fetch, D
 
 <img src="Pipeline/images/Full_Pipeline_CPU.png" width="850" height="550" alt="Pipeline 5 stages passed">
 
-Of course, even with all these changes (and other minor ones) the cpu could still not pass any of the 5 tests given to us, this was because I was yet to add the [Hazard Unit](Pipeline/rtl/HazardUnit.sv) and related [HazardMux'es](Pipeline/rtl/HazardMux.sv). I made the [Hazard Unit](Pipeline/rtl/HazardUnit.sv) able to perfrom 3 different types of actions: Flushing (uses outputs FlushD and FlushE to set all the ouputs of the [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv) and [Decode -> Execute](Pipeline/rtl/PRegDecode.sv) registers to 0), Stalling (uses the ouput stall to prevent the values in the [PC Register](Pipeline/rtl/pcReg.sv) and [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv) registers to pass on to the next ones) and Forwarding (uses the ouputs ForwardAE and ForwardBE to select between the value of register1 and regitsr2 ouputs of the [register file](Pipeline/rtl/regfile.sv) in the execute stage, the value of the aluresult in the memory stage and the value of the result which is in the writeback stage and ). In my HazardUnit code, forwarding, stalling, and flushing are implemented to resolve hazards as follows:
+Of course, even with all these changes (and other minor ones) the cpu could still not pass any of the 5 tests given to us, this was because I was yet to add the [Hazard Unit](Pipeline/rtl/HazardUnit.sv) and related [HazardMux'es](Pipeline/rtl/HazardMux.sv). I made the [Hazard Unit](Pipeline/rtl/HazardUnit.sv) able to perform 3 different types of actions: Flushing (uses outputs FlushD and FlushE to set all the outputs of the [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv) and [Decode -> Execute](Pipeline/rtl/PRegDecode.sv) registers to 0), Stalling (uses the ouput stall to prevent the values in the [PC Register](Pipeline/rtl/pcReg.sv) and [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv) registers to pass on to the next ones) and Forwarding (uses the ouputs ForwardAE and ForwardBE to select between the value of register1 and register2 ouputs of the [register file](Pipeline/rtl/regfile.sv) in the execute stage, the value of the aluresult in the memory stage and the value of the result which is in the writeback stage and ). In my HazardUnit code, forwarding, stalling, and flushing are implemented to resolve hazards as follows:
 
 Forwarding resolves data hazards by bypassing results from later stages (Memory or Writeback) to the Execute stage. For Source A (ForwardAE), the logic is as follows:
 
@@ -442,7 +444,7 @@ end
 
 ### PC Register
 
-Only change from sigle cycle to be noted is that now the pc value would only update if stall is low.
+Only change from single cycle to be noted is that now the pc value would only update if stall is low.
 
 #### Links to Modules
 
@@ -604,7 +606,7 @@ The role of this mux is to select between the value of PCe (program counter in e
 
 ### PCMux Select
 
-This component took three 1-bit inputs (JumpE, BranchE and zero) and performe boolean operations (JumpE | (BranchE & zero)) on them to decide wether or not a branch/jump operation should be perfomred.
+This component took three 1-bit inputs (JumpE, BranchE and zero) and performe boolean operations (JumpE | (BranchE & zero)) on them to decide wether or not a branch/jump operation should be performed.
 
 #### Links to Modules
 
@@ -616,7 +618,7 @@ This component took three 1-bit inputs (JumpE, BranchE and zero) and performe bo
 
 ---
 
-After having added all these features and having done a lot of debuggin I tested the 5 cpu tests and got the following results:
+After having added all these features and having done a lot of debugging I tested the 5 cpu tests and got the following results:
 
 ## Testing & Results
 
@@ -651,14 +653,15 @@ The joy of overcoming those hurdles and seeing a system I meticulously designed 
 In the end, the satisfaction of completing something so well-structured and functionally robust has reaffirmed my passion for engineering. It’s moments like these that make the challenges worthwhile and strengthen my belief that this path is where I belong.
 
 ---
----
 
 ## potential improvements
 
-When thinking about potential improvements to this CPU thethings that come to mind are:
+When thinking about potential improvements to this CPU the things that come to mind are:
 - I could have added more intructions, such as arithmetic shifts and much more. 
 - Another interesting feature would have been Dynamic Branch Prediction:
-- Introducing out-of-order execution to allow instructions to be executed as resources become available would have sed up the compile time by a lot, rather than strictly in program order.
+- Introducing out-of-order execution to allow instructions to be executed as resources become available would have sped up the compile time by a lot, rather than strictly in program order.
+
+---
 
 ## Additional Comments 
 
