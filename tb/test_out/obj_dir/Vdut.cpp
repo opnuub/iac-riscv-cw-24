@@ -10,9 +10,9 @@
 Vdut::Vdut(VerilatedContext* _vcontextp__, const char* _vcname__)
     : VerilatedModel{*_vcontextp__}
     , vlSymsp{new Vdut__Syms(contextp(), _vcname__, this)}
-    , clk{vlSymsp->TOP.clk}
-    , rst{vlSymsp->TOP.rst}
-    , a0{vlSymsp->TOP.a0}
+    , clk_i{vlSymsp->TOP.clk_i}
+    , rst_ni{vlSymsp->TOP.rst_ni}
+    , a0_o{vlSymsp->TOP.a0_o}
     , rootp{&(vlSymsp->TOP)}
 {
     // Register model with the context
