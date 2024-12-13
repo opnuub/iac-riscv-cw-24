@@ -1,5 +1,5 @@
 # Personal Statement: Soon Yung
-**Name:**Soon Yung  </br>
+**Name:** Soon Yung  </br>
 **CID:** 02390909   </br>
 **Github username:** so0nyung
 

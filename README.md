@@ -53,14 +53,15 @@ Once within the `tb` folder, traverse to `pdf_program` folder, attach the vbuddy
 ## Working Evidence (Picture)
 | Dataset|Graph                                       |
 |--------|--------------------------------------------|
-|Gaussian|![Gaussian Graph](images/Gaussian_Graph.jpg)|
-|        | ![Gaussian Plot](https://www.youtube.com/shorts/S-n3LoTKLPA) |
-|Noisy   |![Noisy Graph](images/Noisy_Graph.jpg)      |
-|        |![Noisy Plot](https://youtube.com/shorts/oGnb0cSuTNY)        |
-|Triangle|![Triangle Graph](images/Triangle_Graph.jpg)|
-|        |![Triangle Plot](https://youtu.be/bxq5VPnM24I)  |
+|Gaussian|<img src="images/Gaussian_Plot_Graph.jpg" alt="Gaussian Plot" width="400">|
+|        |<iframe width="560" height="315" src="https://www.youtube.com/shorts/S-n3LoTKLPA" frameborder="0" allowfullscreen></iframe>  |
+|Noisy|<img src="images/Noisy_Plot_Graph.jpg" alt="Noisy Plot" width="400">|
+|| 
+<iframe width="560" height="315" src="https://youtube.com/shorts/oGnb0cSuTNY" frameborder="0" allowfullscreen></iframe>|
+|Triangle|<img src="images/Triangle_Plot_Graph.jpg" alt="Triangle Plot" width="400">|
+||<iframe width="560" height="315" src="https://youtu.be/bxq5VPnM24I" frameborder="0" allowfullscreen></iframe>  |
 
-![F1 Video](https://youtube.com/shorts/eye_c77uzMk)
+<iframe width="560" height="315" src="https://youtube.com/shorts/eye_c77uzMk" frameborder="0" allowfullscreen></iframe>
 
 
 ## Contributions
