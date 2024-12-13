@@ -15,6 +15,8 @@ During my time working on this project I initially devoted my work towards worki
 
 ## SingleCycle 
 
+[Jump to Relevant Single Cycle commits](#Single_Cycle-Added_or_edited_Components)
+
 When considering the single cycle CPU, my work on it consisted on making, debugging and editing various components starting from ones from lab4 and augmenting them in order to better fit to the more advanced CPU. Strarting with the program counter ([PC Register](rtl/pcReg.sv) and [PC Mux](rtl/pcMux.sv)) where at first I focused on trying to apply compartmentalisation and separated the add4 component with the counter itself, however later decided to combine the 2 into a single component allowing for simplification in debugging and in the top file. 
 <img src="Pipeline/images/SC_PC.png" width="650" height="350" alt="SC_PC"> 
 After that I worked on the [alu](rtl/alu.sv) where I innitially started with a 4-bit version allowing for a large range of instructions, later deciding to shrink it down to 3 bits given that this would still keep the main operations and allowed for a lot of simplicfication(this would then be changed back to 4-bits in the pipeline).
@@ -24,12 +26,12 @@ I then spent some time making the [register file](Pipeline/rtl/regfile.sv), whic
 The last single-cycle component which I made very significant changes to was the [Data Memory](rtl/dataMemory.sv), which on the second attempt I got to both work and select between a byte, half word and word size.
 <img src="Pipeline/images/SC_Data_Memory.png" width="650" height="350" alt="SC_Dmem">
 
-[Jump to Target Section](#target-line)
-
 ---
 ---
 
 ## Pipeline
+
+[Jump to Relevant Pipeline commits](#Pipeline-Added_or_Edited_Components)
 
 ### Without hazard unit
 
@@ -37,7 +39,7 @@ The last single-cycle component which I made very significant changes to was the
 
 For the Pipeline CPU I made various changes both to separate the stages Fetch, Decode, Execute, Memory and WriteBack, and to various components in order to adjust them to these stages. First of all I added 4 regsters to separate the stages [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv), [Decode -> Execute](Pipeline/rtl/PRegDecode.sv), [Execute -> Memory](Pipeline/rtl/PRegExecute.sv), [Memory -> WriteBack](Pipeline/rtl/PRegMemory.sv). Initially these only rook the inputs from one stage and passed them to the next after a clock tick, at first here I thought it would be a good idea to give these registers a memory, but later I decide to make them act like 32-bit flip flops. After having made these I edited the [control unit](Pipeline/rtl/controlUnit.sv) (specifically making changes in the [aluDecoder.sv](Pipeline/rtl/aluDecoder.sv) and the [mainDecoder.sv](Pipeline/rtl/mainDecoder.sv)) and added outputs including JumpD to decide when I would Jump, BranchD to decide when I would Branch, I then used the component [PCMuxSelect](Pipeline/rtl/mainDecoder.sv) to AND the zeroE output of the [Branch Unit](Pipeline/rtl/branchUnit.sv) with JumpE (JumpD output after passing through the Decode -> Execute stage), and then OR'ed the output of this AND gate with BranchE. I removed the PCsrc Output and then changed my ReultSrc output from 1 to 2 bits, this is because I wanted the [result Mux](Pipeline/rtl/resultMux.sv) (register in the in the writeback stage of the alu) to select between 3 values (where I made the 4th input be a default 00 as this would never be used). The reason for now using a 4 input mux was that i combined 2 muxes from the single-cycle stage (resultMux and JumpMux) to better follow the schematic given to us and to keep everything as compact as possible. I also changed ALUControl from 3 to 4 bits, this change was made in order to allow the [alu](Pipeline/rtl/alu.sv) and [Branch Unit](Pipeline/rtl/branchUnit.sv) to act separateley, as with 3 bits their operations would overlap in the same stage and leed to errors. Hence, due to this change in ALUControl I changed the bit allocation in the [Branch Unit](Pipeline/rtl/branchUnit.sv) and [alu](Pipeline/rtl/alu.sv) (adding adding a 1 as MSB for the [Branch Unit](Pipeline/rtl/branchUnit.sv) and a 0 for the [alu](Pipeline/rtl/alu.sv)). I also added a Jalrsrc output to act as a select bit for a [Jalr Mux](Pipeline/rtl/JalrMux.sv) located in the execute stage which would select between the last program counter value or the last register1 value to be passed into the [extend PC component](Pipeline/rtl/extendPC.sv) component which would add the immediate value in the execute stage with the value passed on by the [Jalr Mux](Pipeline/rtl/JalrMux.sv), with the ouput of this component being the other input in the [PC Register](Pipeline/rtl/pcReg.sv). 
 
-### With hazard unit
+### With hazard unit <a name="Hazard_Unit_description"></a>
 
 <img src="Pipeline/images/Full_Pipeline_CPU.png" width="850" height="550" alt="Pipeline 5 stages passed">
 
@@ -94,7 +96,9 @@ After having added all these features and having done a lot of debuggin I tested
 ### Debugging Strategies
 
 During my time working on the project, I found that a very large percentage of the workload was dedicated to finding and fixing errors. For this, I found two very useful strategies: displaying outputs and displaying signals on GTKWave. Displaying outputs was the first strategy I used, as it allowed for an instant and simple visualization of various signals. Its advantage was that it was really easy to set up, enabling the display of input, output, and intermediate signals.
-<img src="Pipeline/images/Display_output.png" width="650" height="450" alt="debugging with GTK wave">
+
+<img src="Pipeline/images/Display_output.png" width="650" height="450" alt="debugging with displays">
+
 However, this strategy had a significant limitation: the terminal had a limit on the amount of information it could display at once. This led me to switch to GTKWave, which turned out to be an almost perfect solution. It allowed me to visualize a large number of signals simultaneously, with the minor drawback that these signals had to be outputs of the top file. This required the slightly tedious process of temporarily making each signal an output. Ultimately, though, it provided a very straightforward debugging process without any limitations.
 
 the simulation from GTKWave looked like this (image from debugging test 5 errors in pipeline)
@@ -103,8 +107,7 @@ the simulation from GTKWave looked like this (image from debugging test 5 errors
 
 ---
 ---
-<a name="target-line"></a>
-# Target Section
+<a name="Single_Cycle-Added_or_edited_Components"></a>
 
 ## Single Cycle - Added or edited Components
 
@@ -328,6 +331,7 @@ Sign extension fills higher bits with the most significant bit of the data if si
 
 ---
 ---
+<a name="Pipeline-Added_or_Edited_Components"></a>
 
 ## Pipeline - Added or Edited Components
 
@@ -391,7 +395,19 @@ end
 
 1) [Improved Pipeline Registers](https://github.com/opnuub/iac-riscv-cw-16/commit/72aea873a82f6d3353513419fee9e28bb456142d)
 
-2) [implemented the Jalr instruction by using a seperate mux](https://github.com/opnuub/iac-riscv-cw-16/commit/aa623c2f9ed204c58805c8cf299f0bddc0a6dc05)
+---
+
+## PC Register
+
+Only change from sigle cycle to be noted is that now the pc value would only update if stall is low.
+
+#### Links to Modules
+
+[Pipeline pcReg.sv](Pipeline/rtl/pcReg.sv)
+
+#### Most Relevant Commits
+
+1) [added stall input and logic to PC Register](https://github.com/opnuub/iac-riscv-cw-16/commit/e0d78c7d70b8c6f9d52549edf97012f398580148#diff-4a14945f50d25a4a73dbddafd3a27787d927da7f30fc6a6f8f0f3b4974b420f2)
 
 ---
 
@@ -493,8 +509,6 @@ end
 
 1) [Improved Pipeline Registers](https://github.com/opnuub/iac-riscv-cw-16/commit/72aea873a82f6d3353513419fee9e28bb456142d)
 
-2) [implemented the Jalr instruction by using a seperate mux](https://github.com/opnuub/iac-riscv-cw-16/commit/aa623c2f9ed204c58805c8cf299f0bddc0a6dc05)
-
 ---
 
 ## ALU & Branch Unit
@@ -517,19 +531,54 @@ The change I made here was that I made the inputs of ALUControl for the alu and 
 
 ## Hazard Unit and Mux
 
-The Hazard Unit is responsible of making sure to perform forwarding, stalling and flushing.
+The Hazard Unit is responsible of making sure to perform forwarding, stalling and flushing. The description of both this and its relevant muxes can be found [above](#Hazard_Unit_description).
 
 #### Blocks Diagrams
 
 #### Links to Modules
 
-[Pipeline alu.sv](Pipeline/rtl/alu.sv)
+[Pipeline HazardUnit.sv](Pipeline/rtl/HazardUnit.sv)
 
-[Pipeline branchUnit.sv](Pipeline/rtl/branchUnit.sv)
+[Pipeline HazardMux.sv](Pipeline/rtl/HazardMux.sv)
 
 #### Most Relevant Commits
 
-1) [AlU and Branch Unit back to 4 bits](https://github.com/opnuub/iac-riscv-cw-16/commit/85c43cbd421743b3bdd7a0dee47591ee72d02baa)
+1) [Initial completion of Hazard Unit](https://github.com/opnuub/iac-riscv-cw-16/commit/e0d78c7d70b8c6f9d52549edf97012f398580148)
+
+
+2) [Completed Hazard Unit and Hazard Muxes For integration ](https://github.com/opnuub/iac-riscv-cw-16/commit/d50856a378adf044793459dd35e9c20bbe420e27#diff-f2270990438d4fe624dded4421d87faf3af562e371a59e28e0ed97eccde2a080)
+
+---
+
+## JALR Mux
+
+The role of this mux is to select between the value of PCe (program counter in execute stage) and RD1E (register 1 output in execute stage) to be added with the immediate value and become one of the inputs of the pcMux.
+
+#### Blocks Diagrams
+
+#### Links to Modules
+
+[Pipeline JalrMux.sv](Pipeline/rtl/JalrMux.sv)
+
+#### Most Relevant Commits
+
+1) [Implementation of Jalr instruction using a separate mux to pass test 4](https://github.com/opnuub/iac-riscv-cw-16/commit/aa623c2f9ed204c58805c8cf299f0bddc0a6dc05)
+
+---
+
+## PCMux Select
+
+This component took three 1-bit inputs (JumpE, BranchE and zero) and performe boolean operations (JumpE | (BranchE & zero)) on them to decide wether or not a branch/jump operation should be perfomred.
+
+#### Blocks Diagrams
+
+#### Links to Modules
+
+[Pipeline PCMuxSelect.sv](Pipeline/rtl/PCMuxSelect.sv)
+
+#### Most Relevant Commits
+
+1) [added PCMuxSelect](https://github.com/opnuub/iac-riscv-cw-16/commit/8b46618a579c4afabefadc15f6fbddc0e15df24d)
 
 ---
 
