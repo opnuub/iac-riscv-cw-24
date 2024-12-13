@@ -1,8 +1,8 @@
 #include <cstdlib>
 #include <utility>
 #include "cpu_testbench.h"
-#define CYCLES 10000
 
+#define CYCLES 10000
 TEST_F(CpuTestbench, TestAddiBne)
 {
     setupTest("1_addi_bne");

@@ -95,6 +95,7 @@ Key Instruction Mapping Example
 	•	mem[{addr_i[11:2], 2'b01}]: Third byte.
 	•	mem[{addr_i[11:2], 2'b00}]: Least significant byte (LSB).
  ```
+ Therefore, to design the imem.sv module, I began by carefully analyzing the requirements for instruction fetching in a RISC-V architecture, particularly focusing on word-aligned access to 32-bit instructions. The first step was to define a memory array to simulate the instruction storage, ensuring each entry could hold 8-bit values to represent individual bytes. Next, I devised a scheme to handle addressing, leveraging the **addr_i** signal to index the memory. Specifically, the upper bits **addr_i[11:2]** were used to identify the base address of the word-aligned instruction, while the lower two bits specified the specific byte within the word. The key challenge was combining these bytes into a cohesive 32-bit instruction, which I achieved using an always_ff block to concatenate the four bytes from the memory array in the correct order—starting with the most significant byte (MSB) at **mem[{addr_i[11:2], 2'b11}]** and ending with the least significant byte (LSB) at **mem[{addr_i[11:2], 2'b00}]**. Finally, I validated the design through simulation, ensuring accurate fetching of instructions under various addressing scenarios and verifying the correct behavior of the memory alignment and byte combination logic. 
 - To verify this works and my groupmate could use it in the later stage when integration, I also made unit testbench with it with test functions of: 
   - Sequential Read
   - Unaligned Read
@@ -118,7 +119,7 @@ To ensure the correctness and reliability of the designs, I meticulously wrote u
 ![alt text](Cache/images/BenchALU.jpg)
 
 Evidence of the old testbench files in this folder: [Link]
-
+[Most Relevant Commit]("https://github.com/opnuub/iac-riscv-cw-16/commit/a3f3f0584d648cb6eb74a3197592a65f355354bd")
 ## 2. Cache System Design and Implementation Analysis
 
 ### 2.1 Core Cache Architecture
@@ -367,11 +368,11 @@ The LRU implementation uses a single bit per set where:
 - `lru[index] = 0`: Way 1 is least recently used
 - `lru[index] = 1`: Way 0 is least recently used
 
-Benefits of this implementation:
+Benefits and reason for this implementation:
 1. Minimal hardware overhead (single bit per set)
 2. Simple update logic
 3. Fast LRU determination
-4. Efficient way selection
+4. Efficient and easy way selection compare to other methods
 
 ## 5. Memory Controller Design
 The original memory hierachy design from pipeline looked like this with the processor:
@@ -379,6 +380,9 @@ The original memory hierachy design from pipeline looked like this with the proc
 
 To integrate the design with caches, I implemented based on the original DataMemory.sv, and Renamed it as MemoryController, with the following logic of how the interior design looks like:
 ![alt text](Cache/images/MemoryHierachy.jpg)
+
+In the new design, I linked L1 L2 and L3 Cache with mainmemory, and 
+
 ### 5.1 Controller Interface
 ```systemverilog
 module MemoryController #(
