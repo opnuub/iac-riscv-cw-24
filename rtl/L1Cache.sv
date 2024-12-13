@@ -109,10 +109,16 @@ module L1Cache #(
                 end
                 
                 WRITE_BACK: begin
-                    if(mem_ready) begin
+                    if (mem_ready && mem_write) begin
                         mem_write <= 0;
-                        mem_read <= load;
-                        state <= load ? READ_MISS : WRITE_MISS;
+                        if (load) begin
+                            mem_read <= 1;
+                            state <= READ_MISS;
+                        end else if (store) begin
+                            state <= WRITE_MISS;
+                        end else begin
+                            state <= IDLE;
+                        end
                     end
                 end
                 

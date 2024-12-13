@@ -80,14 +80,25 @@ module MemoryController #(
     );
 
 
-    L3Cache l3_cache (
+    L3Cache #(
+        .DATA_WIDTH(DATA_WIDTH),
+        .SET_WIDTH(6)  
+    ) l3_cache (
         .clk(clk),
-        .reset(!rst_n),
-        .address({15'b0, addr}),  
-        .writeData(l2_mem_write_data),
-        .writeEnable(l2_mem_write),
-        .readData(l3_data_out),
-        .hit(l3_hit)
+        .rst_n(rst_n),
+        .load(l2_mem_read),            
+        .store(l2_mem_write),          
+        .address({15'b0, addr}),        
+        .data_in(l2_mem_write_data),   
+        .mem_data(main_mem_data),       
+        .mem_ready(main_mem_ready_reg), 
+        .hit(l3_hit),                   
+        .miss(l3_miss),                
+        .mem_write(l3_mem_write),       
+        .mem_read(l3_mem_read),         
+        .busy(l3_busy),                 
+        .data_out(l3_data_out),         
+        .mem_write_data(l3_mem_write_data) 
     );
 
 

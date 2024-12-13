@@ -1,115 +1,138 @@
-module L3Cache (
-    input  logic        clk,
-    input  logic        reset,
-    input  logic [31:0] address,          
-    input  logic [31:0] writeData,        
-    input  logic        writeEnable,      
-    output logic [31:0] readData,         
-    output logic        hit,              
-    output logic        stall,            
-    output logic        mem_read,        
-    output logic        mem_write,        
-    output logic [31:0] mem_address,      
-    output logic [31:0] mem_write_data,   
-    input  logic [31:0] mem_read_data,    
-    input  logic        mem_ready         
+module L3Cache #(
+    parameter DATA_WIDTH = 32,
+    parameter SET_WIDTH = 9,
+    parameter TAG_WIDTH = DATA_WIDTH - SET_WIDTH - 2
+) (
+    input  logic clk,
+    input  logic rst_n,
+    input  logic load,
+    input  logic store,
+    input  logic [DATA_WIDTH-1:0] address,
+    input  logic [DATA_WIDTH-1:0] data_in,
+    input  logic [DATA_WIDTH-1:0] mem_data,
+    input  logic mem_ready,
+    output logic hit,
+    output logic miss,
+    output logic mem_write,
+    output logic mem_read,
+    output logic busy,
+    output logic [DATA_WIDTH-1:0] data_out,
+    output logic [DATA_WIDTH-1:0] mem_write_data
 );
-
-    parameter CACHE_SIZE = 4096;  
-    parameter LINE_SIZE  = 16;   //
-    parameter TAG_WIDTH  = 14;   
-    localparam INDEX_BITS  = $clog2(CACHE_SIZE / LINE_SIZE);
-    localparam OFFSET_BITS = $clog2(LINE_SIZE);
-
-    typedef struct packed {
-        logic [TAG_WIDTH-1:0] tag;                 
-        logic [LINE_SIZE-1:0][31:0] data;          
-        logic valid;                               
-        logic dirty;                               
-    } CacheLine;
-
-    CacheLine cache[CACHE_SIZE / LINE_SIZE];       
-
-    logic [INDEX_BITS-1:0] index;                  
-    logic [OFFSET_BITS-1:0] offset;                
-    logic [TAG_WIDTH-1:0] tag_in;                  
-    typedef enum logic [1:0] {
+    typedef enum logic [2:0] {
         IDLE,
         READ_MISS,
+        WRITE_MISS,
         WRITE_BACK,
         UPDATE
     } state_t;
 
     state_t state;
 
-    assign index   = address[INDEX_BITS + OFFSET_BITS - 1:OFFSET_BITS];
-    assign offset  = address[OFFSET_BITS-1:0];
-    assign tag_in  = address[31:INDEX_BITS + OFFSET_BITS];
+    typedef struct packed {
+        logic valid;
+        logic dirty;
+        logic [TAG_WIDTH-1:0] tag;
+        logic [DATA_WIDTH-1:0] data;
+    } line_t;
 
-    always_ff @(posedge clk or posedge reset) begin
-        if (reset) begin
+    line_t cache[2**SET_WIDTH][2];
+    logic [2**SET_WIDTH-1:0] lru;
+
+    logic [TAG_WIDTH-1:0] tag;
+    logic [SET_WIDTH-1:0] index;
+    logic way;
+    logic hit_way;
+
+    assign tag = address[DATA_WIDTH-1:SET_WIDTH+2];
+    assign index = address[SET_WIDTH+1:2];
+
+    always_comb begin
+        hit = 0;
+        hit_way = 0;
+
+        if (cache[index][0].valid && cache[index][0].tag == tag) begin
+            hit = 1;
+            hit_way = 0;
+        end else if (cache[index][1].valid && cache[index][1].tag == tag) begin
+            hit = 1;
+            hit_way = 1;
+        end
+
+        way = lru[index];
+        if (!cache[index][0].valid) way = 0;
+        else if (!cache[index][1].valid) way = 1;
+
+        miss = !hit && (load || store);
+        mem_write_data = cache[index][way].data;
+        data_out = hit ? cache[index][hit_way].data : mem_data;
+    end
+
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
             state <= IDLE;
-            readData <= 0;
-            hit <= 0;
+            busy <= 0;
             mem_read <= 0;
             mem_write <= 0;
-            stall <= 0;
-            for (int i = 0; i < CACHE_SIZE / LINE_SIZE; i++) begin
-                cache[i].valid = 0;
-                cache[i].dirty = 0;
-                cache[i].tag = 0;
+            lru <= 0;
+            for (int i = 0; i < 2**SET_WIDTH; i++) begin
+                cache[i][0] <= '0;
+                cache[i][1] <= '0;
             end
         end else begin
             unique case (state)
                 IDLE: begin
-                    stall <= 0; 
-                    if (cache[index].valid && cache[index].tag == tag_in) begin
-                        hit <= 1;
-                        readData <= cache[index].data[offset];
-                    end else begin
-                        hit <= 0;
-                        stall <= 1; 
-                        if (cache[index].dirty) begin
+                    if (miss) begin
+                        busy <= 1;
+                        if (cache[index][way].valid && cache[index][way].dirty) begin
+                            mem_write <= 1;
                             state <= WRITE_BACK;
-                        end else begin
+                        end else if (load) begin
+                            mem_read <= 1;
                             state <= READ_MISS;
+                        end else begin
+                            state <= WRITE_MISS;
+                        end
+                    end else begin
+                        busy <= 0;
+                        mem_write <= 0;
+                        mem_read <= 0;
+                        if (hit && store) begin
+                            cache[index][hit_way].data <= data_in;
+                            cache[index][hit_way].dirty <= 1;
+                            lru[index] <= !hit_way;
+                        end else if (store) begin
+                            cache[index][way].dirty <= 1;
                         end
                     end
                 end
 
                 WRITE_BACK: begin
-                    stall <= 1;
-                    mem_write <= 1;
-                    
-                    mem_address <= {cache[index].tag, index, {OFFSET_BITS{1'b0}}}; 
-                    
-                    mem_write_data <= cache[index].data[0]; 
-                    
                     if (mem_ready) begin
                         mem_write <= 0;
-                        cache[index].dirty <= 0;
-                        cache[index].valid <= 0; 
-                        state <= READ_MISS;
+                        mem_read <= load;
+                        state <= load ? READ_MISS : WRITE_MISS;
                     end
                 end
 
                 READ_MISS: begin
-                    stall <= 1; 
-                    mem_read <= 1;
-                    mem_address <= address;
                     if (mem_ready) begin
-                        cache[index].data <= mem_read_data;
-                        cache[index].tag <= tag_in;
-                        cache[index].valid <= 1;
-                        cache[index].dirty <= writeEnable; 
                         mem_read <= 0;
                         state <= UPDATE;
                     end
                 end
 
+                WRITE_MISS: begin
+                    state <= UPDATE;
+                end
 
                 UPDATE: begin
-                    stall <= 0;
+                    busy <= 0;
+                    cache[index][way].valid <= 1;
+                    cache[index][way].dirty <= store;
+                    cache[index][way].tag <= tag;
+                    cache[index][way].data <= store ? data_in : mem_data;
+                    lru[index] <= !way;
                     state <= IDLE;
                 end
             endcase
