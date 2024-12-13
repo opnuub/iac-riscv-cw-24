@@ -15,7 +15,14 @@ During my time working on this project I initially devoted my work towards worki
 
 ## SingleCycle 
 
-When considering the single cycle CPU, my work on it consisted on making, debugging and editing various components starting from ones from lab4 and augmenting them in order to better fit to the more advanced CPU. Strarting with the program counter ([PC Register](rtl/pcReg.sv) and [PC Mux](rtl/pcMux.sv)) where at first I focused on trying to apply compartmentalisation and separated the add4 component with the counter itself, however later decided to combine the 2 into a single component allowing for simplification in debugging and in the top file. After that I worked on the [alu.sv] (rtl/alu.sv) where I innitially started with a 4-bit version allowing for a large range of instructions, later deciding to shrink it down to 3 bits given that this would still keep the main operations and allowed for a lot of simplicfication(this would then be changed back to 4-bits in the pipeline). I then spent some time making the [register file](Pipeline/rtl/regfile.sv), which turned out to be a lot simpler than expected. A issue that I at first had with this component was that I was convinced I neeed a .mem file to store values which eventually I noticed not to be the case. The last single-cycle component which I made very significant changes to was the [dataMemory.sv](rtl/dataMemory.sv), which on the second attempt I got to both work and select between a byte, half word and word size.
+When considering the single cycle CPU, my work on it consisted on making, debugging and editing various components starting from ones from lab4 and augmenting them in order to better fit to the more advanced CPU. Strarting with the program counter ([PC Register](rtl/pcReg.sv) and [PC Mux](rtl/pcMux.sv)) where at first I focused on trying to apply compartmentalisation and separated the add4 component with the counter itself, however later decided to combine the 2 into a single component allowing for simplification in debugging and in the top file. 
+<img src="Pipeline/images/SC_PC.png" width="650" height="350" alt="SC_PC"> 
+After that I worked on the [alu](rtl/alu.sv) where I innitially started with a 4-bit version allowing for a large range of instructions, later deciding to shrink it down to 3 bits given that this would still keep the main operations and allowed for a lot of simplicfication(this would then be changed back to 4-bits in the pipeline).
+<img src="Pipeline/images/SC_ALU.png" width="650" height="350" alt="SC_ALU">
+I then spent some time making the [register file](Pipeline/rtl/regfile.sv), which turned out to be a lot simpler than expected. A issue that I at first had with this component was that I was convinced I neeed a .mem file to store values which eventually I noticed not to be the case. 
+<img src="Pipeline/images/SC_Register_file.png" width="650" height="350" alt="SC_Reg">
+The last single-cycle component which I made very significant changes to was the [Data Memory](rtl/dataMemory.sv), which on the second attempt I got to both work and select between a byte, half word and word size.
+<img src="Pipeline/images/SC_Data_Memory.png" width="650" height="350" alt="SC_Dmem">
 
 ---
 ---
@@ -30,7 +37,7 @@ For the Pipeline CPU I made various changes both to separate the stages Fetch, D
 
 ### With hazard unit
 
-<img src="Pipeline/images/finished_pipeline_cpu.jpeg" width="850" height="550" alt="Pipeline 5 stages passed">
+<img src="Pipeline/images/Full_Pipeline_CPU.png" width="850" height="550" alt="Pipeline 5 stages passed">
 
 Of course, even with all these changes (and other minor ones) the cpu could still not pass any of the 5 tests given to us, this was because I was yet to add the [Hazard Unit](Pipeline/rtl/HazardUnit.sv) and related [HazardMux'es](Pipeline/rtl/HazardMux.sv). I made the [Hazard Unit](Pipeline/rtl/HazardUnit.sv) able to perfrom 3 different types of actions: Flushing (uses outputs FlushD and FlushE to set all the ouputs of the [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv) and [Decode -> Execute](Pipeline/rtl/PRegDecode.sv) registers to 0), Stalling (uses the ouput stall to prevent the values in the [PC Register](Pipeline/rtl/pcReg.sv) and [Fetch -> Decode](Pipeline/rtl/PRegFetch.sv) registers to pass on to the next ones) and Forwarding (uses the ouputs ForwardAE and ForwardBE to select between the value of register1 and regitsr2 ouputs of the [register file](Pipeline/rtl/regfile.sv) in the execute stage, the value of the aluresult in the memory stage and the value of the result which is in the writeback stage and ). In my HazardUnit code, forwarding, stalling, and flushing are implemented to resolve hazards as follows:
 
@@ -90,7 +97,7 @@ However, this strategy had a significant limitation: the terminal had a limit on
 
 the simulation from GTKWave looked like this (image from debugging test 5 errors in pipeline)
 
-<img src="Pipeline/images/GTKWave.png" width="1250" height="450" alt="debugging with GTK wave">
+<img src="Pipeline/images/GTKWave.png" width="1150" height="450" alt="debugging with GTK wave">
 
 ---
 ---
@@ -328,7 +335,47 @@ Sign extension fills higher bits with the most significant bit of the data if si
 
 ## Pipeline Registers
 
-#### Blocks Diagram
+1) PRegFetch
+Purpose: Transfers instruction and program counter values from Fetch (F) to Decode (D).
+Key Behavior:
+```systemverilog
+if (rst || Flush) begin
+    Outputs_D <= 0;
+end else if (!stall) begin
+    Outputs_D <= Inputs_F;
+end
+```
+2) PRegDecode
+Purpose: Passes register values, immediate data, and control signals from Decode (D) to Execute (E).
+Key Behavior:
+```systemverilog
+if (rst || Flush) begin
+    Outputs_E <= 0;
+end else begin
+    Outputs_E <= Inputs_D;
+end
+```
+3) PRegExecute
+Purpose: Transfers ALU results, write data, and control signals from Execute (E) to Memory (M).
+Key Behavior:
+```systemverilog
+if (rst) begin
+    Outputs_M <= 0;
+end else begin
+    Outputs_M <= Inputs_E;
+end
+```
+4) PRegMemory
+Purpose: Transfers memory results and control signals from Memory (M) to Write-back (W).
+Key Behavior:
+```systemverilog
+if (rst) begin
+    Outputs_W <= 0;
+end else begin
+    Outputs_W <= Inputs_M;
+end
+```
+#### Block Diagrams
 
 #### Links to Modules
 
@@ -369,9 +416,8 @@ Expanded resultSrc to 2 Bits
 Allows distinction between ALU (00), memory (01), and PC (10) results.
 
 ```systemverilog
-output  logic       resultSrc; // 1-bit signal
-```
 output  logic [1:0] resultSrc; // Expanded to 2 bits
+```
 Added Separate Branch Signal
 Differentiates branch determination from pcSrc.
 
@@ -451,7 +497,23 @@ end
 
 ---
 
-## Additional Features and Testing  
+## ALU & Branch Unit
+
+#### Blocks Diagrams
+
+#### Links to Modules
+
+[controlUnit.sv](Pipeline/rtl/alu.sv)
+
+[aluDecoder.sv](Pipeline/rtl/branchUnit.sv)
+
+#### Most Relevant Commits
+
+1) [Improved Pipeline Registers](https://github.com/opnuub/iac-riscv-cw-16/commit/72aea873a82f6d3353513419fee9e28bb456142d)
+
+2) [implemented the Jalr instruction by using a seperate mux](https://github.com/opnuub/iac-riscv-cw-16/commit/aa623c2f9ed204c58805c8cf299f0bddc0a6dc05)
+
+---
 
 ### Features Added  
 
