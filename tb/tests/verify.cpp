@@ -46,6 +46,41 @@ TEST_F(CpuTestbench, TestPdf)
     EXPECT_EQ(top_->a0, 15363);
 }
 
+TEST_F(CpuTestbech, TestReg)
+{
+    setupTest("6_regfile");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0,84);
+}
+
+TEST_F(CpuTestbech, ZeroReg)
+{
+    setupTest("7_zero_register_test");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0,99);
+}
+
+TEST_F(CpuTesbench, JumpTest)
+{
+    setupTest("8_jump");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0,3);
+}
+
+// Branch Test bench is testing all the ALU functions implemented
+// as well as branch and load instructions
+// Will return a0 = 0 if all pass
+TEST_T(CpuTestbench, BranchTb)
+{
+    setupTest("9_branchtb");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top->a0,0)
+}
+
 int main(int argc, char **argv)
 {
     testing::InitGoogleTest(&argc, argv);
