@@ -2,6 +2,9 @@
 
 ## Overview
 
+Streched goals are in the following locations:
+
+
 
 | Branch   | Descripton                |
 | -------- | ------------------------- |
@@ -24,10 +27,11 @@
 
 ### Layout
 
-We've divided our different versions of the CPU into 3 branches:</br>
-`main`: For Single-Cycle</br>
+We've divided our different versions of the CPU into 4 branches:</br>
+`main`: For Single-Cycle & For Pipeline</br>
 `Pipeline`: For pipeline </br>
 `Cache`: For two-set cache associative </br>
+`Full_Instruction`: For full instruction </br>
 
 ### Directory Navigation
 
@@ -95,6 +99,14 @@ The team allocated tasks based on the following factors:
 | PDF Plotting           | pdf_tb.cpp                                                       |                          |                |                     | F                |
 |                        | doit.sh                                                          |                          | P              |                     | P                |
 | Unit Testing           | Multiple assembly files                                          |                          |                | P                   | F                |
+
+
+&nbsp;
+
+| Module                 | File Names                                                       | Flavio (@FlavioGazzetta) | Cole (@opnuub) | Michael (@Happymic) | Soon (@so0nyung) |
+| ---------------------- | ---------------------------------------------------------------- | ------------------------ | -------------- | ------------------- | ---------------- |
+| Full instruction set   |                                                                  |                          |                |          M          |                  |
+
 
 &nbsp;
 
