@@ -1,5 +1,9 @@
-
 main:
+    addi    t0, zero, 0x1
+    jal     ra, subroutine
+    ret
+
+subroutine:
     addi 	a0, zero, 0x1
     addi 	a0, zero, 0x3
     addi 	a0, zero, 0x7
@@ -8,5 +12,4 @@ main:
     addi 	a0, zero, 0x3f
     addi 	a0, zero, 0x7f
     addi    a0, zero, 0xff
-    addi    a0, zero, 0x0
-    ret
+    li      a0, 0x0
