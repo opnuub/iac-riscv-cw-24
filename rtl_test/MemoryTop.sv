@@ -125,6 +125,7 @@ module MemoryTop #(
     // l3_cache_hit ? l3_rd_data :
     // mem_rd_data;
     // Data valid when any cache hits or memory responds
-    assign data_valid_o = 1'b1; //l1_cache_hit | l2_cache_hit | l3_cache_hit | mem_valid;
+    //assign data_valid_o = 1'b1; 
+    //l1_cache_hit | l2_cache_hit | l3_cache_hit | mem_valid;
 
 endmodule

@@ -7,7 +7,7 @@ fi
 
 MODULE_NAME=$1 
 RTL_FOLDER=$(realpath "../rtl")
-TB_FOLDER=$(realpath "../tests")
+TB_FOLDER=$(realpath "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/tb/tests")
 OUTPUT_DIR=$(realpath "./obj_dir")
 
 mkdir -p ${OUTPUT_DIR}

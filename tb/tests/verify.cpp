@@ -3,38 +3,37 @@
 #include "cpu_testbench.h"
 #define CYCLES 10000
 
-//Original tests
-// TEST_F(CpuTestbench, TestAddiBne)
-// {
-//     setupTest("1_addi_bne");
-//     initSimulation();
-//     runSimulation(CYCLES);
-//     EXPECT_EQ(top_->a0, 254);
-// }
+TEST_F(CpuTestbench, TestAddiBne)
+{
+    setupTest("1_addi_bne");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 254);
+}
 
-// TEST_F(CpuTestbench, TestLiAdd)
-// {
-//     setupTest("2_li_add");
-//     initSimulation();
-//     runSimulation(CYCLES);
-//     EXPECT_EQ(top_->a0, 1000);
-// }
+TEST_F(CpuTestbench, TestLiAdd)
+{
+    setupTest("2_li_add");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 1000);
+}
 
-// TEST_F(CpuTestbench, TestLbuSb)
-// {
-//     setupTest("3_lbu_sb");
-//     initSimulation();
-//     runSimulation(CYCLES);
-//     EXPECT_EQ(top_->a0, 300);
-// }
+TEST_F(CpuTestbench, TestLbuSb)
+{
+    setupTest("3_lbu_sb");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 300);
+}
 
-// TEST_F(CpuTestbench, TestJalRet)
-// {
-//     setupTest("4_jal_ret");
-//     initSimulation();
-//     runSimulation(CYCLES);
-//     EXPECT_EQ(top_->a0, 53);
-// }
+TEST_F(CpuTestbench, TestJalRet)
+{
+    setupTest("4_jal_ret");
+    initSimulation();
+    runSimulation(CYCLES);
+    EXPECT_EQ(top_->a0, 53);
+}
 
 TEST_F(CpuTestbench, TestPdf)
 {
@@ -52,7 +51,7 @@ TEST_F(CpuTestbench, TestPdf)
 //     setupTest("7_test");
 //     initSimulation();
 //     runSimulation(CYCLES);
-//     EXPECT_EQ(top_->a0, 0xFF);  // All logical operations passed
+//     EXPECT_EQ(top_->a0, 0xFF); 
 // }
 
 // TEST_F(CpuTestbench, TestShifts)
@@ -111,14 +110,14 @@ TEST_F(CpuTestbench, TestPdf)
 //     EXPECT_EQ(top_->a0, 0x80000000);  // Minimum signed 32-bit value
 // }
 
-// // Additional edge case tests
-// TEST_F(CpuTestbench, TestLoadStoreEdgeCases)
-// {
-//     setupTest("15_edge_loads");
-//     initSimulation();
-//     runSimulation(CYCLES);
-//     EXPECT_EQ(top_->a0, 65790);  // Result of special load combinations
-// }
+// // // Additional edge case tests
+// // TEST_F(CpuTestbench, TestLoadStoreEdgeCases)
+// // {
+// //     setupTest("15_edge_loads");
+// //     initSimulation();
+// //     runSimulation(CYCLES);
+// //     EXPECT_EQ(top_->a0, 65790);  // Result of special load combinations
+// // }
 
 // TEST_F(CpuTestbench, TestShiftRight)
 // {
