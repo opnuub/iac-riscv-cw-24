@@ -46,7 +46,7 @@ TEST_F(CpuTestbench, TestPdf)
     EXPECT_EQ(top_->a0, 15363);
 }
 
-TEST_F(CpuTestbech, TestReg)
+TEST_F(CpuTestbench, TestReg)
 {
     setupTest("6_regfile");
     initSimulation();
@@ -54,7 +54,7 @@ TEST_F(CpuTestbech, TestReg)
     EXPECT_EQ(top_->a0,84);
 }
 
-TEST_F(CpuTestbech, ZeroReg)
+TEST_F(CpuTestbench, ZeroReg)
 {
     setupTest("7_zero_register_test");
     initSimulation();
@@ -62,7 +62,7 @@ TEST_F(CpuTestbech, ZeroReg)
     EXPECT_EQ(top_->a0,99);
 }
 
-TEST_F(CpuTesbench, JumpTest)
+TEST_F(CpuTestbench, JumpTest)
 {
     setupTest("8_jump");
     initSimulation();
@@ -78,7 +78,7 @@ TEST_T(CpuTestbench, BranchTb)
     setupTest("9_branchtb");
     initSimulation();
     runSimulation(CYCLES);
-    EXPECT_EQ(top->a0,0)
+    EXPECT_EQ(top->a0,0);
 }
 
 int main(int argc, char **argv)
