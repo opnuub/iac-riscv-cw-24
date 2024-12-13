@@ -83,14 +83,14 @@ Once within the `tb` folder, traverse to `pdf_program` folder, attach the vbuddy
 &nbsp;
 
 ### Pipelined Processor
-| Part                       | File                                                                    | Flavio      | Cole         | Michael     | Soon      |
+ Part                       | File                                                                     | Flavio      | Cole         | Michael     | Soon      |
 |:---------------------------|:------------------------------------------------------------------------|:-----------:|:------------:|:-----------:|:---------:|
 | Pipeline Registers         | PRegFetch.sv, PRegDecode.sv, PRegExecute.sv, PRegMemory.sv              |       F     |              |             |           |
-| Jump Control| BandJSelector.sv                                                        |       F     |              |             |           |
-| Module signal reconnection | ALU.sv, Control Unit.sv, Extend.sv, ...                                 |       F     |              |             |           |
+| Jump Control               | JalrMux.sv                                                              |       F     |              |             |           |
+| Module Signal Reconnection | alu.sv, controlUnit.sv, extendPC.sv, resultMux.sv                       |       F     |              |             |           |
 | Reformat Intermediate TOPs | FetchTOP.sv, DecodeTOP.sv, ExecuteTOP.sv, MemoryTOP.sv, WritebackTOP.sv |       F     |              |             |           |
 | Hazard Handling            | HazardUnit.sv                                                           |       F     |              |             |           |
-|                            | ExecuteFwdMuxA.sv, ExecuteFwdMuxB.sv                                    |       F     |              |             |           |
+|                            | HazardMux.sv                                                            |       F     |              |             |           |
 | Full Integration           | top.sv                                                                  |       F     |              |             |           |
 
 &nbsp;
