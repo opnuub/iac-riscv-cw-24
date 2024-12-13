@@ -8,8 +8,99 @@
 
 ## Overview  
 
-During my time working on this project I initially devoted my work towards working on both the single cycle and especially a 5 stage pipelined CPU. For the single-cycle I made and tested various componets, these components were the DataMemory, the Register file, the ALU, the PC and various multiplexers. After having completed this I focused my time on the pipelining cpu for which I made many new components including a hazard unit (would decide when to flush, stall and use forwarding), hazard multiplexers (to implement forwarding), registers which would separate the stages Fetch->Decode, Decode->Execute, Execute->Memory, Memory->WriteBack, a mux which would allow the implementation of the JALR instruction and many more. 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RISC-V RV32I Processor Coursework - Flavio Gazzetta</title>
+</head>
+<body>
 
+<h1 id="personal-statement-for-risc-v-rv32i-processor-coursework">RISC-V RV32I Processor Coursework</h1>
+<h2>Personal Statement of Contributions</h2>
+<p><strong>Flavio Gazzetta</strong></p>
+
+<hr>
+
+<h2 id="overview">Overview</h2>
+<ul>
+    <li><a href="#cpu-design-and-implementation">1. CPU Design and Implementation</a>
+        <ul>
+            <li><a href="#initial-group-work-allocation">1.1 Initial Group Work Allocation</a></li>
+            <li><a href="#single-cycle-component-work">1.2 Single Cycle Component Work</a></li>
+            <li><a href="#testing-and-validation">1.3 Testing and Validation</a></li>
+        </ul>
+    </li>
+    <li><a href="#cache-system-design-and-implementation">2. Cache System Design and Implementation</a>
+        <ul>
+            <li><a href="#core-cache-architecture">2.1 Core Cache Architecture</a>
+                <ul>
+                    <li><a href="#cache-line-structure">Cache Line Structure</a></li>
+                </ul>
+            </li>
+            <li><a href="#cache-array-organization">2.2 Cache Array Organization</a></li>
+            <li><a href="#address-decomposition-algorithm">2.3 Address Decomposition Algorithm</a>
+                <ul>
+                    <li><a href="#address-fields">Address Fields</a></li>
+                </ul>
+            </li>
+            <li><a href="#hit-detection-logic">2.4 Hit Detection Logic</a></li>
+        </ul>
+    </li>
+    <li><a href="#cache-controller-state-machine">3. Cache Controller State Machine</a>
+        <ul>
+            <li><a href="#detailed-analysis">3.1 Detailed Analysis</a></li>
+            <li><a href="#state-definitions">3.2 State Definitions</a></li>
+            <li><a href="#state-details">3.3 State Details</a>
+                <ul>
+                    <li><a href="#idle-state">IDLE State</a></li>
+                    <li><a href="#write-back-state">WRITE_BACK State</a></li>
+                    <li><a href="#read-miss-state">READ_MISS State</a></li>
+                    <li><a href="#write-miss-state">WRITE_MISS State</a></li>
+                    <li><a href="#update-state">UPDATE State</a></li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li><a href="#lru-implementation-details">4. LRU Implementation Details</a>
+        <ul>
+            <li><a href="#lru-bit-structure">4.1 LRU Bit Structure</a></li>
+            <li><a href="#lru-update-logic-diagram">4.2 LRU Update Logic Diagram</a></li>
+            <li><a href="#lru-decision-process">4.3 LRU Decision Process</a></li>
+            <li><a href="#lru-implementation-analysis">4.4 LRU Implementation Analysis</a></li>
+        </ul>
+    </li>
+    <li><a href="#memory-controller-design">5. Memory Controller Design</a>
+        <ul>
+            <li><a href="#controller-interface">5.1 Controller Interface</a></li>
+            <li><a href="#cache-level-interconnection">5.2 Cache Level Interconnection</a></li>
+            <li><a href="#l1-l2-l3-cache-io">5.3 L1/L2/L3 Cache IO</a></li>
+            <li><a href="#result-analysis">5.4 Result & Analysis</a></li>
+            <li><a href="#optimization-and-future-directions">5.5 Optimization and Future Directions</a></li>
+        </ul>
+    </li>
+    <li><a href="#full-instruction-cpu">6. Full Instruction CPU</a></li>
+    <li><a href="#reflections-and-learnings">7. Reflections and Learnings</a>
+        <ul>
+            <li><a href="#deep-dive-into-cache-design">7.1 Deep Dive into Cache Design</a></li>
+            <li><a href="#team-collaboration-and-git-management">7.2 Team Collaboration and Git Management</a></li>
+            <li><a href="#testbench-development">7.3 Testbench Development</a></li>
+        </ul>
+    </li>
+    <li><a href="#acknowledgement-and-conclusion">8. Acknowledgement & Conclusion</a></li>
+</ul>
+
+<hr>
+
+<h2 id="single-cycle">Single Cycle</h2>
+<p><a href="#single-cycle-added-or-edited-components">Jump to Relevant Single Cycle commits</a></p>
+<p>The single-cycle CPU development involved creating, debugging, and improving components. These enhancements were based on lessons learned in Lab 4 and tailored to the more advanced CPU requirements. Key contributions included compartmentalizing functionality and optimizing debugging workflows by merging components where necessary.</p>
+
+<img src="Pipeline/images/SC_PC.png" width="650" height="350" alt="SC_PC">
+<!-- Example: Continue descriptions for each subsection -->
+</body>
+</html>
 
 
 ---
