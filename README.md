@@ -50,18 +50,16 @@ Once within the `tb` folder, traverse to `pdf_program` folder, attach the vbuddy
 ./attach_usb
 ./doit.sh
 ```
-## Working Evidence (Picture)
-| Dataset|Graph                                       |
-|--------|--------------------------------------------|
-|Gaussian|<img src="images/Gaussian_Plot_Graph.jpg" alt="Gaussian Plot" width="400">|
-|        |<iframe width="560" height="315" src="https://www.youtube.com/shorts/S-n3LoTKLPA" frameborder="0" allowfullscreen></iframe>  |
-|Noisy|<img src="images/Noisy_Plot_Graph.jpg" alt="Noisy Plot" width="400">|
-|| 
-<iframe width="560" height="315" src="https://youtube.com/shorts/oGnb0cSuTNY" frameborder="0" allowfullscreen></iframe>|
-|Triangle|<img src="images/Triangle_Plot_Graph.jpg" alt="Triangle Plot" width="400">|
-||<iframe width="560" height="315" src="https://youtu.be/bxq5VPnM24I" frameborder="0" allowfullscreen></iframe>  |
+## Working Evidence (PDF Plotting)
 
-<iframe width="560" height="315" src="https://youtube.com/shorts/eye_c77uzMk" frameborder="0" allowfullscreen></iframe>
+| Dataset   | Graph                                                                                 | Video                                                                                              |
+|-----------|---------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| Gaussian  | <img src="images/Gaussian_Plot_Graph.jpg" alt="Gaussian Plot" width="400">            | [Gaussian Plot Video](https://www.youtube.com/shorts/S-n3LoTKLPA)                                         |
+| Noisy     | <img src="images/Noisy_Plot_Graph.jpg" alt="Noisy Plot" width="400">                  | [Noisy Plot Video](https://youtube.com/shorts/oGnb0cSuTNY)                                             |
+| Triangle  | <img src="images/Triangle_Plot_Graph.jpg" alt="Triangle Plot" width="400">            | [Triangle Plot Video](https://youtu.be/bxq5VPnM24I)                                                       |
+
+## Working Evidence (F1 Lights)
+[F1 Video](https://youtube.com/shorts/eye_c77uzMk)
 
 
 ## Contributions
@@ -103,7 +101,7 @@ The team allocated tasks based on the following factors:
 &nbsp;
 
 ### Set Associative Cache
-| Part             | File     | Flavio  | Cole | Michael  | Soon      |
+| Part| File     |Flavio (@FlavioGazzetta)|Cole (@opnuub)| Michael (@Happymic) |Soon (@so0nyung)|
 |:-----------------|:---------|:-------:|:----:|:--------:|:-------:|
 | Two-way set cache| HazardUnit.sv (Cache - Memory stall)|P | |F|   |
 || MemoryControler.sv|||    F        ||
