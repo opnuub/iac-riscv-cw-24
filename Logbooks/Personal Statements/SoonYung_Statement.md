@@ -113,13 +113,13 @@ The assembly code went through the most iterations and greatly influenced the re
 Initially, I had first thought of making a trigger within the assembly code using a beq function (View [commit here](https://github.com/opnuub/iac-riscv-cw-16/commit/dabe4cceb595ad3fc03d3f3027d8d1797f2d3615)). But, it was extremely tedious and unecessarily extended the code. I eventually changed the `clktick.sv` to include a rst function.
 
 To create the random number generator, I had first considered following a Linear Congruential Generator within the assembly code that following the formula:
-[LFG Equation](images/LFG_Eqn.jpg)
+![LFG Equation](../../images/LFG_Eqn.jpg)
 But that made the code too long and our CPU did not have all the necessary functions to implement it correctly (E.g. full multiplication). </br>
 
 In the end, I settled on the lfsr used in the lectures as a sufficient pseudorandom number generator.
 
 The end result was a simple code that fulfilled the requirements of the F1:</br>
-![F1 Assembly Code](/images/F1_assem.jpg) </br>
+![F1 Assembly Code](../../images/F1_assem.jpg) </br>
 
 #### Testing
 
@@ -146,23 +146,23 @@ For this portion, I ended with the following files:
 1. <u>Starting point</u>. We were provided with the `pdf.s` to follow. The task was to develop a testbench that would be able to receive the data and translate it properly and plot it in vBuddy.
 2. <u>pdf.s amendements</u>. While reading through the pdf.s file, I realised the display section:
 
-![Display assembly code](images/pdf_dispcode.jpg) </br>
+![Display assembly code](../../images/pdf_dispcode.jpg) </br>
     was when one loop of building the pdf function was finished. I could use this as a break for my testbench to extract the data and plot it. Hence, I added an `addi` function:</br>
     
-![New Display Assembly code](images/pdf_newdis.jpg)</br>
+![New Display Assembly code](../../images/pdf_newdis.jpg)</br>
 
 which allowed me to identify when one loop of building the pdf was complete.
 
 3. <u>PDF Plotting testbench</u>. The testbench has a very similar structure to most testbenches outputting to vBuddy: initialise verilator values, run the files and output the data into vBuddy. The problem is there is too much data to output each value one by one (The gaussian.mem is over 8 thousans lines long). It could lead to all sorts of issues To minimise them, I decided to input data into a vector after every loop and upload all that data in the vBuddy.
 
 First I added three new variables:</br>
-![Pdf New Variables](images/pdf_newVar.jpg)</br>
+![Pdf New Variables](../../images/pdf_newVar.jpg)</br>
 a. discyc - to capture the clock cycles </br>
 b. norm_dist - to capture the values in each loop </br>
 c. startDisplaying - a boolean flag to indicate when to dump values to vBuddy
 
 Next, I added logic to detect when a loop is finished and to start collecting data: </br>
-![Pdf Conditions](images/pdf_conditions.jpg)</br>
+![Pdf Conditions](../../images/pdf_conditions.jpg)</br>
 Which simply collects the next 240 values in `a0` (which are loaded in from data memory storing pdf data) and outputs it into the `vbdPlot()`.
 
 
@@ -170,9 +170,9 @@ Which simply collects the next 240 values in `a0` (which are loaded in from data
 
 |Signal|Graphic|
 |------|-------|
-|Gaussian|[Old Gaussian Graph](images/Gaussian_Graph.jpg)  |
-|Noisy   |[Old Noisy Graph](images/Noisy_Graph.jpg)        |
-|Triangle|[Old Triangle Graph](images/Triangle_Graph.jpg)       |
+|Gaussian|[Old Gaussian Graph](../../images/Gaussian_Graph.jpg)  |
+|Noisy   |[Old Noisy Graph](../../images/Noisy_Graph.jpg)        |
+|Triangle|[Old Triangle Graph](../../images/Triangle_Graph.jpg)       |
 
 The effect was particulary noticeable in the `noisy.mem` graph. To compensate this, I adjusted the number of cycles `discyc` is given, thereby increasing the frequency of collection. This shifted the graph to the left to show the full images, which can be found in the [`README.md`](https://github.com/opnuub/iac-riscv-cw-16/blob/main/README.md) file.
 

@@ -16,7 +16,7 @@
 |Cole     |[Peronal Statement](Github.com)|
 |Flavio   |[Peronal Statement](Github.com)|
 |Michael  |[Peronal Statement](Github.com)|
-|Soon Yung|[Peronal Statement](Github.com)|
+|Soon Yung|[Peronal Statement](https://github.com/opnuub/iac-riscv-cw-16/blob/main/Logbooks/Personal%20Statements/SoonYung_Statement.md)|
 
 ## Navigation
 ### Layout
@@ -54,13 +54,13 @@ Once within the `tb` folder, traverse to `pdf_program` folder, attach the vbuddy
 | Dataset|Graph                                       |
 |--------|--------------------------------------------|
 |Gaussian|![Gaussian Graph](images/Gaussian_Graph.jpg)|
-|        | ![Gaussian Plot](images/gaussian_plot.mp4) |
+|        | ![Gaussian Plot](https://www.youtube.com/shorts/S-n3LoTKLPA) |
 |Noisy   |![Noisy Graph](images/Noisy_Graph.jpg)      |
-|        |![Noisy Plot](images/Noisy_Plot.mp4)        |
+|        |![Noisy Plot](https://youtube.com/shorts/oGnb0cSuTNY)        |
 |Triangle|![Triangle Graph](images/Triangle_Graph.jpg)|
-|        |![Triangle Plot](images/Triangle_plot.mp4)  |
+|        |![Triangle Plot](https://youtu.be/bxq5VPnM24I)  |
 
-![F1 Video](images/F1_Lights.MOV)
+![F1 Video](https://youtube.com/shorts/eye_c77uzMk)
 
 
 ## Contributions
