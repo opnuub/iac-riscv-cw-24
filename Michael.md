@@ -79,7 +79,7 @@ Key Instruction Mapping Example
 | **Jump (JAL/JALR)**   | `rf_wdata_sel_o = 10`, `next_pc_sel_o = 10/11`    | Saves return address and jumps to target.                         |
 
 and I have also implemnted all the different cases in the module using a case scenario.
-![alt text](image.jpg)
+
 To verify that this works, I improved the testbench files I used for Lab4, adding new testing logics for Branch and Load type instructions, with also illegal instructions to verify the workability of this submodule:
 Controller Test
 ![alt text](Cache/images/BenchController.png)
@@ -201,7 +201,7 @@ end
 To provide a detailed analysis of the cache design, I created a hierarchy diagram that illustrated the structure and interactions of the various components involved. This diagram served as a visual aid, helping me and my team understand the flow of data and control within the cache system.
 
 ### 3.1 State Definitions
-```systemverilog
+```verilog
 typedef enum logic [2:0] {
     IDLE,
     READ_MISS,
@@ -342,17 +342,17 @@ logic [2**SET_WIDTH-1:0] lru;  // One bit per set
 
 ### 2.2 LRU Update Logic Diagram
 
+
 ```mermaid
-graph TD
-    A[Cache Access] --> B{Hit?}
-    B -->|Yes| C[Update LRU for Hit]
-    B -->|No| D[Update LRU for Miss]
-    
-    C --> E[lru[index] = !hit_way]
-    D --> F[lru[index] = !way]
-    
-    E --> G[Next Access]
-    F --> G
+flowchart TD
+    A[Memory Access] --> B{Cache Hit or Miss?}
+    B -->|Cache Hit| C[Update LRU Bits for Accessed Cache Line]
+    B -->|Cache Miss| D[Find LRU Block in the Set]
+    C --> E[Continue Program]
+    D --> F[Evict LRU Cache Line]
+    F --> G[Load New Memory Block to LRU Line]
+    G --> H[Update LRU Bits to Reflect New Cache Line Usage]
+    H --> E
 ```
 
 ### 2.3 LRU Decision Process
