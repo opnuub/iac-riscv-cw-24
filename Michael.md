@@ -33,9 +33,13 @@
     - [5.1 Controller Interface](#51-controller-interface)
     - [5.2 Cache Level Interconnection](#52-cache-level-interconnection)
     - [5.3 L1/L2/L3 Cache IO](#53-l1l2l3-cache-io)
-    - [Result \& Analysis](#result--analysis)
-    - [5.5 Optimization and Future Directions](#55-optimization-and-future-directions)
-  - [6. Full Instruction CPU](#6-full-instruction-cpu)
+    - [5.4 Modify Hazard Unit to Control Stall Signals](#54-modify-hazard-unit-to-control-stall-signals)
+    - [5.5 Result \& Analysis](#55-result--analysis)
+    - [5.6 Optimization and Future Directions](#56-optimization-and-future-directions)
+  - [6. Full Instruction CPU \& Assembly Debug](#6-full-instruction-cpu--assembly-debug)
+    - [6.1 Instrution Implementation](#61-instrution-implementation)
+    - [6.2 Fixing Minor Bugs of Offsert Waveform for Vbuddy PDF Program](#62-fixing-minor-bugs-of-offsert-waveform-for-vbuddy-pdf-program)
+    - [6.3 Future Direction \& Optimization](#63-future-direction--optimization)
   - [7. Reflections and Learnings](#7-reflections-and-learnings)
     - [7.1 Deep Dive into Cache Design](#71-deep-dive-into-cache-design)
     - [7.2 Team Collaboration and Git Management](#72-team-collaboration-and-git-management)
@@ -83,7 +87,7 @@ Key Instruction Mapping Example
 2. **Instruction Memory (imem.sv)**: These modules simulated the memory components of a real CPU, allowing for the storage and retrieval of data and instructions.
 
 - The Instruction Memory (IMEM) module is responsible for storing and providing instructions to the processor. It is implemented as a byte-addressable memory array and supports reading 32-bit instructions. 
-
+![alt text](Cache/images/imem_partial.jpg)
 - **Instruction Fetching**
 	•	Addressing Scheme: The input **addr_i** specifies the address of the instruction to fetch. Since RISC-V instructions are 32 bits (4 bytes) wide, the **addr_i** is divided:
 	•	**addr_i[11:2]**: Determines the base address of the instruction in word-aligned format.
@@ -118,8 +122,8 @@ To ensure the correctness and reliability of the designs, I meticulously wrote u
 - ALU Test: Test all ALU Instructions
 ![alt text](Cache/images/BenchALU.jpg)
 
-Evidence of the old testbench files in this folder: [Link]
-[Most Relevant Commit]("https://github.com/opnuub/iac-riscv-cw-16/commit/a3f3f0584d648cb6eb74a3197592a65f355354bd")
+
+[Most Relevant Commit for Section 1]("https://github.com/opnuub/iac-riscv-cw-16/commit/a3f3f0584d648cb6eb74a3197592a65f355354bd")
 ## 2. Cache System Design and Implementation Analysis
 
 ### 2.1 Core Cache Architecture
@@ -194,11 +198,14 @@ end
 •	If **cache[index][0]** is invalid, selects way 0 (way = 0).
 •	If **cache[index][1]** is invalid, selects way 1 (way = 1).
 
+Below is the most relevant commit that cache passed the basic unit test for write back: [Cache1 Unit Test Passed Commit]("https://github.com/opnuub/iac-riscv-cw-16/commit/943ff76ef60498c74b3a94936426ca2ead0c6639#diff-30ba30756adb35a1ecbf4b3b22e1cd36e622bc47a4c31fed0eb373679c20f129")
 ## 3. Cache Controller State Machine
 ![alt text](Cache/images/StateMachine.jpg)
 ### Detailed Analysis
 
-To provide a detailed analysis of the cache design, I created a hierarchy diagram that illustrated the structure and interactions of the various components involved. This diagram served as a visual aid, helping me and my team understand the flow of data and control within the cache system.
+To provide a detailed analysis of the cache design, I created a hierarchy diagram that illustrated the structure and interactions of the various components involved. The reason I chose to implement a state because it provides a structured and efficient way to manage the cache’s complex operations, such as tag matching, data retrieval, and replacement policies. By clearly defining states for operations state machine ensures that the cache controller handles requests systematically, avoiding ambiguity and conflicts. This approach makes it easier to incorporate features like hit/miss detection and least-recently-used (LRU) replacement logic, as each step in the process can be assigned to a specific state with well-defined transitions. Additionally, using a state machine simplifies debugging and verification, as the predictable flow of execution ensures that edge cases are handled consistently. 
+
+This diagram served as a visual aid, helping me and my team understand the flow of data and control within the cache system.
 
 ### 3.1 State Definitions
 ```verilog
@@ -374,6 +381,8 @@ Benefits and reason for this implementation:
 3. Fast LRU determination
 4. Efficient and easy way selection compare to other methods
 
+[Most Relevant Commit for Cache Development & Debug]("https://github.com/opnuub/iac-riscv-cw-16/commit/05ec666a3d472f2fac9f86d106d0537b7ae9fb47")
+
 ## 5. Memory Controller Design
 The original memory hierachy design from pipeline looked like this with the processor:
 ![alt text](Cache/images/OriginalHierachy.jpg)
@@ -457,25 +466,123 @@ always_comb begin
     end
 end
 ```
+![alt text](Cache/images/WaveTrace_hit.jpg)
 
-### Result & Analysis
+The above wave trace from the program showed this logic, where the three level of caches hits data and update sequentially to ensure that data consistency, and in chronologically order, which is maintained across all cache levels while minimizing latency.
 
-[Link of GTK Wave Trace]
+### 5.4 Modify Hazard Unit to Control Stall Signals
 
-### 5.5 Optimization and Future Directions
+To implement the stall logic in the Hazard Unit, I first identified scenarios that require stalling, including load-use hazards, control hazards (branching or jumps), and memory stalls. I investigated into the combinational logic block to evaluate these conditions based on pipeline register dependencies and control signals. Specifically, for load-use hazards, I checked if the destination register in the Execute stage matched the source registers in the Decode stage when a memory read operation was active. For control hazards, I remodified and incorporated signals indicating branches and jumps, and also added debug signals for viewing the logic of flush and stall units comparing with Cache States.
+
+[Most Relevant Commit]("https://github.com/opnuub/iac-riscv-cw-16/commit/395d0e2fbb8a7543e3710e644db533c618e79a74")
+
+However, realizing that the Hazard Unit operates as part of a state machine simplifies the stall logic, as the state machine inherently ensures sequential processing and coordination across pipeline stages. Unlike a more complex multi-threaded or out-of-order execution pipeline, a state machine processes one instruction at a time within a defined sequence of states. This characteristic reduces the need for multiple independent stall units, as the state transitions naturally enforce dependencies and resolve hazards within a single unified structure. Consequently, the stall logic only needs to address key scenarios like load-use hazards, control hazards, and memory stalls, as these are the main disruptions to the otherwise orderly flow.
+
+```systemverilog
+
+    if (load_use_hazard) begin 
+        stall = 1'b1;   
+        FlushE = 1'b1;  
+        FlushD = 1'b0;  
+    end else if (control_hazard) begin
+        stall = 1'b0;   
+        FlushD = 1'b1;  
+        FlushE = 1'b1;  
+    end else if (mem_stall) begin
+        stall = 1'b1;   
+        FlushE = 1'b1;   
+        FlushD = 1'b0; 
+    end else begin
+        stall = 1'b0;  
+        FlushD = 1'b0;
+        FlushE = 1'b0;
+    end
+```
+
+The final version of the Hazard Unit reflects this streamlined approach. By consolidating stall conditions into a central logic block and integrating forwarding and flushing mechanisms within the same framework, the design minimizes complexity while maintaining functionality. This efficiency ensures that the Hazard Unit handles all critical pipeline hazards without the need for redundant or overly granular control signals, making it a compact yet robust solution for managing dependencies and maintaining data consistency in a state-machine-driven pipeline.
+
+
+### 5.5 Result & Analysis
+
+![alt text](Cache/images/Cache_Result_Pass.jpg)
+
+### 5.6 Optimization and Future Directions
 
 Reflecting on the cache design process, I recognize that there are several areas where further optimization is possible. For instance, exploring different replacement algorithms could enhance the cache's efficiency and reduce latency. Additionally, incorporating prefetching mechanisms could further improve the system's performance by anticipating and fetching data before it is needed.
 
-## 6. Full Instruction CPU 
+## 6. Full Instruction CPU & Assembly Debug
 
+### 6.1 Instrution Implementation
 After finishing the major branches. We have found out we are only missing a few instructions from completing a Full instruction CPU based on the stretched goals. The missing instructions were: 
-- R-type: SRA (Arithmetic right shift), SRAI
-- I-type: SRAI (Arithmetic right shift immediate), SLTIU (Set less than immediate unsigned)
-- U-type: AUIPC (Add upper immediate to PC)
+- **R-type: SRA (Arithmetic right shift), SRAI**
+  
+```
+ 4'b1000: aluResult = signedA >>> shiftAmt;
+```
 
-Therefore, I added these instructions inside the pipieline branch and modified the ALU & ALU Decoder to implement these logic. After that, I also wrote a several base case test assembly code to validate these instructions, while also designing a stress test to test the boundaries of some of the newly developed code. Here are the details of the assembly code that is implemented:
+- **I-type: SRAI (Arithmetic right shift immediate), SLTIU (Set less than immediate unsigned)**
+- **U-type: AUIPC (Add upper immediate to PC)**
 
-[Add]
+```
+// Special operations (LUI/AUIPC)
+2'b11: begin
+    if (op)
+        aluControl = 4'b0100; // lui
+    else
+        aluControl = 4'b1011; // auipc
+end
+```
+
+Therefore, I added these instructions **inside the pipieline branch** and modified the ALU & ALU Decoder to implement these logic. After that, I also wrote a several base case test assembly code to validate these instructions, while also designing a stress test to test the boundaries of some of the newly developed code. Here are the details of the assembly code that is implemented (since assembly code 6 is f1_light, I will introduce the new written assembly code one by one starting from asm 7):
+
+1. Bitwise operation testing (with xor, we didn't implement before)
+2. All Shift operation testing
+3. All Comparison operation testing
+4.  Memory operation testing
+5.  Branch instruction testing
+6.  Upper immediate instruction testing
+7.  Data hazard handling testing
+8.  Overflow and edge case testing
+9.  Jump and branch instruction testing
+10. Logical and all arithmetic shift testing (new)
+11. All newly implemented instruction testing
+12. AUIPC instruction offset testing (new)
+
+ Specific assembly code can be found in the Full_Instruction code, under [/tb/asm folder]("") directory
+ 
+ ![alt text](Cache/images/Assembly_Passed.jpg)
+[Most Relevant Commit]("https://github.com/opnuub/iac-riscv-cw-16/commit/9c4ca525f978f2b64da3972eea36939d514af38f#diff-05d63b49c48622028b72200bd9b4330d51d90a6497b585845d160e85339584beR15")
+
+### 6.2 Fixing Minor Bugs of Offsert Waveform for Vbuddy PDF Program
+
+In the end of the day when we are validating the last pdf program for the CPU, the pdf program was offset by a few and we all couldn't find the issue. The offset wrong pdf program looked like these two pictures:
+
+![alt text](Cache/images/noisy_wrong.jpg)
+![alt text](Cache/images/gaussian_wrong.jpg)
+
+In the end, I reviewed the top testbench program in the PDF and identified an issue with the frequency settings. To address this, I modified the loop as follows:
+
+```C
+if (int(top->a0) == -1){
+            startDisplaying = true;
+            discyc = simcyc+3;
+        }
+
+        if (startDisplaying and simcyc == discyc and norm_dist.size()<240){
+            norm_dist.push_back(int(top->a0));
+            discyc += 3;
+        }
+```
+
+This adjustment ensures that the frequency is updated appropriately to display all the data. Additionally, I revised some of the conditions related to this frequency change in other files to maintain consistency and proper functionality, and now the output PDF looked like this:
+
+![alt text](Cache/images/gaussian_fixed.jpg)
+![alt text](Cache/images/noisy_fixed.jpg)
+
+[Most Related Commit]("https://github.com/opnuub/iac-riscv-cw-16/commit/609d835db64f4ef7c3fb81d101816114f8a4c5a2#diff-abfd7fa5ab6c006971361e0cd7e7a787119ad0c068e0fb3c49c6ddb2a9fa41abR48")
+
+### 6.3 Future Direction & Optimization
+The full CPU and assembly code was a stretch goal we attempted at the final stages of the project (Stretched Goal 3). We managed to complete most of the implementation and thoroughly tested edge cases and extreme scenarios while ensuring that all instructions were validated. Upon reflection, if we had more time, we would have designed and tested more complex, full-scale programs to provide a more comprehensive evaluation of the CPU. I also look forward to exploring the remaining instructions not included in the stretch goals after submitting the project and identifying additional issues to debug. After spending so much time debugging, testing, and modifying this CPU, I have developed a profound understanding of every part of the CPU, each submodule, and every signal. As a result, integrating these new instructions was not particularly challenging but rather an enriching experience that solidified my grasp of the CPU’s overall design.
 
 ## 7. Reflections and Learnings
 
@@ -493,7 +600,9 @@ Learning to navigate the Git workflow and resolve merge conflicts has significan
 
 ### 7.3 Testbench Development
 
-Developing comprehensive testbenches was a critical aspect of ensuring the correctness and reliability of our designs. I invested significant time in writing and refining testbenches for each component, simulating various scenarios to uncover potential issues. This process taught me the importance of thorough testing and validation in the development lifecycle.
+Developing comprehensive testbenches was an essential part of ensuring the correctness and reliability of our designs. I devoted significant effort to writing and refining testbenches for each component, meticulously simulating a wide range of scenarios to identify potential edge cases and subtle issues. Through this process, I gained a deeper appreciation for the critical role thorough testing and validation play in the development lifecycle, particularly in hardware design, where small errors can cascade into system-wide failures.
+
+This experience also emphasized the importance of understanding how individual submodules function and interact within the larger system. In a complex project like CPU design, where signals, control I/O, and hierarchical architecture create a high level of interdependence, having a clear grasp of each submodule’s behavior is vital. It taught me that success in such intricate designs hinges on balancing attention to detail at the module level with a comprehensive understanding of the overall system, ensuring all components work seamlessly together, saving more time and effort for the other collaboraters.
 
 ## Acknowledgement & Conclusion
 

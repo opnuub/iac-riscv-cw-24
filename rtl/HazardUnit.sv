@@ -55,7 +55,7 @@ always_comb begin
     assign control_hazard = zero_hazard || jump_hazard;
 
     // Stall and flush logic
-    if (load_use_hazard) begin // memstall might required!!!
+    if (load_use_hazard) begin 
         stall = 1'b1;   
         FlushE = 1'b1;  
         FlushD = 1'b0;  

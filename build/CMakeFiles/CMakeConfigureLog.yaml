@@ -2232,3 +2232,231 @@ events:
         
       exitCode: 1
 ...
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /opt/riscv/bin/riscv64-unknown-elf-gcc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/3.31.0/CompilerIdC/a.out
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /opt/riscv/bin/riscv64-unknown-elf-g++ 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is GNU, found in:
+        /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/3.31.0/CompilerIdCXX/a.out
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-uqkson"
+      binary: "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-uqkson"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: "15.0"
+      CMAKE_OSX_SYSROOT: "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-uqkson'
+        
+        Run Build Command(s): /opt/homebrew/bin/ninja -v cmTC_67ec5
+        [1/2] /opt/riscv/bin/riscv64-unknown-elf-gcc   -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk   -v -Wl,-v -o CMakeFiles/cmTC_67ec5.dir/CMakeCCompilerABI.c.o -c /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c
+        FAILED: CMakeFiles/cmTC_67ec5.dir/CMakeCCompilerABI.c.o 
+        /opt/riscv/bin/riscv64-unknown-elf-gcc   -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk   -v -Wl,-v -o CMakeFiles/cmTC_67ec5.dir/CMakeCCompilerABI.c.o -c /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/opt/riscv/bin/riscv64-unknown-elf-gcc
+        riscv64-unknown-elf-gcc: error: unrecognized command-line option '-arch'; did you mean '-march='?
+        Target: riscv64-unknown-elf
+        Configured with: /Users/m1/Documents/riscv-gnu-toolchain/gcc/configure --target=riscv64-unknown-elf --prefix=/Users/m1/Documents/riscv --disable-shared --disable-threads --enable-languages=c,c++ --with-pkgversion= --with-system-zlib --enable-tls --with-newlib --with-sysroot=/Users/m1/Documents/riscv/riscv64-unknown-elf --with-native-system-header-dir=/include --disable-libmudflap --disable-libssp --disable-libquadmath --disable-libgomp --disable-nls --disable-tm-clone-registry --src=/Users/m1/Documents/riscv-gnu-toolchain/gcc --enable-multilib --with-multilib-generator='rv32i-ilp32--;rv32iac-ilp32--;rv32im-ilp32--;rv32imc-ilp32--;rv32imf-ilp32--;rv32imf-ilp32f--;rv32imac-ilp32--;rv32imafc-ilp32f--;rv64imac-lp64--;rv64imafdc-lp64d--' --with-abi=lp64d --with-arch=rv64imafdc --with-tune=rocket --with-isa-spec=2.2 'CFLAGS_FOR_TARGET=-Os   -mcmodel=medlow' 'CXXFLAGS_FOR_TARGET=-Os   -mcmodel=medlow'
+        Thread model: single
+        Supported LTO compression algorithms: zlib
+        gcc version 12.2.0 () 
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/CMakeTestCCompiler.cmake:56 (try_compile)"
+      - "CMakeLists.txt"
+    checks:
+      - "Check for working C compiler: /opt/riscv/bin/riscv64-unknown-elf-gcc"
+    directories:
+      source: "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-5Mhdv6"
+      binary: "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-5Mhdv6"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: "15.0"
+      CMAKE_OSX_SYSROOT: "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk"
+    buildResult:
+      variable: "CMAKE_C_COMPILER_WORKS"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-5Mhdv6'
+        
+        Run Build Command(s): /opt/homebrew/bin/ninja -v cmTC_f63b8
+        [1/2] /opt/riscv/bin/riscv64-unknown-elf-gcc   -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk -o CMakeFiles/cmTC_f63b8.dir/testCCompiler.c.o -c /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-5Mhdv6/testCCompiler.c
+        FAILED: CMakeFiles/cmTC_f63b8.dir/testCCompiler.c.o 
+        /opt/riscv/bin/riscv64-unknown-elf-gcc   -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk -o CMakeFiles/cmTC_f63b8.dir/testCCompiler.c.o -c /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-5Mhdv6/testCCompiler.c
+        riscv64-unknown-elf-gcc: error: unrecognized command-line option '-arch'; did you mean '-march='?
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+...
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCCompiler.cmake:123 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt"
+    message: |
+      Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
+      Compiler: /opt/riscv/bin/riscv64-unknown-elf-gcc 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "a.out"
+      
+      The C compiler identification is GNU, found in:
+        /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/3.31.0/CompilerIdC/a.out
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /opt/riscv/bin/riscv64-unknown-elf-g++ 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is GNU, found in:
+        /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/3.31.0/CompilerIdCXX/a.out
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "/opt/homebrew/share/cmake/Modules/CMakeTestCCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt"
+    checks:
+      - "Detecting C compiler ABI info"
+    directories:
+      source: "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-GlXkXT"
+      binary: "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-GlXkXT"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: "15.0"
+      CMAKE_OSX_SYSROOT: "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk"
+    buildResult:
+      variable: "CMAKE_C_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-GlXkXT'
+        
+        Run Build Command(s): /opt/homebrew/bin/ninja -v cmTC_762aa
+        [1/2] /opt/riscv/bin/riscv64-unknown-elf-gcc   -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk   -v -Wl,-v -o CMakeFiles/cmTC_762aa.dir/CMakeCCompilerABI.c.o -c /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c
+        FAILED: CMakeFiles/cmTC_762aa.dir/CMakeCCompilerABI.c.o 
+        /opt/riscv/bin/riscv64-unknown-elf-gcc   -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk   -v -Wl,-v -o CMakeFiles/cmTC_762aa.dir/CMakeCCompilerABI.c.o -c /opt/homebrew/share/cmake/Modules/CMakeCCompilerABI.c
+        Using built-in specs.
+        COLLECT_GCC=/opt/riscv/bin/riscv64-unknown-elf-gcc
+        riscv64-unknown-elf-gcc: error: unrecognized command-line option '-arch'; did you mean '-march='?
+        Target: riscv64-unknown-elf
+        Configured with: /Users/m1/Documents/riscv-gnu-toolchain/gcc/configure --target=riscv64-unknown-elf --prefix=/Users/m1/Documents/riscv --disable-shared --disable-threads --enable-languages=c,c++ --with-pkgversion= --with-system-zlib --enable-tls --with-newlib --with-sysroot=/Users/m1/Documents/riscv/riscv64-unknown-elf --with-native-system-header-dir=/include --disable-libmudflap --disable-libssp --disable-libquadmath --disable-libgomp --disable-nls --disable-tm-clone-registry --src=/Users/m1/Documents/riscv-gnu-toolchain/gcc --enable-multilib --with-multilib-generator='rv32i-ilp32--;rv32iac-ilp32--;rv32im-ilp32--;rv32imc-ilp32--;rv32imf-ilp32--;rv32imf-ilp32f--;rv32imac-ilp32--;rv32imafc-ilp32f--;rv64imac-lp64--;rv64imafdc-lp64d--' --with-abi=lp64d --with-arch=rv64imafdc --with-tune=rocket --with-isa-spec=2.2 'CFLAGS_FOR_TARGET=-Os   -mcmodel=medlow' 'CXXFLAGS_FOR_TARGET=-Os   -mcmodel=medlow'
+        Thread model: single
+        Supported LTO compression algorithms: zlib
+        gcc version 12.2.0 () 
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/opt/homebrew/share/cmake/Modules/CMakeTestCCompiler.cmake:56 (try_compile)"
+      - "CMakeLists.txt"
+    checks:
+      - "Check for working C compiler: /opt/riscv/bin/riscv64-unknown-elf-gcc"
+    directories:
+      source: "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-4nmRO3"
+      binary: "/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-4nmRO3"
+    cmakeVariables:
+      CMAKE_C_FLAGS: ""
+      CMAKE_OSX_ARCHITECTURES: ""
+      CMAKE_OSX_DEPLOYMENT_TARGET: "15.0"
+      CMAKE_OSX_SYSROOT: "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk"
+    buildResult:
+      variable: "CMAKE_C_COMPILER_WORKS"
+      cached: true
+      stdout: |
+        Change Dir: '/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-4nmRO3'
+        
+        Run Build Command(s): /opt/homebrew/bin/ninja -v cmTC_d1aeb
+        [1/2] /opt/riscv/bin/riscv64-unknown-elf-gcc   -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk -o CMakeFiles/cmTC_d1aeb.dir/testCCompiler.c.o -c /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-4nmRO3/testCCompiler.c
+        FAILED: CMakeFiles/cmTC_d1aeb.dir/testCCompiler.c.o 
+        /opt/riscv/bin/riscv64-unknown-elf-gcc   -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.1.sdk -o CMakeFiles/cmTC_d1aeb.dir/testCCompiler.c.o -c /Users/michaelli/Documents/GitHub/iac-riscv-cw-24/build/CMakeFiles/CMakeScratch/TryCompile-4nmRO3/testCCompiler.c
+        riscv64-unknown-elf-gcc: error: unrecognized command-line option '-arch'; did you mean '-march='?
+        ninja: build stopped: subcommand failed.
+        
+      exitCode: 1
+...
