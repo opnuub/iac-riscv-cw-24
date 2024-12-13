@@ -24,6 +24,8 @@ I then spent some time making the [register file](Pipeline/rtl/regfile.sv), whic
 The last single-cycle component which I made very significant changes to was the [Data Memory](rtl/dataMemory.sv), which on the second attempt I got to both work and select between a byte, half word and word size.
 <img src="Pipeline/images/SC_Data_Memory.png" width="650" height="350" alt="SC_Dmem">
 
+[Jump to Target Section](#target-line)
+
 ---
 ---
 
@@ -101,6 +103,8 @@ the simulation from GTKWave looked like this (image from debugging test 5 errors
 
 ---
 ---
+<a name="target-line"></a>
+# Target Section
 
 ## Single Cycle - Added or edited Components
 
@@ -325,7 +329,7 @@ Sign extension fills higher bits with the most significant bit of the data if si
 ---
 ---
 
-## Pipelin - Added or Edited Components
+## Pipeline - Added or Edited Components
 
 ---
 
