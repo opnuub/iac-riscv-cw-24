@@ -62,16 +62,13 @@ Once within the `tb` folder, traverse to `pdf_program` folder, attach the vbuddy
 ### Single Cycle Processor
 
 | Part           | File  | Flavio (@FlavioGazzetta)| Cole (@opnuub)| Michael (@Happymic)| Soon (@so0nyung)      |
-|:--------|:------|:------------------:|:-----------:|:-------------------:|:---------:|
-| Program Counter| PCReg.sv, PCTOP.sv, PCMux.sv| F           |      P       |             |           |
-| ALU & RegisterFile| ALU.sv, ALUMux1.sv, ALUMux3.sv, ALUTop.sv| F|P|||
-|| RegisterFile.sv, ALUMux2.sv| F           |      P       |||
-| Instruction Processing| InstructionMemory.sv||      F       |    P||
-|| extend.sv.sv|             |      F       |    P        |           |
-|| ControlUnit.sv|             |      F       |    P        |           |
-|| branchUnit.sv|             |      F       |             |           |
-| Full Integration| top.sv|                 |      F       |             |           |
-| Data Memory  | DataMemory.sv| F           |      P       |             |          |
+| Module                  | File Names                                    | F | P |   |   |
+|-------------------------|-----------------------------------------------|---|---|---|---|
+| Program Counter         | `pcReg.sv`, `top.sv`, `pcMux.sv`             | F | P |   |   |
+| ALU & RegisterFile      | `alu.sv`, `aluMux.sv`, `regFile.sv`          | F | P |   |   |
+| Instruction Processing  | `instrMemory.sv`, `extend.sv`, `controlUnit.sv`, `branchUnit.sv` |   | F | P |   |
+| Full Integration        | `top.sv`                                     |   | F |   |   |
+| Data Memory             | `dataMemory.sv`                              | F | P |   |   |
 | F1 Program    | f1.s      ||      P       |        |     F      |
 |               | f1.sv     ||   P      |           |      F     |
 |               | f1_tb.cpp ||||F|
