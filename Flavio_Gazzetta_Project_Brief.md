@@ -133,8 +133,6 @@ always_ff @ (posedge clk)
 
 This block updates the pc on the positive edge of the clock. If the reset (rst) signal is active, pc is initialized to 32'hBFC00000, a common boot address. Otherwise, pc is updated to the value of nextPC, supporting jumps or branch instructions.
 
-Purpose: The module ensures incPC provides the address for sequential execution (pc + OFFSET), while pc can be reset or updated to any address (nextPC). This design supports both normal program flow and exceptions like resets or jumps.
-
 #### Block Diagram
 
 ##### Links to Module  
@@ -181,13 +179,11 @@ This block uses a case statement to determine the ALU operation based on the 3-b
 3'b110 and 3'b111 perform logical shifts left and right, using the lower 5 bits of srcB to specify the shift amount.
 Purpose:
 
-The module implements a versatile ALU for use in a CPU. It supports arithmetic operations, bitwise logic, shifts, and comparisons, all determined by the aluControl signal. These operations are fundamental for executing instructions in most instruction set architectures.
-
 #### Block Diagram
 
 #### Link to Module  
 
-[alu.sv](rtl/alu.sv)
+[Single cycle alu.sv](rtl/alu.sv)
 
 #### Most Relevant Commits
 
@@ -230,7 +226,7 @@ end
 
 #### Link to Module 
 
-[regFile.sv](rtl/regFile.sv)
+[Single cycle regFile.sv](rtl/regFile.sv)
 
 #### Most Relevant Commits
 
@@ -320,7 +316,7 @@ Sign extension fills higher bits with the most significant bit of the data if si
 
 #### Link to Module
 
-[dataMemory.sv](rtl/dataMemory.sv)
+[Single cycle dataMemory.sv](rtl/dataMemory.sv)
 
 #### Most Relevant Commits
 
@@ -379,13 +375,13 @@ end
 
 #### Links to Modules
 
-[PRegFetch.sv](Pipeline/rtl/PRegFetch.sv)
+[Pipeline PRegFetch.sv](Pipeline/rtl/PRegFetch.sv)
 
-[PRegDecode.sv](Pipeline/rtl/PRegDecode.sv)
+[Pipeline PRegDecode.sv](Pipeline/rtl/PRegDecode.sv)
 
-[PRegExecute.sv](Pipeline/rtl/PRegExecute.sv)
+[Pipeline PRegExecute.sv](Pipeline/rtl/PRegExecute.sv)
 
-[PRegMemory.sv](Pipeline/rtl/PRegMemory.sv)
+[Pipeline PRegMemory.sv](Pipeline/rtl/PRegMemory.sv)
 
 #### Most Relevant Commits
 
@@ -483,11 +479,11 @@ end
 
 #### Links to Modules
 
-[controlUnit.sv](Pipeline/rtl/controlUnit.sv)
+[Pipeline controlUnit.sv](Pipeline/rtl/controlUnit.sv)
 
-[aluDecoder.sv](Pipeline/rtl/aluDecoder.sv)
+[Pipeline aluDecoder.sv](Pipeline/rtl/aluDecoder.sv)
 
-[mainDecoder.sv](Pipeline/rtl/mainDecoder.sv)
+[Pipeline mainDecoder.sv](Pipeline/rtl/mainDecoder.sv)
 
 #### Most Relevant Commits
 
@@ -499,19 +495,37 @@ end
 
 ## ALU & Branch Unit
 
+The change I made here was that I made the inputs of ALUControl for the alu and for the branch unit 4 bits instead of 3, this was in order to avoid overlapping of instructions between alu and branch unit.
+
 #### Blocks Diagrams
 
 #### Links to Modules
 
-[controlUnit.sv](Pipeline/rtl/alu.sv)
+[Pipeline alu.sv](Pipeline/rtl/alu.sv)
 
-[aluDecoder.sv](Pipeline/rtl/branchUnit.sv)
+[Pipeline branchUnit.sv](Pipeline/rtl/branchUnit.sv)
 
 #### Most Relevant Commits
 
-1) [Improved Pipeline Registers](https://github.com/opnuub/iac-riscv-cw-16/commit/72aea873a82f6d3353513419fee9e28bb456142d)
+1) [AlU and Branch Unit back to 4 bits](https://github.com/opnuub/iac-riscv-cw-16/commit/85c43cbd421743b3bdd7a0dee47591ee72d02baa)
 
-2) [implemented the Jalr instruction by using a seperate mux](https://github.com/opnuub/iac-riscv-cw-16/commit/aa623c2f9ed204c58805c8cf299f0bddc0a6dc05)
+---
+
+## Hazard Unit and Mux
+
+The Hazard Unit is responsible of making sure to perform forwarding, stalling and flushing.
+
+#### Blocks Diagrams
+
+#### Links to Modules
+
+[Pipeline alu.sv](Pipeline/rtl/alu.sv)
+
+[Pipeline branchUnit.sv](Pipeline/rtl/branchUnit.sv)
+
+#### Most Relevant Commits
+
+1) [AlU and Branch Unit back to 4 bits](https://github.com/opnuub/iac-riscv-cw-16/commit/85c43cbd421743b3bdd7a0dee47591ee72d02baa)
 
 ---
 
