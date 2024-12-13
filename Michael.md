@@ -18,34 +18,27 @@
   - [3. Cache Controller State Machine](#3-cache-controller-state-machine)
     - [Detailed Analysis](#detailed-analysis)
     - [3.1 State Definitions](#31-state-definitions)
-    - [3.2 State Transition Implementation](#32-state-transition-implementation)
-    - [3.3 State Details](#33-state-details)
+    - [3.2 State Details](#32-state-details)
       - [IDLE State](#idle-state)
       - [WRITE\_BACK State](#write_back-state)
       - [READ\_MISS State](#read_miss-state)
       - [WRITE\_MISS State](#write_miss-state)
       - [UPDATE State](#update-state)
-  - [2. LRU Implementation Details](#2-lru-implementation-details)
-    - [2.1 LRU Bit Structure](#21-lru-bit-structure)
-    - [2.2 LRU Update Logic Diagram](#22-lru-update-logic-diagram)
-    - [2.3 LRU Decision Process](#23-lru-decision-process)
-    - [2.4 LRU Implementation Analysis](#24-lru-implementation-analysis)
-  - [4. Memory Controller Design](#4-memory-controller-design)
-    - [4.1 Controller Interface](#41-controller-interface)
-    - [4.2 Cache Level Interconnection](#42-cache-level-interconnection)
-  - [5. Cache Level Implementations](#5-cache-level-implementations)
-    - [5.1 L1 Cache](#51-l1-cache)
-    - [5.2 L2 Cache](#52-l2-cache)
-    - [5.3 L3 Cache](#53-l3-cache)
-  - [6. Memory Access Implementation](#6-memory-access-implementation)
-    - [6.1 Read Path Algorithm](#61-read-path-algorithm)
-    - [6.2 Write Path Algorithm](#62-write-path-algorithm)
-    - [Optimization and Future Directions](#optimization-and-future-directions)
-  - [Reflections and Learnings](#reflections-and-learnings)
-    - [1. Deep Dive into Cache Design](#1-deep-dive-into-cache-design)
-    - [2. Team Collaboration and Git Management](#2-team-collaboration-and-git-management)
-    - [3. Testbench Development](#3-testbench-development)
-  - [Conclusion](#conclusion)
+  - [4. LRU Implementation Details](#4-lru-implementation-details)
+    - [4.1 LRU Bit Structure](#41-lru-bit-structure)
+    - [4.2 LRU Update Logic Diagram](#42-lru-update-logic-diagram)
+    - [4.3 LRU Decision Process](#43-lru-decision-process)
+    - [4.4 LRU Implementation Analysis](#44-lru-implementation-analysis)
+  - [5. Memory Controller Design](#5-memory-controller-design)
+    - [5.1 Controller Interface](#51-controller-interface)
+    - [5.2 Cache Level Interconnection](#52-cache-level-interconnection)
+    - [5.3 L1/L2/L3 Cache IO](#53-l1l2l3-cache-io)
+    - [6. Optimization and Future Directions](#6-optimization-and-future-directions)
+  - [7. Reflections and Learnings](#7-reflections-and-learnings)
+    - [7.1 Deep Dive into Cache Design](#71-deep-dive-into-cache-design)
+    - [7.2 Team Collaboration and Git Management](#72-team-collaboration-and-git-management)
+    - [7.3 Testbench Development](#73-testbench-development)
+  - [Acknowledgement \& Conclusion](#acknowledgement--conclusion)
 
 
 ## 1. CPU Design and Implementation: A Personal Journey
@@ -64,9 +57,9 @@ The first week was dedicated to understanding the fundamentals of a full-cycle s
 
 As the start of the project, I began to develop individual components of the CPU, each in its own SystemVerilog file with Unit Testing and Testbenches for further development before integration. This modular approach allowed for a systematic and organized development process. Here's a detailed breakdown of the components I worked with:
 
-- **Controller.sv**: The controller module managed the overall operation of the CPU, coordinating between different components to ensure smooth execution of instructions, since I have developed this part in the Lab 4. I modified the control units to implement more instructions. While our group used a simplified version for Pipelining, I developed this Controller which was used later in Stretched Goal.
+1. **Controller.sv**: The controller module managed the overall operation of the CPU, coordinating between different components to ensure smooth execution of instructions, since I have developed this part in the Lab 4. I modified the control units to implement more instructions. While our group used a simplified version for Pipelining, I developed this Controller which was used later in Stretched Goal.
 
-To decode RISC-V instructions and generate control signals for components like the ALU, register file, memory, and PC, I designed and implemented a RISC-V controller module in SystemVerilog. Below is a breakdown of the design process and key implementation details:
+- To decode RISC-V instructions and generate control signals for components like the ALU, register file, memory, and PC, I designed and implemented a RISC-V controller module in SystemVerilog. Below is a breakdown of the design process and key implementation details:
 
 Key Instruction Mapping Example
 | **Instruction Type** | **Key Signals**                                    | **Logic Implemented**                                             |
@@ -78,17 +71,18 @@ Key Instruction Mapping Example
 | **Branch**            | `next_pc_sel_o` set via branch condition signals  | Updates PC based on conditions like BEQ or BLT.                   |
 | **Jump (JAL/JALR)**   | `rf_wdata_sel_o = 10`, `next_pc_sel_o = 10/11`    | Saves return address and jumps to target.                         |
 
-and I have also implemnted all the different cases in the module using a case scenario.
+- and I have also implemnted all the different cases in the module using a case scenario.
 
-To verify that this works, I improved the testbench files I used for Lab4, adding new testing logics for Branch and Load type instructions, with also illegal instructions to verify the workability of this submodule:
-Controller Test
+- To verify that this works, I improved the testbench files I used for Lab4, adding new testing logics for Branch and Load type instructions, with also illegal instructions to verify the workability of this submodule:
+
+- **Controller Unit Testbench**
 ![alt text](Cache/images/BenchController.jpg)
 
-- **Instruction Memory (imem.sv)**: These modules simulated the memory components of a real CPU, allowing for the storage and retrieval of data and instructions.
+2. **Instruction Memory (imem.sv)**: These modules simulated the memory components of a real CPU, allowing for the storage and retrieval of data and instructions.
 
-The Instruction Memory (IMEM) module is responsible for storing and providing instructions to the processor. It is implemented as a byte-addressable memory array and supports reading 32-bit instructions. 
+- The Instruction Memory (IMEM) module is responsible for storing and providing instructions to the processor. It is implemented as a byte-addressable memory array and supports reading 32-bit instructions. 
 
-Instruction Fetching
+- **Instruction Fetching**
 	•	Addressing Scheme: The input **addr_i** specifies the address of the instruction to fetch. Since RISC-V instructions are 32 bits (4 bytes) wide, the **addr_i** is divided:
 	•	**addr_i[11:2]**: Determines the base address of the instruction in word-aligned format.
 	•	**2'b00, 2'b01, 2'b10, 2'b11**: Specify which byte of the word to fetch.
@@ -99,23 +93,26 @@ Instruction Fetching
 	•	mem[{addr_i[11:2], 2'b01}]: Third byte.
 	•	mem[{addr_i[11:2], 2'b00}]: Least significant byte (LSB).
  ```
-To verify this works and Cole could use it in the later stage when integration, I also unit Tested it with test functions of: Sequential Read, Unaligned Read and Boundary Conditions.
-
+- To verify this works and my groupmate could use it in the later stage when integration, I also made unit testbench with it with test functions of: 
+  - Sequential Read
+  - Unaligned Read
+  - Boundary Conditions
+- InstructionMemory Testbench
 ![alt text](Cache/images/BenchImem.jpg)
 
 ### 1.3 Testing and Validation
 
-To ensure the correctness and reliability of my designs, I meticulously wrote unit test benches for some component. These test benches simulated various scenarios and edge cases, allowing me to identify and rectify any issues in the design. The process of testing and validation was iterative, with each iteration bringing me closer to a fully functional and efficient CPU.
+To ensure the correctness and reliability of the designs, I meticulously wrote unit test benches for most of the majority component in the design. These test benches simulated various scenarios and edge cases, allowing me to identify and rectify any issues before integrate it in the design. The process of testing and validation was iterative, with each iteration bringing us closer to a fully functional and efficient CPU.
 
-Register File Test:
+- Register File Test:
 ![alt text](Cache/images/BenchReg.jpg)
-Branch Test
+- Branch Test
 ![alt text](Cache/images/BenchBranch.jpg)
-Data Memory Test
+- Data Memory Test
 ![alt text](Cache/images/BenchDmem.jpg)
-PC Unit Test
+- PC Unit Test
 ![alt text](Cache/images/BenchPC.jpg)
-ALU Test
+- ALU Test
 ![alt text](Cache/images/BenchALU.jpg)
 
 Evidence in this folder Under the Branch PC&Instmem: [Link]
@@ -212,31 +209,7 @@ typedef enum logic [2:0] {
 ```
 
 
-### 3.2 State Transition Implementation
-```systemverilog
-always_ff @(posedge clk or negedge rst_n) begin
-    if (!rst_n) begin
-        state <= IDLE;
-        busy <= 0;
-        mem_read <= 0;
-        mem_write <= 0;
-        lru <= 0;
-        // Initialize cache lines
-        for (int i = 0; i < 2**SET_WIDTH; i++) begin
-            cache[i][0] <= '0;
-            cache[i][1] <= '0;
-        end
-    end else begin
-        case (state)
-            IDLE: begin
-                // IDLE state logic
-            end
-            // Other states
-        endcase
-    end
-end
-```
-### 3.3 State Details
+### 3.2 State Details
 
 #### IDLE State
 ```systemverilog
@@ -333,29 +306,37 @@ Key Operations:
 3. Update LRU
 4. Return to IDLE
 
-## 2. LRU Implementation Details
+## 4. LRU Implementation Details
 
-### 2.1 LRU Bit Structure
+### 4.1 LRU Bit Structure
 ```systemverilog
 logic [2**SET_WIDTH-1:0] lru;  // One bit per set
 ```
 
-### 2.2 LRU Update Logic Diagram
+### 4.2 LRU Update Logic Diagram
 
 
 ```mermaid
 flowchart TD
     A[Memory Access] --> B{Cache Hit or Miss?}
-    B -->|Hit| C[Update LRU Bits for Accessed Cache Line]
-    B -->|Miss| D[Find LRU Block in the Set]
-    C --> E[Continue Program]
-    D --> F[Evict LRU Cache Line]
+    B -->|Hit| C[Cache Hit Update]
+    B -->|Miss| D[Cache Miss Update]
+
+    %% Cache Hit Logic
+    C --> C1[Locate Cache Line in the Set]
+    C1 --> C2[Update LRU Bits for Accessed Cache Line]
+    C2 --> E[Continue Program]
+
+    %% Cache Miss Logic
+    D --> D1[Locate Target Set Using Index Bits]
+    D1 --> D2[Find LRU Block in the Set]
+    D2 --> F[Evict LRU Cache Line]
     F --> G[Load New Memory Block to LRU Line]
     G --> H[Update LRU Bits to Reflect New Cache Line Usage]
     H --> E
 ```
 
-### 2.3 LRU Decision Process
+### 4.3 LRU Decision Process
 
 1. **On Cache Hit:**
 ```systemverilog
@@ -378,7 +359,7 @@ else if (!cache[index][1].valid) way = 1;
 lru[index] <= !way;  // Mark current way as most recently used
 ```
 
-### 2.4 LRU Implementation Analysis
+### 4.4 LRU Implementation Analysis
 
 The LRU implementation uses a single bit per set where:
 - `lru[index] = 0`: Way 1 is least recently used
@@ -390,13 +371,13 @@ Benefits of this implementation:
 3. Fast LRU determination
 4. Efficient way selection
 
-## 4. Memory Controller Design
-The original memory hierachy design looked like this with the processor:
+## 5. Memory Controller Design
+The original memory hierachy design from pipeline looked like this with the processor:
 ![alt text](Cache/images/OriginalHierachy.jpg)
 
 To integrate the design with caches, I implemented based on the original DataMemory.sv, and Renamed it as MemoryController, with the following logic of how the interior design looks like:
 ![alt text](Cache/images/MemoryHierachy.jpg)
-### 4.1 Controller Interface
+### 5.1 Controller Interface
 ```systemverilog
 module MemoryController #(
     parameter DATA_WIDTH = 32,
@@ -413,7 +394,7 @@ module MemoryController #(
 );
 ```
 
-### 4.2 Cache Level Interconnection
+### 5.2 Cache Level Interconnection
 The memory controller manages the interconnection between cache levels through internal signals:
 
 ```systemverilog
@@ -430,9 +411,10 @@ logic l3_hit, l3_busy;
 logic [DATA_WIDTH-1:0] l3_data_out;
 ```
 
-## 5. Cache Level Implementations
+### 5.3 L1/L2/L3 Cache IO
 
-### 5.1 L1 Cache
+The three levels of cache—L1, L2, and L3—share a similar design in terms of inputs and outputs, with the main difference being their size, latency, and sometimes associativity. Each level takes the same inputs, including memory addresses, data, and control signals (e.g., read/write), and outputs retrieved data and status signals (e.g., hit/miss). The fundamental operations, such as checking for data, fetching on a hit, or forwarding a miss to the next level, remain consistent across all levels. However, L1 is smaller and faster, optimized for immediate CPU access, while L2 and L3 progressively increase in size and latency to handle larger data sets efficiently.
+
 ```systemverilog
 L1Cache #(
     .DATA_WIDTH(DATA_WIDTH),
@@ -450,45 +432,8 @@ L1Cache #(
 );
 ```
 
-### 5.2 L2 Cache
-```systemverilog
-L2Cache #(
-    .DATA_WIDTH(DATA_WIDTH),
-    .SET_WIDTH(6)
-) l2_cache (
-    .clk(clk),
-    .rst_n(rst_n),
-    .load(l1_mem_read),
-    .store(l1_mem_write),
-    .address({15'b0, addr}),
-    .data_in(l1_mem_write_data),
-    .mem_data(l3_data_out),
-    .mem_ready(!l3_busy),
-    // Other connections
-);
-```
+The provided code snippet demonstrates how the three levels of cache (L1, L2, and L3) interact to retrieve data in a hierarchical caching system. The logic prioritizes the lowest-level cache with a hit: if the data is in L1 (l1_hit), it is retrieved from l1_data_out, and the system signals readiness (MemReady = 1). If L1 misses, the system checks L2 (l2_hit), and similarly, if L2 misses, it checks L3 (l3_hit). If all cache levels miss, the data is retrieved from main memory (main_mem_data), with MemReady only signaling readiness when the main memory is prepared, and none of the caches are busy (!l1_busy, !l2_busy, !l3_busy). This logic ensures efficient data retrieval by prioritizing faster, smaller caches and falling back to main memory as a last resort.
 
-### 5.3 L3 Cache
-```systemverilog
-L3Cache #(
-    .DATA_WIDTH(DATA_WIDTH),
-    .SET_WIDTH(6)
-) l3_cache (
-    .clk(clk),
-    .rst_n(rst_n),
-    .load(l2_mem_read),
-    .store(l2_mem_write),
-    .address({15'b0, addr}),
-    .data_in(l2_mem_write_data),
-    .mem_data(main_mem_data),
-    .mem_ready(main_mem_ready_reg),
-    // Other connections
-);
-```
-
-## 6. Memory Access Implementation
-
-### 6.1 Read Path Algorithm
 ```systemverilog
 always_comb begin
     if (l1_hit) begin
@@ -507,55 +452,28 @@ always_comb begin
 end
 ```
 
-### 6.2 Write Path Algorithm
-```systemverilog
-always_ff @(posedge clk) begin
-    if (!rst_n) begin
-        main_mem_ready_reg <= 0;
-    end else if (MemWrite && !l1_hit && !l2_hit && !l3_hit) begin
-        case (SizeCtr)
-            3'b010: begin // Word
-                main_memory[addr]     <= WriteData[7:0];
-                main_memory[addr+1]   <= WriteData[15:8];
-                main_memory[addr+2]   <= WriteData[23:16];
-                main_memory[addr+3]   <= WriteData[31:24];
-            end
-            3'b001: begin // Halfword
-                main_memory[addr]     <= WriteData[7:0];
-                main_memory[addr+1]   <= WriteData[15:8];
-            end
-            3'b000: begin // Byte
-                main_memory[addr]     <= WriteData[7:0];
-            end
-            default: ; 
-        endcase
-        main_mem_ready_reg <= 1;
-    end
-end
-```
-
-### Optimization and Future Directions
+### 6. Optimization and Future Directions
 
 Reflecting on the cache design process, I recognize that there are several areas where further optimization is possible. For instance, exploring different replacement algorithms could enhance the cache's efficiency and reduce latency. Additionally, incorporating prefetching mechanisms could further improve the system's performance by anticipating and fetching data before it is needed.
 
-## Reflections and Learnings
+## 7. Reflections and Learnings
 
-### 1. Deep Dive into Cache Design
+### 7.1 Deep Dive into Cache Design
 
 The process of designing the cache was both challenging and enlightening. Initially, my understanding of caches was limited to their role as a bridge between data memory and the CPU. However, through this project, I gained a profound appreciation for the intricacies of cache design and its impact on system performance. I learned about various caching strategies, such as direct-mapped, set-associative, and fully associative caches, each with its own trade-offs in terms of complexity, cost, and performance.
 
 Moreover, I delved into advanced topics such as cache coherence and consistency, which are crucial for multi-core systems. Understanding these concepts has sparked my interest in more advanced memory systems, including virtual memory and memory management units (MMUs).
 
-### 2. Team Collaboration and Git Management
+### 7.2 Team Collaboration and Git Management
 
 This project marked my first experience using Git for collaborative software development. The ability to track changes, manage branches, and merge code was invaluable, especially given the complexity and scale of our project. Through Git, I could monitor my teammates' progress, provide feedback, and contribute to the project in a structured and efficient manner.
 
 Learning to navigate the Git workflow and resolve merge conflicts has significantly enhanced my software development skills. It has also taught me the importance of clear communication and coordination in team projects.
 
-### 3. Testbench Development
+### 7.3 Testbench Development
 
 Developing comprehensive testbenches was a critical aspect of ensuring the correctness and reliability of our designs. I invested significant time in writing and refining testbenches for each component, simulating various scenarios to uncover potential issues. This process taught me the importance of thorough testing and validation in the development lifecycle.
 
-## Conclusion
+## Acknowledgement & Conclusion
 
 The RISC-V RV32I Processor Coursework has been an invaluable learning experience, providing me with a deep understanding of CPU design, cache mechanisms, and collaborative software development. Through this project, I have not only honed my technical skills but also gained valuable insights into the complexities of system design and optimization. Looking ahead, I am eager to apply these learnings to more advanced projects and further explore the fascinating world of computer architecture and memory systems.
