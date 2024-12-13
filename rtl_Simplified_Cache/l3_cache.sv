@@ -1,8 +1,8 @@
-module l1_cache #(
+module l3_cache #(
     parameter ADDR_WIDTH = 32,
     parameter DATA_WIDTH = 32,
     parameter BLOCK_SIZE = 4,
-    parameter NUM_SETS = 256,
+    parameter NUM_SETS = 1024,
     parameter NUM_WAYS = 4,
     parameter TAG_WIDTH = ADDR_WIDTH - $clog2(NUM_SETS) - $clog2(BLOCK_SIZE)
 ) (
@@ -12,10 +12,10 @@ module l1_cache #(
     input  logic [ADDR_WIDTH-1:0]       addr_i,
     input  logic [DATA_WIDTH-1:0]       wr_data_i,
     input  logic [3:0]                  byte_en_i,
-    input  logic                        l2_cache_valid_i,
-    input  logic [DATA_WIDTH-1:0]       l2_cache_data_i,
-    output logic [DATA_WIDTH-1:0]       l1_rd_data_o,
-    output logic                        l1_cache_hit_o
+    input  logic                        mem_valid_i,
+    input  logic [DATA_WIDTH-1:0]       mem_data_i,
+    output logic [DATA_WIDTH-1:0]       l3_rd_data_o,
+    output logic                        l3_cache_hit_o
 );
     // Cache storage
     logic [DATA_WIDTH-1:0] cache_data [NUM_SETS-1:0][NUM_WAYS-1:0];
@@ -43,8 +43,10 @@ module l1_cache #(
     always_comb begin
         hit = 1'b0;
         hit_way = '0;
+        rd_data = '0;
         for (int i = 0; i < NUM_WAYS; i++) begin
-            if (valid[index][i] && (cache_tags[index][i] == tag)) begin
+            rd_data = cache_data[index][i];
+            if ((valid[index][i] && (cache_tags[index][i] == tag))||(|rd_data)) begin
                 hit = 1'b1;
                 hit_way = i;
                 break;
@@ -111,10 +113,10 @@ module l1_cache #(
                     end
                 end 
             end 
-            else if (!hit && l2_cache_valid_i) begin
-                // On miss with valid next level data, write to cache
+            else if (!hit && mem_valid_i) begin
+                // On miss with valid memory data, write to cache
                 cache_tags[index][replace_way] <= tag;
-                cache_data[index][replace_way] <= l2_cache_data_i;
+                cache_data[index][replace_way] <= mem_data_i;
                 valid[index][replace_way] <= 1'b1;
             end
         end
@@ -124,14 +126,14 @@ module l1_cache #(
     always_comb begin
         if (hit)
             rd_data = cache_data[index][hit_way];
-        else if (l2_cache_valid_i)
-            rd_data = l2_cache_data_i;
+        else if (mem_valid_i)
+            rd_data = mem_data_i;
         else
             rd_data = '0;
     end
 
     // Output assignments
-    assign l1_cache_hit_o = hit;
-    assign l1_rd_data_o = rd_data;
+    assign l3_cache_hit_o = hit;
+    assign l3_rd_data_o = rd_data;
 
 endmodule

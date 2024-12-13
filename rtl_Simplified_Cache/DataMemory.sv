@@ -12,11 +12,11 @@ module DataMemory #(
 
     logic [7:0] memory [2**ADDR_WIDTH-1:0];
 
-    initial begin
-        $display("Attempting to load 'data.hex'...");
-        $readmemh("data.hex", memory, 17'h10000);
-        $display("'data.hex' loaded into memory.");
-    end
+    // initial begin
+    //     // $display("Attempting to load 'data.hex'...");
+    //     //$readmemh("data.hex", memory, 17'h10000);
+    //     // $display("'data.hex' loaded into memory.");
+    // end
 
     always_ff @(posedge clk) begin
         if (MemWrite) begin

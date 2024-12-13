@@ -95,14 +95,15 @@ module MemoryTop #(
         .ReadData   (mem_rd_data)
     );
 
-    
-
     // Memory valid logic
     // Set valid when data is available from memory after all cache misses
-    assign mem_valid = 1'b1;//~l1_cache_hit & ~l2_cache_hit & ~l3_cache_hit;
+    assign mem_valid = ~l1_cache_hit & ~l2_cache_hit & ~l3_cache_hit;
     // Read data multiplexing
     logic data_valid;
-    assign data_valid = |read_data_o;  // 如果read_data_o的任何位为1，则data_valid为1
+    //assign data_valid_o = |read_data_o;  // 如果read_data_o的任何位为1，则data_valid为1
+    assign data_valid_o = l1_cache_hit | l2_cache_hit | l3_cache_hit | mem_valid;
+
+
 
     // Select data from the first cache level that hits
     always_comb begin
@@ -116,7 +117,7 @@ module MemoryTop #(
         else
             read_data_o = mem_rd_data;
     end
-    //tag bit 的问题， 用 lower bit 加两个bit
+    // tag bit 的问题， 用 lower bit 加两个bit
 
 
     // assign read_data_o = l1_cache_hit ? l1_rd_data :

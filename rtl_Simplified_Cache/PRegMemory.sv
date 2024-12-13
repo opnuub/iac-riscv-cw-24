@@ -20,7 +20,7 @@ module PRegMemory #(
     // Sequential logic for updating outputs
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
-            // Reset all outputs to default values
+            // Reset or flush all outputs to default values
             ALUResultW <= 32'b0;
             ReadDataW  <= 32'b0;
             RdW        <= 5'b0;
