@@ -33,7 +33,9 @@
     - [5.1 Controller Interface](#51-controller-interface)
     - [5.2 Cache Level Interconnection](#52-cache-level-interconnection)
     - [5.3 L1/L2/L3 Cache IO](#53-l1l2l3-cache-io)
-    - [6. Optimization and Future Directions](#6-optimization-and-future-directions)
+    - [Result \& Analysis](#result--analysis)
+    - [5.5 Optimization and Future Directions](#55-optimization-and-future-directions)
+  - [6. Full Instruction CPU](#6-full-instruction-cpu)
   - [7. Reflections and Learnings](#7-reflections-and-learnings)
     - [7.1 Deep Dive into Cache Design](#71-deep-dive-into-cache-design)
     - [7.2 Team Collaboration and Git Management](#72-team-collaboration-and-git-management)
@@ -71,7 +73,7 @@ Key Instruction Mapping Example
 | **Branch**            | `next_pc_sel_o` set via branch condition signals  | Updates PC based on conditions like BEQ or BLT.                   |
 | **Jump (JAL/JALR)**   | `rf_wdata_sel_o = 10`, `next_pc_sel_o = 10/11`    | Saves return address and jumps to target.                         |
 
-- and I have also implemnted all the different cases in the module using a case scenario.
+- and I have also implemnted all the different cases in the module using a case scenario.[link]
 
 - To verify that this works, I improved the testbench files I used for Lab4, adding new testing logics for Branch and Load type instructions, with also illegal instructions to verify the workability of this submodule:
 
@@ -432,7 +434,7 @@ L1Cache #(
 );
 ```
 
-The provided code snippet demonstrates how the three levels of cache (L1, L2, and L3) interact to retrieve data in a hierarchical caching system. The logic prioritizes the lowest-level cache with a hit: if the data is in L1 (l1_hit), it is retrieved from l1_data_out, and the system signals readiness (MemReady = 1). If L1 misses, the system checks L2 (l2_hit), and similarly, if L2 misses, it checks L3 (l3_hit). If all cache levels miss, the data is retrieved from main memory (main_mem_data), with MemReady only signaling readiness when the main memory is prepared, and none of the caches are busy (!l1_busy, !l2_busy, !l3_busy). This logic ensures efficient data retrieval by prioritizing faster, smaller caches and falling back to main memory as a last resort.
+The provided code snippet demonstrates how the three levels of cache (L1, L2, and L3) interact to retrieve data in a hierarchical caching system. The logic prioritizes the lowest-level cache with a hit: if the data is in L1 **(l1_hit)**, it is retrieved from l1_data_out, and the system signals readiness **(MemReady = 1)**. If L1 misses, the system checks L2 **(l2_hit)**, and similarly, if L2 misses, it checks L3 **(l3_hit)**. If all cache levels miss, the data is retrieved from main memory **(main_mem_data)**, with MemReady only signaling readiness when the main memory is prepared, and none of the caches are busy **(!l1_busy, !l2_busy, !l3_busy)**. This logic ensures efficient data retrieval by prioritizing faster, smaller caches and falling back to main memory as a last resort.
 
 ```systemverilog
 always_comb begin
@@ -452,9 +454,24 @@ always_comb begin
 end
 ```
 
-### 6. Optimization and Future Directions
+### Result & Analysis
+
+[Link of GTK Wave Trace]
+
+### 5.5 Optimization and Future Directions
 
 Reflecting on the cache design process, I recognize that there are several areas where further optimization is possible. For instance, exploring different replacement algorithms could enhance the cache's efficiency and reduce latency. Additionally, incorporating prefetching mechanisms could further improve the system's performance by anticipating and fetching data before it is needed.
+
+## 6. Full Instruction CPU 
+
+After finishing the major branches. We have found out we are only missing a few instructions from completing a Full instruction CPU based on the stretched goals. The missing instructions were: 
+- R-type: SRA (Arithmetic right shift)
+- I-type: SRAI (Arithmetic right shift immediate), SLTIU (Set less than immediate unsigned)
+- U-type: AUIPC (Add upper immediate to PC)
+
+Therefore, I added these instructions inside the pipieline branch and modified the ALU & ALU Decoder to implement these logic. After that, I also wrote a several base case test assembly code to validate these instructions, while also designing a stress test to test the boundaries of some of the newly developed code. Here are the details of the assembly code that is implemented:
+
+[Add]
 
 ## 7. Reflections and Learnings
 
@@ -476,4 +493,6 @@ Developing comprehensive testbenches was a critical aspect of ensuring the corre
 
 ## Acknowledgement & Conclusion
 
-The RISC-V RV32I Processor Coursework has been an invaluable learning experience, providing me with a deep understanding of CPU design, cache mechanisms, and collaborative software development. Through this project, I have not only honed my technical skills but also gained valuable insights into the complexities of system design and optimization. Looking ahead, I am eager to apply these learnings to more advanced projects and further explore the fascinating world of computer architecture and memory systems.
+In the end,  I would like to express my deepest gratitude to my teammates, whose dedication and countless hours spent in the library made this project possible. This project would not have had such a strong start without Cole, who took the initiative to integrate and debug the first single-cycle CPU early on, laying the most crucial foundation for our advanced followup development. A heartfelt thanks to Flavio, with whom I spent the final days in the library, meticulously going through the code line by line and analyzing wave traces to debug our pipeline and cache versions. My sincere appreciation also goes to Soon Yung, the unsung hero working tirelessly behind the scenes, ensuring seamless integration between the software and hardware components. His efforts in testing every part of the program on the Vbuddy and resolving issues in the lower-level assembly code were instrumental to our success. Lastly, I extend my gratitude to Professor Cheung and the teaching assistants for their engaging lectures and unwavering support during problem classes, introducing us to the fascinating world of FPGAs and the intricacies of computer architecture.
+
+Overall, the RISC-V RV32I Processor Coursework has been an invaluable learning experience, providing me with a deep understanding of CPU design, cache mechanisms, and collaborative software development. Through this project, I have not only honed my technical skills but also gained valuable insights into the complexities of system design and optimization. Looking ahead, I am eager to apply these learnings to more advanced projects and further explore the fascinating world of computer architecture and memory systems.
