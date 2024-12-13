@@ -1,22 +1,22 @@
-# Instruction Architecture RISC-V Coursework - Group Error404
+# Instruction Architecture RISC-V Coursework - Group 16
 
 ## Overview
 
 
-|Branch	|Descripton			                |Statement	        	|
-|-------|-----------------------------------|-----------------------|
-|[Branch]	| Lab 4 - Simplified RISC-V CPU	|[Link]			        |
-|[Branch]	|	Basic  RISC-V CPU	        |[Link]	    	        |   
-|[Branch]	|Pipelined RV32I Design		    |[Link]		            |
-|[Branch]	|Data Memory Cache		        |[Link]			        |
+|Branch	|Descripton|
+|-------|---------------------|
+|[Branch]| Lab 4 - Simplified RISC-V 	|
+|[Branch]|	Basic  RISC-V CPU|
+|[Branch]|Pipelined RV32I Design|
+|[Branch]|Data Memory Cache|
 
 ## Personal Statements
-|Member   |Personal Statement             |Logbook              |
-|---------|-------------------------------|---------------------|
-|Cole     |[Peronal Statement](Github.com)|[Logbook](google.com)|
-|Flavio   |[Peronal Statement](Github.com)|[Logbook](google.com)|
-|Michael  |[Peronal Statement](Github.com)|[Logbook](google.com)|
-|Soon Yung|[Peronal Statement](Github.com)|[Logbook](google.com)|
+|Member   |Personal Statement             |
+|---------|-------------------------------|
+|Cole     |[Peronal Statement](Github.com)|
+|Flavio   |[Peronal Statement](Github.com)|
+|Michael  |[Peronal Statement](Github.com)|
+|Soon Yung|[Peronal Statement](Github.com)|
 
 ## Navigation
 ### Layout
@@ -50,19 +50,28 @@ Once within the `tb` folder, traverse to `pdf_program` folder, attach the vbuddy
 ./attach_usb
 ./doit.sh
 ```
-## Working Evidence
-| Dataset|Graph                                      |
-|--------|-------------------------------------------|
-|Gaussian|[Gaussian Graph](images/Gaussian_Graph.jpg)|
-|Noisy   |[Noisy Graph](images/Noisy_Graph.jpg)      |
-|Triangle|[Triangle Graph](images/Triangle_Graph.jpg)|
+## Working Evidence (Picture)
+| Dataset|Graph                                       |
+|--------|--------------------------------------------|
+|Gaussian|![Gaussian Graph](images/Gaussian_Graph.jpg)|
+|        | ![Gaussian Plot](images/gaussian_plot.mp4) |
+|Noisy   |![Noisy Graph](images/Noisy_Graph.jpg)      |
+|        |![Noisy Plot](images/Noisy_Plot.mp4)        |
+|Triangle|![Triangle Graph](images/Triangle_Graph.jpg)|
+|        |![Triangle Plot](images/Triangle_plot.mp4)  |
+
+![F1 Video](images/F1_Lights.MOV)
+
 
 ## Contributions
-
+### Task Allocation
+The team allocated tasks based on the following factors:
+1. Competency - We ensured that more capable members would handle tasks that suited individual work (E.g pipeline stretched goal)
+2. Significance - We spread out tasks to ensure that everyone in the group contributed a significant portion to the project
+3. Interest - Members were allowed to choose certain tasks if they were interested in doing it.
 ### Single Cycle Processor
 
-| Part           | File  | Flavio (@FlavioGazzetta)| Cole (@opnuub)| Michael (@Happymic)| Soon (@so0nyung)      |
-| Module                  | File Names                                    | F | P |   |   |
+| Module| File Names| Flavio (@FlavioGazzetta) | Cole (@opnuub) | Michael (@Happymic)  | Soon (@so0nyung)   |
 |-------------------------|-----------------------------------------------|---|---|---|---|
 | Program Counter         | `pcReg.sv`, `top.sv`, `pcMux.sv`             | F | P |   |   |
 | ALU & RegisterFile      | `alu.sv`, `aluMux.sv`, `regFile.sv`          | F | P |   |   |
@@ -75,14 +84,14 @@ Once within the `tb` folder, traverse to `pdf_program` folder, attach the vbuddy
 |               | lfsr.sv   ||||F|
 | PDF Plotting  | pdf_tb.cpp  |||| F|
 |               |doit.sh||P||P|
-|Unit Testing|Multiple assembly files( 6-10.s,under `tests` folder)||||F|
+|Unit Testing|Multiple assembly files|||P|F|
 
 &nbsp;
 
 ### Pipelined Processor
- Part                       | File                                                                     | Flavio      | Cole         | Michael     | Soon      |
-|:---------------------------|:------------------------------------------------------------------------|:-----------:|:------------:|:-----------:|:---------:|
-| Pipeline Registers         | PRegFetch.sv, PRegDecode.sv, PRegExecute.sv, PRegMemory.sv              |       F     |              |             |           |
+ Part|File| Flavio (@FlavioGazzetta)|Cole (@opnuub)| Michael (@Happymic) |Soon (@so0nyung)|
+|:-----------------|:----------------------|:-----:|:------------:|:-----------:|:---------:|
+| Pipeline Registers| PRegFetch.sv, PRegDecode.sv, PRegExecute.sv, PRegMemory.sv              |       F     |              |             |           |
 | Jump Control               | JalrMux.sv                                                              |       F     |              |             |           |
 | Module Signal Reconnection | alu.sv, controlUnit.sv, extendPC.sv, resultMux.sv                       |       F     |              |             |           |
 | Reformat Intermediate TOPs | FetchTOP.sv, DecodeTOP.sv, ExecuteTOP.sv, MemoryTOP.sv, WritebackTOP.sv |       F     |              |             |           |
