@@ -2,12 +2,13 @@
 
 ## Overview
 
-|Tag	|Descripton			|Statement		|
-|-------|-------------------------------|-----------------------|
-|[Tag]	| Lab 4 - Simplified RISC-V CPU	|[Link]			|
-|[Tag]	|	Basic  RISC-V CPU	| [Link]		|
-|[Tag]	|Pipelined RV32I Design		| [Link]		|
-|[Tag]	|Data Memory Cache		|[Link]			|
+
+|Branch	|Descripton			                |Statement	        	|
+|-------|-----------------------------------|-----------------------|
+|[Branch]	| Lab 4 - Simplified RISC-V CPU	|[Link]			        |
+|[Branch]	|	Basic  RISC-V CPU	        |[Link]	    	        |   
+|[Branch]	|Pipelined RV32I Design		    |[Link]		            |
+|[Branch]	|Data Memory Cache		        |[Link]			        |
 
 ## Personal Statements
 |Member   |Personal Statement             |Logbook              |
@@ -17,32 +18,67 @@
 |Michael  |[Peronal Statement](Github.com)|[Logbook](google.com)|
 |Soon Yung|[Peronal Statement](Github.com)|[Logbook](google.com)|
 
+## Navigation
+### Layout
+We've divided our different versions of the CPU into 3 branches:</br>
+`main`: For Single-Cycle</br>
+`Pipeline`: For pipeline </br>
+`Cache`: For two-set cache associative </br>
 
+### Directory Navigation
+In all three files they share the same basic layout:</br>
+`rtl`: All `.sv` files</br>
+`tb`: All testbench related files.
+
+## Quickstart
+### Verify.cpp
+To test for verify.cpp, please traverse to the `tb` folder and enter the following:
+```
+./doit.sh
+```
+### F1 Lights
+Once within the `tb` folder, traverse to `f1_program` fold and enter the following two commands:
+```
+./attach_usb
+./doit.sh
+```
+>Note: We note that the time taken and result shown by this command may differ depending on the layout and or previous commands you gave. To ensure it runs correctly, it is advised to run the doit.sh file several times.
+
+### PDF Plotting
+Once within the `tb` folder, traverse to `pdf_program` folder, attach the vbuddy unit and enter the following two commands:
+```
+./attach_usb
+./doit.sh
+```
 ## Working Evidence
-| Dataset|Graph |Dataset |Graph |
-|-|-|-|-|
+| Dataset|Graph                                      |
+|--------|-------------------------------------------|
+|Gaussian|[Gaussian Graph](images/Gaussian_Graph.jpg)|
+|Noisy   |[Noisy Graph](images/Noisy_Graph.jpg)      |
+|Triangle|[Triangle Graph](images/Triangle_Graph.jpg)|
 
 ## Contributions
 
 ### Single Cycle Processor
 
 | Part           | File  | Flavio (@FlavioGazzetta)| Cole (@opnuub)| Michael (@Happymic)| Soon (@so0nyung)      |
-|:---------------|:------|:-----------------------:|:------------:|:-------------------:|:---------:|
+|:--------|:------|:------------------:|:-----------:|:-------------------:|:---------:|
 | Program Counter| PCReg.sv, PCTOP.sv, PCMux.sv| F           |      P       |             |           |
-| ALU & RegisterFile         | ALU.sv, ALUMux1.sv, ALUMux3.sv, ALUTop.sv                               | F           |      P       |             |           |
-|                            | RegisterFile.sv, ALUMux2.sv                                             | F           |      P       |             |           |
-| Instruction Processing     | InstructionMemory.sv                                                    |             |      F       |    P        |           |
-|                            | extend.sv.sv                                                            |             |      F       |    P        |           |
-|                            | ControlUnit.sv                                                          |             |      F       |    P        |           |
-|                            | branchUnit.sv                                                           |             |      F       |             |           |
-| Full Integration           | top.sv                                                                  |             |      F       |             |           |
-| Data Memory                | DataMemory.sv                                                           | F           |      P       |             |          |
-| F1 Program    | f1.s      |               |      F       |        |           |
-|               | f1.sv     |               |           |           |           |
-|               | f1_tb.cpp |               |           |               ||
-| PDF Plotting| pdf_tb.cpp  |             |              |             | F         |
-|           |               |               |               |           |
-|Unit Testing|              |               |               |           |
+| ALU & RegisterFile| ALU.sv, ALUMux1.sv, ALUMux3.sv, ALUTop.sv| F|P|||
+|| RegisterFile.sv, ALUMux2.sv| F           |      P       |||
+| Instruction Processing| InstructionMemory.sv||      F       |    P||
+|| extend.sv.sv|             |      F       |    P        |           |
+|| ControlUnit.sv|             |      F       |    P        |           |
+|| branchUnit.sv|             |      F       |             |           |
+| Full Integration| top.sv|                 |      F       |             |           |
+| Data Memory  | DataMemory.sv| F           |      P       |             |          |
+| F1 Program    | f1.s      ||      P       |        |     F      |
+|               | f1.sv     ||   P      |           |      F     |
+|               | f1_tb.cpp ||||F|
+|               | lfsr.sv   ||||F|
+| PDF Plotting  | pdf_tb.cpp  |||| F|
+|               |doit.sh||P||P|
+|Unit Testing|Multiple assembly files( 6-10.s,under `tests` folder)||||F|
 
 &nbsp;
 
@@ -50,7 +86,7 @@
 | Part                       | File                                                                    | Flavio      | Cole         | Michael     | Soon      |
 |:---------------------------|:------------------------------------------------------------------------|:-----------:|:------------:|:-----------:|:---------:|
 | Pipeline Registers         | PRegFetch.sv, PRegDecode.sv, PRegExecute.sv, PRegMemory.sv              |       F     |              |             |           |
-| Jump Control               | BandJSelector.sv                                                        |       F     |              |             |           |
+| Jump Control| BandJSelector.sv                                                        |       F     |              |             |           |
 | Module signal reconnection | ALU.sv, Control Unit.sv, Extend.sv, ...                                 |       F     |              |             |           |
 | Reformat Intermediate TOPs | FetchTOP.sv, DecodeTOP.sv, ExecuteTOP.sv, MemoryTOP.sv, WritebackTOP.sv |       F     |              |             |           |
 | Hazard Handling            | HazardUnit.sv                                                           |       F     |              |             |           |
@@ -68,10 +104,4 @@
 || L2Cache.sv        |||    F        ||
 || L3Cache.sv        |||    F        ||
 
-## File Layout
-
-##### Directory
-
-##### Files to Take Note
-1. README.md file
-[`logbooks`](docs/logbooks/)
+As a group, we do not believe that the commits may accurately reflect the given contributions. This is because we regularly sent individual files to each other (via Whatsapp, for example) or ran testbenches on a singular computer and push commits on another. As such, we believe that reading logbooks, personal statements and the team statement in conjuction with the commits.
