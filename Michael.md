@@ -73,7 +73,7 @@ Key Instruction Mapping Example
 | **Branch**            | `next_pc_sel_o` set via branch condition signals  | Updates PC based on conditions like BEQ or BLT.                   |
 | **Jump (JAL/JALR)**   | `rf_wdata_sel_o = 10`, `next_pc_sel_o = 10/11`    | Saves return address and jumps to target.                         |
 
-- and I have also implemnted all the different cases in the module using a case scenario.[link]
+- and I have also implemnted all the different cases in the module using a case scenario.[Link]
 
 - To verify that this works, I improved the testbench files I used for Lab4, adding new testing logics for Branch and Load type instructions, with also illegal instructions to verify the workability of this submodule:
 
@@ -104,20 +104,20 @@ Key Instruction Mapping Example
 
 ### 1.3 Testing and Validation
 
-To ensure the correctness and reliability of the designs, I meticulously wrote unit test benches for most of the majority component in the design. These test benches simulated various scenarios and edge cases, allowing me to identify and rectify any issues before integrate it in the design. The process of testing and validation was iterative, with each iteration bringing us closer to a fully functional and efficient CPU.
+To ensure the correctness and reliability of the designs, I meticulously wrote unit test benches for the majority of the components in the design. This was achieved by creating a modular_tb.sv file to simulate the input signals and behavior of the submodules and a corresponding modular_tb.cpp file to design Google Test functions. These test benches simulated various scenarios and edge cases, enabling me to identify and rectify issues before integrating the components into the design. The testing and validation process was iterative, with each iteration bringing us closer to a fully functional and efficient CPU.
 
-- Register File Test:
+- Register File Test: Reset & ReadWrite & ZeroRegisterBehavior
 ![alt text](Cache/images/BenchReg.jpg)
-- Branch Test
+- Branch Test: Test all Branch Instructions
 ![alt text](Cache/images/BenchBranch.jpg)
-- Data Memory Test
+- Data Memory Test: ReadWrite & Reset
 ![alt text](Cache/images/BenchDmem.jpg)
-- PC Unit Test
+- PC Unit Test: Test all Jump Instructions
 ![alt text](Cache/images/BenchPC.jpg)
-- ALU Test
+- ALU Test: Test all ALU Instructions
 ![alt text](Cache/images/BenchALU.jpg)
 
-Evidence in this folder Under the Branch PC&Instmem: [Link]
+Evidence of the old testbench files in this folder: [Link]
 
 ## 2. Cache System Design and Implementation Analysis
 
