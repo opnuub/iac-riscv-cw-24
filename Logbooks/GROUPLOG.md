@@ -1,5 +1,4 @@
 # Group 16 Logbook
-
 ### 13/11/2024: WhatsApp Group Created
 Our first meet up was done via WhatsApp, because several of our members were unable to make it face-to-face (be it illness or external commitments).
 - Discussed and allocated roles for Lab 4 based on the recommended split:
@@ -57,12 +56,17 @@ These file names do not accurately reflect the final file names - they are merel
 
 #### Timeline
 - We aimed to meet up by the end of the week with the basic CPU design finished, before discussing what to do next
-- 
 
 
 ### 08/12/2024: Update on progress
-At this point, the group had completed pipeline with work done on the cache stretched goal. It was here that we realised we didn't actually complete the f1 lights or the pdf plots - both of which were essential for our testing
+At this point, the group had completed pipeline with work done on the cache stretched goal. It was here that we realised we didn't actually complete the f1 lights or the pdf plots - both of which were essential for our testing. 
 
 
-12/12/2024: Final meetup
-At this final meeting, the group had completed the two-set associative cache stretched goal and were almost completed with all the pdf plotting tracks.
+### 12/12/2024: Library meetup
+At this meeting, the group had almost completed the two-set associative cache stretched goal and all the pdf plotting tracks. This meeting was to help each other with debugging and began the writing process 
+
+
+### 13/12/2024: Final Meetup
+By this meeting, the associative cache stretched goal and pdf plotting was complete. This meeting was to take pictures for the pdf plotting and assist in making our personal statements.
+
+In this final meeting, we also took sometime to reflect on the group's experience as a whole - and accross the board we felt that we had done well. Throughout the project we felt that we had been very organised and well-informed on each other's actions.

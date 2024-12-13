@@ -158,8 +158,10 @@ I created a bash script `doit.sh` in `pdf_program` which takes a parameter of ty
 
 ## Additional Comments
 
-In addition to the contributions listed above, I did some general bug fixes and verification of the single-cycle CPU. Some components were not designed by specification and was changed by me, such as:
+Additionally, I did the integration and verification of the single-cycle CPU, as well as some general bug fixes while doing so. Some components were not designed by specification and was changed by me, such as:
 
 * [register file: changed from synchronous read to asynchronous](https://github.com/opnuub/iac-riscv-cw-16/commit/25d7a8b7f1f8e71db2be494ea1576970e52bfd9f#diff-80536fe24033832b51b4f8e006b5662860084c690763185b0613cefa19b6c90a) at `regFile.sv`
 * [data memory: data.hex was loaded into the wrong position, changed to load into 0x10000](https://github.com/opnuub/iac-riscv-cw-16/commit/cefd0cda42676254a68bebdc37e73ae2c5c0ae9d#diff-7b8ff7307b99704edf382ba982955195d1bb1a29ad2608e04ca8cd50dbdb0d3a) at `dataMemory.sv`
 * [pc register: program counter address starts from 0, changed to start from 0xBFC00000](https://github.com/opnuub/iac-riscv-cw-16/commit/f40a8bf6aeb72a42dc86258ccde84d8e30566ed4#diff-4a14945f50d25a4a73dbddafd3a27787d927da7f30fc6a6f8f0f3b4974b420f2) at `pcReg.sv`
+
+In conclusion, this coursework gave me the opportunity to learn more about instruction set architecture (ISA) and teamwork. For the technical side, I have a better understanding of SystemVerilog, the RISC-V architecture and various techniques in designing a CPU, such as pipelining. Having more knowledge about ISA allows me to learn more about this field, such as other architectures like the ARM, or other techniques like branch prediction. With more time, my group would have definitely tried implementing more features like branch prediction. On the non-technical side, I improved on communication skills with my teammates, which made task delegation easier. Having more thought into planning meeting times also helped because it is important to respect people's time, as everyone's time is precious. I believe this project was successful because we managed to complete all three stretched goals and I'm happy with this result. Hence, I'm grateful to have done this project with my teammates, as all of us was motivated and cooperative.
