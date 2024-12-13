@@ -15,7 +15,7 @@ During my time working on this project I initially devoted my work towards worki
 
 ## SingleCycle 
 
-When considering the single cycle CPU, my work on it consisted on making, debugging and editing various components starting from ones from lab4 and augmenting them in order to better fit to the more advanced CPU. Strarting with the program counter ([PC Register](rtl/pcReg.sv) and [PC Mux](rtl/pcMux.sv)) where at first I focused on trying to apply compartmentalisation and separated the add4 component with the counter itself, however later decided to combine the 2 into a single component allowing for simplification in debugging and in the top file. After that I worked on the [alu.sv] (rtl/alu.sv) where I innitially started with a 4-bit version allowing for a large range of instructions, later deciding to shrink it down to 3 bits given that this would still keep the main operations and allowed for a lot of simplicfication(this would then be changed back to 4-bits in the pipeline). I then spent some time making the [register file](Pipeline/rtl/regfile.sv), which turned out to be a lot simpler than expected. A issue that I at first had with this component was that I was convinced I neeed a .mem file to store values which eventually I noticed not to be the case. The last single-cycle component which I made very significant changes to was the [dataMemory.sv](rtl/dataMemory.sv), which on the second attempt I got to work flawlessly.
+When considering the single cycle CPU, my work on it consisted on making, debugging and editing various components starting from ones from lab4 and augmenting them in order to better fit to the more advanced CPU. Strarting with the program counter ([PC Register](rtl/pcReg.sv) and [PC Mux](rtl/pcMux.sv)) where at first I focused on trying to apply compartmentalisation and separated the add4 component with the counter itself, however later decided to combine the 2 into a single component allowing for simplification in debugging and in the top file. After that I worked on the [alu.sv] (rtl/alu.sv) where I innitially started with a 4-bit version allowing for a large range of instructions, later deciding to shrink it down to 3 bits given that this would still keep the main operations and allowed for a lot of simplicfication(this would then be changed back to 4-bits in the pipeline). I then spent some time making the [register file](Pipeline/rtl/regfile.sv), which turned out to be a lot simpler than expected. A issue that I at first had with this component was that I was convinced I neeed a .mem file to store values which eventually I noticed not to be the case. The last single-cycle component which I made very significant changes to was the [dataMemory.sv](rtl/dataMemory.sv), which on the second attempt I got to both work and select between a byte, half word and word size.
 
 ---
 ---
@@ -79,6 +79,19 @@ After having added all these features and having done a lot of debuggin I tested
 
 <img src="Pipeline/images/Pipelined_all_5_tests_pass_proof.png" width="550" height="550" alt="Pipeline 5 stages passed">
  
+---
+---
+
+### Debugging Strategies
+
+During my time working on the project, I found that a very large percentage of the workload was dedicated to finding and fixing errors. For this, I found two very useful strategies: displaying outputs and displaying signals on GTKWave. Displaying outputs was the first strategy I used, as it allowed for an instant and simple visualization of various signals. Its advantage was that it was really easy to set up, enabling the display of input, output, and intermediate signals.
+<img src="Pipeline/images/Display_output.png" width="650" height="450" alt="debugging with GTK wave">
+However, this strategy had a significant limitation: the terminal had a limit on the amount of information it could display at once. This led me to switch to GTKWave, which turned out to be an almost perfect solution. It allowed me to visualize a large number of signals simultaneously, with the minor drawback that these signals had to be outputs of the top file. This required the slightly tedious process of temporarily making each signal an output. Ultimately, though, it provided a very straightforward debugging process without any limitations.
+
+the simulation from GTKWave looked like this (image from debugging test 5 errors in pipeline)
+
+<img src="Pipeline/images/GTKWave.png" width="1250" height="450" alt="debugging with GTK wave">
+
 ---
 ---
 
@@ -147,8 +160,7 @@ always_comb begin
         3'b010: aluResult = srcA & srcB;                         // Bitwise AND
         3'b011: aluResult = srcA | srcB;                         // Bitwise OR
         3'b100: aluResult = srcB;                                // Load Upper Immediate (lui)
-        3'b101: aluResult = ($signed(srcA) < $signed(srcB)) 
-                             ? 32'b1 : 32'b0;                   // Set Less Than (signed)
+        3'b101: aluResult = ($signed(srcA) < $signed(srcB)) ? 32'b1 : 32'b0;  // Set Less Than (signed)
         3'b110: aluResult = srcA << srcB[4:0];                   // Logical Left Shift
         3'b111: aluResult = srcA >> srcB[4:0];                   // Logical Right Shift
     endcase
