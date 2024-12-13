@@ -66,6 +66,7 @@ module L1Cache #(
         miss = !hit && (load || store);
         mem_write_data = cache[index][way].data;
         data_out = hit ? cache[index][hit_way].data : mem_data;
+
     end
     
     always_ff @(posedge clk or negedge rst_n) begin
@@ -135,7 +136,7 @@ module L1Cache #(
                 
                 UPDATE: begin
                     busy <= 0;
-                    cache[index][way].valid <= 1;
+                    //cache[index][way].valid <= 1;
                     cache[index][way].dirty <= store;
                     cache[index][way].tag <= tag;
                     cache[index][way].data <= store ? data_in : mem_data;
