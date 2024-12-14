@@ -8,7 +8,7 @@ Streched goals are in the following locations:
 
 | Branch   | Descripton                |
 | -------- | ------------------------- |
-| [Branch] | Lab 4 - Simplified RISC-V |
+| [This Branch] | Lab 4 - Simplified RISC-V |
 | [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/Full_Instruction) | Basic  RISC-V CPU         |
 | [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/pipeline) | Pipelined RV32I Design    |
 | [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/Cache) | Data Memory Cache         |
@@ -29,7 +29,7 @@ Streched goals are in the following locations:
 
 We've divided our different versions of the CPU into 4 branches:</br>
 `main`: For Single-Cycle & For Pipeline & For Cache & For Full_Instruction</br>
-`Pipeline`: For pipeline </br>
+`Pipeline`: For pipeline (In pipeline folder)</br>
 `Cache`: For two-set cache associative </br>
 `Full_Instruction`: For full instruction </br>
 
@@ -47,6 +47,10 @@ To test for verify.cpp, please traverse to the `tb` folder and enter the followi
 
 ```
 ./doit.sh
+```
+Sometimes its necessary to first run
+```
+chomd +x assemble.sh
 ```
 
 ### F1 Lights
