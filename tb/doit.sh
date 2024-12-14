@@ -15,14 +15,10 @@ RESET=$(tput sgr0)
 passes=0
 fails=0
 
-GTEST_INCLUDE_PATH="/opt/homebrew/opt/googletest/include"
-GTEST_LIB_PATH="/opt/homebrew/opt/googletest/lib"
-
-
 # Handle terminal arguments
 if [[ $# -eq 0 ]]; then
     # If no arguments provided, run all tests
-    files=(${TEST_FOLDER}/verify.cpp)
+    files=(${TEST_FOLDER}/*.cpp)
 else
     # If arguments provided, use them as input files
     files=("$@")
@@ -49,8 +45,7 @@ for file in "${files[@]}"; do
                 -y ${RTL_FOLDER} \
                 --prefix "Vdut" \
                 -o Vdut \
-                -CFLAGS "-I${GTEST_INCLUDE_PATH}" \
-                -LDFLAGS "-L${GTEST_LIB_PATH} -lgtest -lgtest_main -pthread"
+                -LDFLAGS "-lgtest -lgtest_main -lpthread"
 
     # Build C++ project with automatically generated Makefile
     make -j -C obj_dir/ -f Vdut.mk
