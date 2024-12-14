@@ -50,7 +50,7 @@ To test for verify.cpp, please traverse to the `tb` folder and enter the followi
 ```
 Sometimes its necessary to first run
 ```
-chomd +x assemble.sh
+chmod +x assemble.sh
 ```
 
 ### F1 Lights
