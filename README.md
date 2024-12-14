@@ -9,7 +9,7 @@ Streched goals are in the following locations:
 | Branch   | Descripton                |
 | -------- | ------------------------- |
 | [This Branch] | Lab 4 - Simplified RISC-V |
-| [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/Full_Instruction) | Basic  RISC-V CPU         |
+| [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/Full_RISCV) | Basic  RISC-V CPU         |
 | [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/pipeline) | Pipelined RV32I Design    |
 | [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/Cache) | Data Memory Cache         |
 
@@ -109,7 +109,7 @@ The team allocated tasks based on the following factors:
 
 | Module                 | File Names                                                       | Flavio (@FlavioGazzetta) | Cole (@opnuub) | Michael (@Happymic) | Soon (@so0nyung) |
 | ---------------------- | ---------------------------------------------------------------- | ------------------------ | -------------- | ------------------- | ---------------- |
-| Full instruction set   |                                                                  |                          |                |          M          |                  |
+| Full instruction set   |                                                                  |                          |                |          F          |                  |
 
 
 &nbsp;
