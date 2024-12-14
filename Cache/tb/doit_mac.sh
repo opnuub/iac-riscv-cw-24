@@ -18,7 +18,6 @@ fails=0
 GTEST_INCLUDE_PATH="/opt/homebrew/opt/googletest/include"
 GTEST_LIB_PATH="/opt/homebrew/opt/googletest/lib"
 
-
 # Handle terminal arguments
 if [[ $# -eq 0 ]]; then
     # If no arguments provided, run all tests
@@ -32,13 +31,14 @@ cd $SCRIPT_DIR
 
 # Wipe previous test output
 rm -rf test_out/*
+mkdir -p test_out # Ensure the test_out directory exists
 
 # Iterate through files
 for file in "${files[@]}"; do
     name=$(basename "$file" _tb.cpp | cut -f1 -d\-)
 
     # If verify.cpp -> we are testing the top module
-    if [ $name == "verify.cpp" ]; then
+    if [ "$name" == "verify.cpp" ]; then
         name="top"
     fi
 
@@ -48,15 +48,16 @@ for file in "${files[@]}"; do
                 --exe ${file} \
                 -y ${RTL_FOLDER} \
                 --prefix "Vdut" \
+                --Mdir test_out/obj_dir \  # Specify obj_dir to be directly generated in test_out/
                 -o Vdut \
                 -CFLAGS "-I${GTEST_INCLUDE_PATH}" \
                 -LDFLAGS "-L${GTEST_LIB_PATH} -lgtest -lgtest_main -pthread"
 
     # Build C++ project with automatically generated Makefile
-    make -j -C obj_dir/ -f Vdut.mk
+    make -j -C test_out/obj_dir/ -f Vdut.mk
 
     # Run executable simulation file
-    ./obj_dir/Vdut
+    ./test_out/obj_dir/Vdut
 
     # Check if the test succeeded or not
     if [ $? -eq 0 ]; then
@@ -64,8 +65,4 @@ for file in "${files[@]}"; do
     else
         ((fails++))
     fi
-
 done
-
-# Save obj_dir in test_out
-mv obj_dir test_out/
