@@ -1,0 +1,216 @@
+.
+├── asm
+│   ├── 1_addi_bne.s
+│   ├── 2_li_add.s
+│   ├── 3_lbu_sb.s
+│   ├── 4_jal_ret.s
+│   ├── 5_pdf.s
+│   └── 6_f1_lights.s
+├── assemble.sh
+├── attach_usb.sh
+├── directory_structure.txt
+├── doit.sh
+├── doit_m.sh
+├── f1.cpp
+├── reference
+│   ├── Makefile
+│   ├── README.md
+│   ├── Reference_Prog.md
+│   ├── Reference_Prog.pdf
+│   ├── format_hex.sh
+│   ├── gaussian.mem
+│   ├── images
+│   │   ├── memory_map.jpg
+│   │   └── pdf_listing.jpg
+│   ├── noisy.mem
+│   ├── pdf.asm
+│   ├── pdf.hex
+│   ├── pdf.s
+│   └── triangle.mem
+├── test3.txt
+├── test_out
+│   ├── 1_addi_bne
+│   │   ├── data.hex
+│   │   ├── program.dis
+│   │   ├── program.hex
+│   │   └── waveform.vcd
+│   ├── 2_li_add
+│   │   ├── data.hex
+│   │   ├── program.dis
+│   │   ├── program.hex
+│   │   └── waveform.vcd
+│   ├── 3_lbu_sb
+│   │   ├── data.hex
+│   │   ├── program.dis
+│   │   ├── program.hex
+│   │   └── waveform.vcd
+│   ├── 4_jal_ret
+│   │   ├── data.hex
+│   │   ├── program.dis
+│   │   ├── program.hex
+│   │   └── waveform.vcd
+│   ├── 5_pdf
+│   │   ├── data.hex
+│   │   ├── program.dis
+│   │   ├── program.hex
+│   │   └── waveform.vcd
+│   └── obj_dir
+│       ├── Vdut
+│       ├── Vdut.cpp
+│       ├── Vdut.h
+│       ├── Vdut.mk
+│       ├── Vdut__ALL.a
+│       ├── Vdut__ALL.cpp
+│       ├── Vdut__ALL.d
+│       ├── Vdut__ALL.o
+│       ├── Vdut__ConstPool_0.cpp
+│       ├── Vdut__Syms.cpp
+│       ├── Vdut__Syms.h
+│       ├── Vdut__TraceDecls__0__Slow.cpp
+│       ├── Vdut__Trace__0.cpp
+│       ├── Vdut__Trace__0__Slow.cpp
+│       ├── Vdut___024root.h
+│       ├── Vdut___024root__DepSet_hbd7b84b1__0.cpp
+│       ├── Vdut___024root__DepSet_hbd7b84b1__0__Slow.cpp
+│       ├── Vdut___024root__DepSet_hbf6d145a__0.cpp
+│       ├── Vdut___024root__DepSet_hbf6d145a__0__Slow.cpp
+│       ├── Vdut___024root__Slow.cpp
+│       ├── Vdut__pch.h
+│       ├── Vdut_classes.mk
+│       ├── verify.d
+│       ├── verify.o
+│       ├── verilated.d
+│       ├── verilated.o
+│       ├── verilated_threads.d
+│       ├── verilated_threads.o
+│       ├── verilated_vcd_c.d
+│       └── verilated_vcd_c.o
+├── tests
+│   ├── cpu_testbench.h
+│   └── verify.cpp
+├── tests_old
+│   ├── HazardUnit.vcd
+│   ├── HazardUnit_tb.cpp
+│   ├── HazardUnit_tb.sv
+│   ├── L1Cache.vcd
+│   ├── L1Cache_tb.cpp
+│   ├── L1Cache_tb.sv
+│   ├── L2Cache_tb.cpp
+│   ├── L2Cache_tb.sv
+│   ├── L3Cache_tb.cpp
+│   ├── branchUnit.vcd
+│   ├── branchUnit_tb.cpp
+│   ├── branchUnit_tb.sv
+│   ├── obj_dir
+│   │   ├── HazardUnit_tb.d
+│   │   ├── HazardUnit_tb.o
+│   │   ├── L1Cache_tb.d
+│   │   ├── L1Cache_tb.o
+│   │   ├── L2Cache_tb.d
+│   │   ├── L2Cache_tb.o
+│   │   ├── VHazardUnit.cpp
+│   │   ├── VHazardUnit.h
+│   │   ├── VHazardUnit.mk
+│   │   ├── VHazardUnit__ALL.a
+│   │   ├── VHazardUnit__ALL.cpp
+│   │   ├── VHazardUnit__ALL.d
+│   │   ├── VHazardUnit__ALL.o
+│   │   ├── VHazardUnit__Syms.cpp
+│   │   ├── VHazardUnit__Syms.h
+│   │   ├── VHazardUnit__TraceDecls__0__Slow.cpp
+│   │   ├── VHazardUnit__Trace__0.cpp
+│   │   ├── VHazardUnit__Trace__0__Slow.cpp
+│   │   ├── VHazardUnit___024root.h
+│   │   ├── VHazardUnit___024root__DepSet_hacf7eddf__0.cpp
+│   │   ├── VHazardUnit___024root__DepSet_hacf7eddf__0__Slow.cpp
+│   │   ├── VHazardUnit___024root__DepSet_hdaeb411e__0.cpp
+│   │   ├── VHazardUnit___024root__DepSet_hdaeb411e__0__Slow.cpp
+│   │   ├── VHazardUnit___024root__Slow.cpp
+│   │   ├── VHazardUnit__pch.h
+│   │   ├── VHazardUnit__ver.d
+│   │   ├── VHazardUnit__verFiles.dat
+│   │   ├── VHazardUnit_classes.mk
+│   │   ├── VL1Cache
+│   │   ├── VL1Cache.cpp
+│   │   ├── VL1Cache.h
+│   │   ├── VL1Cache.mk
+│   │   ├── VL1Cache__ALL.a
+│   │   ├── VL1Cache__ALL.cpp
+│   │   ├── VL1Cache__ALL.d
+│   │   ├── VL1Cache__ALL.o
+│   │   ├── VL1Cache__ConstPool_0.cpp
+│   │   ├── VL1Cache__Syms.cpp
+│   │   ├── VL1Cache__Syms.h
+│   │   ├── VL1Cache__TraceDecls__0__Slow.cpp
+│   │   ├── VL1Cache__Trace__0.cpp
+│   │   ├── VL1Cache__Trace__0__Slow.cpp
+│   │   ├── VL1Cache___024root.h
+│   │   ├── VL1Cache___024root__DepSet_hcaeda20b__0.cpp
+│   │   ├── VL1Cache___024root__DepSet_hcaeda20b__0__Slow.cpp
+│   │   ├── VL1Cache___024root__DepSet_he8082e3b__0.cpp
+│   │   ├── VL1Cache___024root__DepSet_he8082e3b__0__Slow.cpp
+│   │   ├── VL1Cache___024root__Slow.cpp
+│   │   ├── VL1Cache__pch.h
+│   │   ├── VL1Cache__ver.d
+│   │   ├── VL1Cache__verFiles.dat
+│   │   ├── VL1Cache_classes.mk
+│   │   ├── VL2Cache.cpp
+│   │   ├── VL2Cache.h
+│   │   ├── VL2Cache.mk
+│   │   ├── VL2Cache__ALL.a
+│   │   ├── VL2Cache__ALL.cpp
+│   │   ├── VL2Cache__ALL.d
+│   │   ├── VL2Cache__ALL.o
+│   │   ├── VL2Cache__Syms.cpp
+│   │   ├── VL2Cache__Syms.h
+│   │   ├── VL2Cache__TraceDecls__0__Slow.cpp
+│   │   ├── VL2Cache__Trace__0.cpp
+│   │   ├── VL2Cache__Trace__0__Slow.cpp
+│   │   ├── VL2Cache___024root.h
+│   │   ├── VL2Cache___024root__DepSet_hbb68b77f__0.cpp
+│   │   ├── VL2Cache___024root__DepSet_hbb68b77f__0__Slow.cpp
+│   │   ├── VL2Cache___024root__DepSet_hd1ba2962__0.cpp
+│   │   ├── VL2Cache___024root__DepSet_hd1ba2962__0__Slow.cpp
+│   │   ├── VL2Cache___024root__Slow.cpp
+│   │   ├── VL2Cache__pch.h
+│   │   ├── VL2Cache__ver.d
+│   │   ├── VL2Cache__verFiles.dat
+│   │   ├── VL2Cache_classes.mk
+│   │   ├── VbranchUnit.cpp
+│   │   ├── VbranchUnit.h
+│   │   ├── VbranchUnit.mk
+│   │   ├── VbranchUnit__ALL.a
+│   │   ├── VbranchUnit__ALL.cpp
+│   │   ├── VbranchUnit__ALL.d
+│   │   ├── VbranchUnit__ALL.o
+│   │   ├── VbranchUnit__Syms.cpp
+│   │   ├── VbranchUnit__Syms.h
+│   │   ├── VbranchUnit__TraceDecls__0__Slow.cpp
+│   │   ├── VbranchUnit__Trace__0.cpp
+│   │   ├── VbranchUnit__Trace__0__Slow.cpp
+│   │   ├── VbranchUnit___024root.h
+│   │   ├── VbranchUnit___024root__DepSet_h723502be__0.cpp
+│   │   ├── VbranchUnit___024root__DepSet_h723502be__0__Slow.cpp
+│   │   ├── VbranchUnit___024root__DepSet_h939f4d86__0.cpp
+│   │   ├── VbranchUnit___024root__DepSet_h939f4d86__0__Slow.cpp
+│   │   ├── VbranchUnit___024root__Slow.cpp
+│   │   ├── VbranchUnit__pch.h
+│   │   ├── VbranchUnit__ver.d
+│   │   ├── VbranchUnit__verFiles.dat
+│   │   ├── VbranchUnit_classes.mk
+│   │   ├── branchUnit_tb.d
+│   │   ├── branchUnit_tb.o
+│   │   ├── verilated.d
+│   │   ├── verilated.o
+│   │   ├── verilated_threads.d
+│   │   ├── verilated_threads.o
+│   │   ├── verilated_vcd_c.d
+│   │   └── verilated_vcd_c.o
+│   ├── piptop_tb.cpp
+│   ├── piptop_tb.sv
+│   ├── test_out
+│   └── unit_test.sh
+├── vbuddy.cpp
+└── verification.md
+
+15 directories, 199 files

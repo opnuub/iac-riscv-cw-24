@@ -19,8 +19,8 @@ Streched goals are in the following locations:
 | Member    | Personal Statement                                                                                                            |
 | --------- | ----------------------------------------------------------------------------------------------------------------------------- |
 | Cole      | [Peronal Statement](Github.com)                                                                                               |
-| Flavio    | [Peronal Statement](Github.com)                                                                                               |
-| Michael   | [Peronal Statement](Github.com)                                                                                               |
+| Flavio    | [Peronal Statement](Flavio_Gazzetta_Project_Brief.md)                                                                                               |
+| Michael   | [Peronal Statement](Michael_Statement.md)                                                                                               |
 | Soon Yung | [Peronal Statement](https://github.com/opnuub/iac-riscv-cw-16/blob/main/Logbooks/Personal%20Statements/SoonYung_Statement.md) |
 
 ## Navigation

@@ -1,0 +1,13 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "C/C++ Runner: Debug Session",
+      "type": "lldb",
+      "request": "launch",
+      "args": [],
+      "cwd": "/Users/michaelli/Desktop/Full_Instruction/tb/tests",
+      "program": "/Users/michaelli/Desktop/Full_Instruction/tb/tests/build/Debug/outDebug"
+    }
+  ]
+}
