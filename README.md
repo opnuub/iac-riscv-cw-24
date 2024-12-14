@@ -9,9 +9,9 @@ Streched goals are in the following locations:
 | Branch   | Descripton                |
 | -------- | ------------------------- |
 | [Branch] | Lab 4 - Simplified RISC-V |
-| [Branch] | Basic  RISC-V CPU         |
-| [Branch] | Pipelined RV32I Design    |
-| [Branch] | Data Memory Cache         |
+| [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/Full_Instruction) | Basic  RISC-V CPU         |
+| [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/pipeline) | Pipelined RV32I Design    |
+| [Branch](https://github.com/opnuub/iac-riscv-cw-16/tree/Cache) | Data Memory Cache         |
 
 ## Personal Statements
 
