@@ -38,7 +38,7 @@ TEST_F(CpuTestbench, TestJalRet)
 TEST_F(CpuTestbench, TestPdf)
 {
     setupTest("5_pdf");
-    setData("/Users/michaelli/Documents/GitHub/iac-riscv-cw-24/tb/reference/gaussian.mem");
+    setData("tb/reference/gaussian.mem");
     initSimulation();
     runSimulation(CYCLES * 100);
     EXPECT_EQ(top_->a0, 15363);
