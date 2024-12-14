@@ -28,7 +28,7 @@ Streched goals are in the following locations:
 ### Layout
 
 We've divided our different versions of the CPU into 4 branches:</br>
-`main`: For Single-Cycle & For Pipeline</br>
+`main`: For Single-Cycle & For Pipeline & For Cache & For Full_Instruction</br>
 `Pipeline`: For pipeline </br>
 `Cache`: For two-set cache associative </br>
 `Full_Instruction`: For full instruction </br>
