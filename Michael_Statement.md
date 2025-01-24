@@ -468,7 +468,7 @@ always_comb begin
     end
 end
 ```
-![alt text](images/WaveTrace_hit.jpg)
+![alt text](images/WaveTrace_Hit.jpg)
 
 The above wave trace from the program showed this logic, where the three level of caches hits data and update sequentially to ensure that data consistency, and in chronologically order, which is maintained across all cache levels while minimizing latency.
 
